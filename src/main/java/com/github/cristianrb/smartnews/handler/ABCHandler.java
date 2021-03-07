@@ -15,14 +15,15 @@ public class ABCHandler extends GenericHandler {
             } else if (qName.equalsIgnoreCase(description)) {
                 setDescriptionAndImage();
             } else if (qName.equalsIgnoreCase(category)) {
-                getContribution().setCategory(getData().toString());
+                getContribution().getCategories().add(getData().toString());
             } else if (qName.equalsIgnoreCase(pubDate)) {
                 getContribution().setPubDate(getData().toString());
             } else if (qName.equalsIgnoreCase(creator)) {
                 getContribution().setCreator(getData().toString());
             } else if (qName.equalsIgnoreCase(item)) {
                 getContributionList().add(new Contribution(getContribution()));
-                setContribution(null);
+                getContribution().setSource("ABC");
+                getContribution().setSourceUrl("www.abc.es");
             }
         }
     }
@@ -35,7 +36,11 @@ public class ABCHandler extends GenericHandler {
 
     private void setDescription(String dataDesc, String imageExtension) {
         if (imageExtension != null) {
-            getContribution().setDescription(dataDesc.split(imageExtension + "\">")[1]);
+            String[] dataSplit = dataDesc.split(imageExtension + "\">");
+            if (dataSplit.length > 1) {
+                getContribution().setDescription(dataSplit[1]);
+            }
+
         } else {
             getContribution().setDescription(dataDesc);
         }

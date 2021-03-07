@@ -2,6 +2,7 @@ package com.github.cristianrb.smartnews.rss;
 
 import com.github.cristianrb.smartnews.entity.Contribution;
 import com.github.cristianrb.smartnews.handler.ABCHandler;
+import com.github.cristianrb.smartnews.handler.ElMundoHandler;
 import com.github.cristianrb.smartnews.handler.ElPaisHandler;
 import com.github.cristianrb.smartnews.handler.GenericHandler;
 import javafx.util.Pair;
@@ -23,8 +24,8 @@ public class RSSDownloader {
     public RSSDownloader() {
         sources = new ArrayList<Pair<String, GenericHandler>>();
         sources.add(new Pair<String, GenericHandler>("https://www.abc.es/rss/feeds/abcPortada.xml", new ABCHandler()));
-        sources.add(new Pair<String, GenericHandler>("https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada", new ElPaisHandler()));
-        //sources.add(new Pair<String, GenericHandler>("https://e00-elmundo.uecdn.es/elmundo/rss/portada.xml", new ABCHandler()));
+        //sources.add(new Pair<String, GenericHandler>("https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada", new ElPaisHandler()));
+        //sources.add(new Pair<String, GenericHandler>("https://e00-elmundo.uecdn.es/elmundo/rss/portada.xml", new ElMundoHandler()));
         //sources.add(new Pair<String, GenericHandler>("https://www.lavanguardia.com/newsml/home.xml", new ABCHandler()));
     }
 
