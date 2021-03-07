@@ -21,7 +21,7 @@ public class ABCHandler extends GenericHandler {
             } else if (qName.equalsIgnoreCase(creator)) {
                 getContribution().setCreator(getData().toString());
             } else if (qName.equalsIgnoreCase(item)) {
-                getContributionList().add(new Contribution(getContribution()));
+                getContributionList().add(getContribution());
                 getContribution().setSource("ABC");
                 getContribution().setSourceUrl("www.abc.es");
             }
