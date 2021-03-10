@@ -1,5 +1,8 @@
 package com.github.cristianrb.smartnews.entity;
 
+import org.springframework.stereotype.Component;
+
+import javax.persistence.Entity;
 import java.util.ArrayList;
 import java.util.List;
 
