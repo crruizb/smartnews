@@ -30,38 +30,26 @@ public class ABCHandler extends GenericHandler {
 
     private void setDescriptionAndImage() {
         String dataDesc = getData().toString();
-        String imageExtension = setImage(dataDesc);
-        setDescription(dataDesc, imageExtension);
-    }
-
-    private void setDescription(String dataDesc, String imageExtension) {
-        if (imageExtension != null) {
-            String[] dataSplit = dataDesc.split(imageExtension + "\">");
-            if (dataSplit.length > 1) {
-                getContribution().setDescription(dataSplit[1]);
-            }
-
-        } else {
-            getContribution().setDescription(dataDesc);
+        int startOfDescription = setImage(dataDesc);
+        System.out.println("Start of desc: " + startOfDescription);
+        System.out.println(dataDesc);
+        if (!dataDesc.endsWith(getContribution().getUrlImage() + "\">")) {
+            getContribution().setDescription(dataDesc.substring(startOfDescription));
         }
+
     }
 
-    private String setImage(String dataDesc) {
+    private int setImage(String dataDesc) {
         String imageExtension = null;
+        int endOfImage = -1;
+        int startOfImage = -1;
         if (dataDesc.contains("src=")) {
-            if (dataDesc.contains("JPG")) {
-                imageExtension = "JPG";
-            } else if (dataDesc.contains("jpg")) {
-                imageExtension = "jpg";
-            } else if (dataDesc.contains("jpeg")) {
-                imageExtension = "jpeg";
-            } else if (dataDesc.contains("png")) {
-                imageExtension = "png";
-            }
-            String urlImage = dataDesc.split("src=" + "\"")[1].split(imageExtension + "\">")[0] + imageExtension;
+            startOfImage = dataDesc.indexOf("src=") + "src=".length()+1;
+            endOfImage = dataDesc.indexOf("\">");
+            String urlImage = dataDesc.substring(startOfImage, endOfImage);
             getContribution().setUrlImage(urlImage);
         }
-        return imageExtension;
+        return endOfImage+2;
     }
 
 

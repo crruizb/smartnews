@@ -5,6 +5,8 @@ import com.github.cristianrb.smartnews.entity.ContributionDAO;
 import com.github.cristianrb.smartnews.repository.ContributionsRepository;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsService;
 import com.github.cristianrb.smartnews.service.contributions.mapper.ContributionsMapper;
+import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.mapping.Constraint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -7,6 +7,7 @@ import com.github.cristianrb.smartnews.repository.ContributionsRepository;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsService;
 import com.github.cristianrb.smartnews.service.contributions.impl.ContributionsServiceImpl;
 import javafx.util.Pair;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
@@ -46,7 +47,11 @@ public class RSSDownloader {
     }
 
     private void saveContributionsInDB(List<Contribution> contributionsFromAllSources) {
-        contributionsFromAllSources.forEach( (cont) -> this.contributionsService.saveContribution(cont) );
+        try {
+            contributionsFromAllSources.forEach((cont) -> this.contributionsService.saveContribution(cont));
+        } catch (Exception e) {
+            // Do nothing
+        }
     }
 
     public List<Contribution> downloadNews(String xmlUrl, GenericHandler handler) {
