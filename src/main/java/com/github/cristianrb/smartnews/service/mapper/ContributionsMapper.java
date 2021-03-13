@@ -1,4 +1,4 @@
-package com.github.cristianrb.smartnews.service.contributions.mapper;
+package com.github.cristianrb.smartnews.service.mapper;
 
 import com.github.cristianrb.smartnews.entity.Contribution;
 import com.github.cristianrb.smartnews.entity.ContributionDAO;

@@ -1,19 +1,15 @@
 package com.github.cristianrb.smartnews.rest;
 
 import com.github.cristianrb.smartnews.entity.Contribution;
-import com.github.cristianrb.smartnews.entity.ContributionDAO;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsService;
-import com.github.cristianrb.smartnews.service.contributions.mapper.ContributionsMapper;
+import com.github.cristianrb.smartnews.service.mapper.ContributionsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api")

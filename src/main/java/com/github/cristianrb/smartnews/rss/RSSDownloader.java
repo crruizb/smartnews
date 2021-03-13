@@ -3,14 +3,10 @@ package com.github.cristianrb.smartnews.rss;
 import com.github.cristianrb.smartnews.config.SpringContextConfig;
 import com.github.cristianrb.smartnews.entity.Contribution;
 import com.github.cristianrb.smartnews.handler.*;
-import com.github.cristianrb.smartnews.repository.ContributionsRepository;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsService;
-import com.github.cristianrb.smartnews.service.contributions.impl.ContributionsServiceImpl;
 import javafx.util.Pair;
-import org.hibernate.exception.ConstraintViolationException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.stereotype.Component;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -22,21 +18,24 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class RSSDownloader {
 
-    private final List<Pair<String, GenericHandler>> sources;
+    private List<Pair<String, GenericHandler>> sources;
     private ContributionsService contributionsService;
 
     public RSSDownloader() {
+
+    }
+
+    @Scheduled(fixedRate=3600000) // Every hour (60*60*1000)
+    public void downloadFromAllSources() {
         this.contributionsService = SpringContextConfig.getBean(ContributionsService.class);
         sources = new ArrayList<Pair<String, GenericHandler>>();
         sources.add(new Pair<String, GenericHandler>("https://www.abc.es/rss/feeds/abcPortada.xml", new ABCHandler()));
         sources.add(new Pair<String, GenericHandler>("https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada", new ElPaisHandler()));
         sources.add(new Pair<String, GenericHandler>("https://e00-elmundo.uecdn.es/elmundo/rss/portada.xml", new ElMundoHandler()));
         sources.add(new Pair<String, GenericHandler>("https://www.lavanguardia.com/newsml/home.xml", new LaVanguardiaHandler()));
-    }
-
-    public void downloadFromAllSources() {
         List<Contribution> contributionsFromAllSources = new ArrayList<Contribution>();
         for (Pair<String, GenericHandler> pair : sources) {
             List<Contribution> contributionList = downloadNews(pair.getKey(), pair.getValue());
@@ -44,6 +43,7 @@ public class RSSDownloader {
         }
 
         saveContributionsInDB(contributionsFromAllSources);
+        logTime();
     }
 
     private void saveContributionsInDB(List<Contribution> contributionsFromAllSources) {
@@ -68,6 +68,10 @@ public class RSSDownloader {
             e.printStackTrace();
         }
         return contributionList;
+    }
+
+    private void logTime() {
+        System.out.println("RSSDownloader finished: " + System.currentTimeMillis());
     }
 
 }
