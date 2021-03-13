@@ -22,8 +22,8 @@ public class ContributionsServiceImpl implements ContributionsService {
 
     @Override
     public ContributionDAO saveContribution(Contribution cont) {
-        System.out.println("Saving: " + cont);
-        return this.contributionsRepository.save(ContributionsMapper.mapContributionToContributionDAO(cont));
+        ContributionDAO cDAO = ContributionsMapper.mapContributionToContributionDAO(cont);
+        return this.contributionsRepository.save(cDAO);
     }
 
     @Override

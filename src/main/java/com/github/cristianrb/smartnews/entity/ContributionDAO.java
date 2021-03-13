@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "contributions")
@@ -56,14 +57,6 @@ public class ContributionDAO {
         this.link = link;
     }
 
-    //public void setCategories(List<String> categories) {
-    //    this.categories = categories;
-    //}
-
-    //public List<String> getCategories() {
-    //    return categories;
-   // }
-
     public String getCategories() {
         return categories;
     }
@@ -112,5 +105,16 @@ public class ContributionDAO {
         this.sourceUrl = sourceUrl;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ContributionDAO that = (ContributionDAO) o;
+        return id == that.id && Objects.equals(title, that.title);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title);
+    }
 }

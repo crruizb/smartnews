@@ -8,16 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api")
 public class ContributionController {
 
     private final ContributionsService contributionsService;
+    private static final int PAGE_SIZE = 10;
 
     @Autowired
     public ContributionController(ContributionsService contributionsService) {
@@ -26,9 +29,7 @@ public class ContributionController {
 
     @GetMapping("/contributions")
     public Page<Contribution> getAllContributions(@RequestParam(name = "page", defaultValue = "0") Integer page) {
-        int size = 10;
-        Pageable paging = PageRequest.of(page, size);
-        Page<ContributionDAO> contributionsDAO = this.contributionsService.getAll(paging);
-        return contributionsDAO.map(ContributionsMapper::mapContributionDAOToContribution);
+        return contributionsService.getAll(PageRequest.of(page, PAGE_SIZE))
+                                    .map(ContributionsMapper::mapContributionDAOToContribution);
     }
 }
