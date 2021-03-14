@@ -33,6 +33,14 @@ public class ContributionDAO {
     @Column
     private String sourceUrl;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getTitle() {
         return title;
     }

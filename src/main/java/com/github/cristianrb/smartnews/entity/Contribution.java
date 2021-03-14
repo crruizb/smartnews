@@ -8,6 +8,7 @@ import java.util.List;
 
 public class Contribution {
 
+    private Integer id;
     private String title;
     private String description;
     private String link;
@@ -22,8 +23,9 @@ public class Contribution {
         this.categories = new ArrayList<String>();
     }
 
-    public Contribution(String title, String description, String link, ArrayList<String> categories,
+    public Contribution(Integer id, String title, String description, String link, ArrayList<String> categories,
                         String pubDate, String creator, String urlImage, String source, String sourceUrl) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.link = link;
@@ -36,6 +38,7 @@ public class Contribution {
     }
 
     public Contribution(Contribution contribution) {
+        this.id = contribution.id;
         this.title = contribution.title;
         this.description = contribution.description;
         this.link = contribution.link;
@@ -45,6 +48,14 @@ public class Contribution {
         this.urlImage = contribution.urlImage;
         this.source = contribution.source;
         this.sourceUrl = contribution.sourceUrl;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -124,6 +135,7 @@ public class Contribution {
     @Override
     public String toString() {
         return "Contribution{" +
+                "id='" + id + '\'' +
                 "title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", link='" + link + '\'' +

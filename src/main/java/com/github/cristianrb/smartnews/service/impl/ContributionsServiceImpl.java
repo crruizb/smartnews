@@ -10,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class ContributionsServiceImpl implements ContributionsService {
 
@@ -29,5 +31,10 @@ public class ContributionsServiceImpl implements ContributionsService {
     @Override
     public Page<ContributionDAO> getAll(Pageable paging) {
         return this.contributionsRepository.findAll(paging);
+    }
+
+    @Override
+    public ContributionDAO getContributionById(Integer id) {
+        return contributionsRepository.findById(id).get();
     }
 }

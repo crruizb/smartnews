@@ -27,6 +27,7 @@ public class ContributionsMapper {
 
     public static Contribution mapContributionDAOToContribution(ContributionDAO contDAO) {
         Contribution cont = new Contribution();
+        cont.setId(contDAO.getId());
         cont.setTitle(contDAO.getTitle());
         cont.setLink(contDAO.getLink());
         cont.setCreator(contDAO.getCreator());

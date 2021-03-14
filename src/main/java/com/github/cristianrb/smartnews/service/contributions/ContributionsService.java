@@ -6,10 +6,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public interface ContributionsService {
 
     ContributionDAO saveContribution(Contribution cont);
 
     Page<ContributionDAO> getAll(Pageable paging);
+
+    ContributionDAO getContributionById(Integer id);
 }
+

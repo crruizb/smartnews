@@ -34,6 +34,7 @@ public class ContributionControllerTests {
 
     private Pageable paging;
     private Page<ContributionDAO> contributionsPaged;
+    private Contribution c1;
     private static final int page = 0;
 
     @BeforeEach
@@ -41,9 +42,9 @@ public class ContributionControllerTests {
         List<ContributionDAO> contributions = new ArrayList<ContributionDAO>();
         ArrayList<String> categories = new ArrayList<String>();
         categories.add("C1");
-        Contribution c1 = new Contribution("C1", "D1", "L1", categories, "P1", "Cr1",
+        c1 = new Contribution(1, "C1", "D1", "L1", categories, "P1", "Cr1",
                 "url1", "source1", "sourceUrl1");
-        Contribution c2 = new Contribution("C2", "D2", "L2", categories, "P2", "Cr2",
+        Contribution c2 = new Contribution(2, "C2", "D2", "L2", categories, "P2", "Cr2",
                 "url2", "source2", "sourceUrl2");
         contributions.addAll(Arrays.asList(ContributionsMapper.mapContributionToContributionDAO(c1),
                 ContributionsMapper.mapContributionToContributionDAO(c2)));
@@ -59,5 +60,12 @@ public class ContributionControllerTests {
         when(contributionsService.getAll(paging)).thenReturn(contributionsPaged);
         Page<Contribution> contributionsResult = contributionController.getAllContributions(page);
         assertThat(contributionsResult.getTotalElements()).isEqualTo(2);
+    }
+
+    @Test
+    public void testRetrieveAContribution() {
+        ContributionDAO cdao = ContributionsMapper.mapContributionToContributionDAO(c1);
+        when(contributionsService.getContributionById(1)).thenReturn(cdao);
+        assertThat(contributionsService.getContributionById(1)).isEqualTo(cdao);
     }
 }

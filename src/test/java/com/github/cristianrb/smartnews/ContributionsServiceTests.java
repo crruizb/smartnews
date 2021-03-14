@@ -37,7 +37,7 @@ public class ContributionsServiceTests {
     public void testSaveContribution() {
         ArrayList<String> categories = new ArrayList<String>();
         categories.add("C1");
-        Contribution c1 = new Contribution("C1", "D1", "L1", categories, "P1", "Cr1",
+        Contribution c1 = new Contribution(null, "C1", "D1", "L1", categories, "P1", "Cr1",
                 "url1", "source1", "sourceUrl1");
 
         ContributionDAO c1DAO = ContributionsMapper.mapContributionToContributionDAO(c1);
@@ -52,9 +52,9 @@ public class ContributionsServiceTests {
         List<ContributionDAO> contributions = new ArrayList<ContributionDAO>();
         ArrayList<String> categories = new ArrayList<String>();
         categories.add("C1");
-        Contribution c1 = new Contribution("C1", "D1", "L1", categories, "P1", "Cr1",
+        Contribution c1 = new Contribution(null, "C1", "D1", "L1", categories, "P1", "Cr1",
                 "url1", "source1", "sourceUrl1");
-        Contribution c2 = new Contribution("C2", "D2", "L2", categories, "P2", "Cr2",
+        Contribution c2 = new Contribution(null, "C2", "D2", "L2", categories, "P2", "Cr2",
                 "url2", "source2", "sourceUrl2");
         contributions.addAll(Arrays.asList(ContributionsMapper.mapContributionToContributionDAO(c1),
                 ContributionsMapper.mapContributionToContributionDAO(c2)));
