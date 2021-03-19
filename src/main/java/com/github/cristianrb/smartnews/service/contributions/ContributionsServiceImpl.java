@@ -1,16 +1,12 @@
-package com.github.cristianrb.smartnews.service.impl;
+package com.github.cristianrb.smartnews.service.contributions;
 
 import com.github.cristianrb.smartnews.entity.Contribution;
 import com.github.cristianrb.smartnews.entity.ContributionDAO;
 import com.github.cristianrb.smartnews.repository.ContributionsRepository;
-import com.github.cristianrb.smartnews.service.contributions.ContributionsService;
-import com.github.cristianrb.smartnews.service.mapper.ContributionsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class ContributionsServiceImpl implements ContributionsService {

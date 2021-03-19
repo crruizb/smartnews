@@ -4,7 +4,7 @@ import com.github.cristianrb.smartnews.entity.Contribution;
 import com.github.cristianrb.smartnews.entity.ContributionDAO;
 import com.github.cristianrb.smartnews.rest.ContributionController;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsService;
-import com.github.cristianrb.smartnews.service.mapper.ContributionsMapper;
+import com.github.cristianrb.smartnews.service.contributions.ContributionsMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
