@@ -4,7 +4,7 @@ import com.github.cristianrb.smartnews.config.SpringContextConfig;
 import com.github.cristianrb.smartnews.entity.Contribution;
 import com.github.cristianrb.smartnews.handler.*;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsService;
-import javafx.util.Pair;
+import com.github.cristianrb.smartnews.util.Pair;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.xml.sax.InputSource;
