@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "contributions")
@@ -32,6 +33,8 @@ public class ContributionDAO {
     private String source;
     @Column
     private String sourceUrl;
+    @OneToMany(mappedBy = "contribution", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserContributionDAO> users;
 
     public int getId() {
         return id;
@@ -111,6 +114,14 @@ public class ContributionDAO {
 
     public void setSourceUrl(String sourceUrl) {
         this.sourceUrl = sourceUrl;
+    }
+
+    public Set<UserContributionDAO> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<UserContributionDAO> users) {
+        this.users = users;
     }
 
     @Override
