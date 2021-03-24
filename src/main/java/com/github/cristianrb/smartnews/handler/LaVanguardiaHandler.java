@@ -3,17 +3,6 @@ package com.github.cristianrb.smartnews.handler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
-
 public class LaVanguardiaHandler extends GenericHandler {
 
     public LaVanguardiaHandler() {

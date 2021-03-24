@@ -1,8 +1,5 @@
 package com.github.cristianrb.smartnews.entity;
 
-import org.springframework.stereotype.Component;
-
-import javax.persistence.Entity;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,8 +86,6 @@ public class Contribution {
     public List<String> getCategories() {
         return categories;
     }
-
-    public void setCategories(ArrayList<String> categories) { this.categories = categories; }
 
     public String getPubDate() {
         return pubDate;

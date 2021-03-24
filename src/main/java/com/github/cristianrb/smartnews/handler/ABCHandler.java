@@ -1,6 +1,5 @@
 package com.github.cristianrb.smartnews.handler;
 
-import com.github.cristianrb.smartnews.entity.Contribution;
 import org.xml.sax.SAXException;
 
 public class ABCHandler extends GenericHandler {

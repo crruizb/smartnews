@@ -1,8 +1,5 @@
 package com.github.cristianrb.smartnews.entity;
 
-import org.apache.catalina.User;
-
-import javax.annotation.Generated;
 import javax.persistence.*;
 import java.util.Date;
 
