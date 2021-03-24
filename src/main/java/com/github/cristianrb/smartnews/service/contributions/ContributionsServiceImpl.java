@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ContributionsServiceImpl implements ContributionsService {
 
@@ -21,8 +23,12 @@ public class ContributionsServiceImpl implements ContributionsService {
     @Override
     public ContributionDAO saveContribution(Contribution cont) {
         ContributionDAO cDAO = ContributionsMapper.mapContributionToContributionDAO(cont);
-        return this.contributionsRepository.save(cDAO);
+        if (!contributionExists(cont.getTitle())) {
+            return this.contributionsRepository.save(cDAO);
+        }
+        return null;
     }
+
 
     @Override
     public Page<ContributionDAO> getAll(Pageable paging) {
@@ -33,4 +39,11 @@ public class ContributionsServiceImpl implements ContributionsService {
     public ContributionDAO getContributionById(Integer id) {
         return contributionsRepository.findById(id).get();
     }
+
+    @Override
+    public boolean contributionExists(String title) {
+        return this.contributionsRepository.findByTitle(title).isPresent();
+    }
+
+
 }

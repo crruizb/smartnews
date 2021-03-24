@@ -51,9 +51,9 @@ public class RSSDownloader {
 
     private void saveContributionsInDB(List<Contribution> contributionsFromAllSources) {
         try {
-            contributionsFromAllSources.forEach((cont) -> this.contributionsService.saveContribution(cont));
+            contributionsFromAllSources.forEach(cont -> this.contributionsService.saveContribution(cont));
         } catch (Exception e) {
-            // Do nothing
+            e.printStackTrace();
         }
     }
 
