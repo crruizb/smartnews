@@ -30,6 +30,7 @@ public class ABCHandler extends GenericHandler {
 
     private void setDescriptionAndImage() {
         String dataDesc = getData().toString();
+        System.out.println(dataDesc);
         int startOfDescription = setImage(dataDesc);
         if (!dataDesc.endsWith(getContribution().getUrlImage() + "\">")) {
             getContribution().setDescription(dataDesc.substring(startOfDescription));
@@ -44,6 +45,7 @@ public class ABCHandler extends GenericHandler {
         if (dataDesc.contains("src=")) {
             startOfImage = dataDesc.indexOf("src=") + "src=".length()+1;
             endOfImage = dataDesc.indexOf("\">");
+            if (startOfImage > endOfImage) return 0;
             String urlImage = dataDesc.substring(startOfImage, endOfImage);
             getContribution().setUrlImage(urlImage);
         }

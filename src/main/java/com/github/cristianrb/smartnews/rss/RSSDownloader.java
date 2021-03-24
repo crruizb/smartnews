@@ -39,7 +39,10 @@ public class RSSDownloader {
         List<Contribution> contributionsFromAllSources = new ArrayList<Contribution>();
         for (Pair<String, GenericHandler> pair : sources) {
             List<Contribution> contributionList = downloadNews(pair.getKey(), pair.getValue());
-            contributionsFromAllSources.addAll(contributionList);
+            if (contributionList != null) {
+                contributionsFromAllSources.addAll(contributionList);
+            }
+
         }
 
         saveContributionsInDB(contributionsFromAllSources);
@@ -64,8 +67,8 @@ public class RSSDownloader {
             contributionList = handler.getContributionList();
 
 
-        } catch (ParserConfigurationException | SAXException | IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            // Continue reading news
         }
         return contributionList;
     }
