@@ -1,6 +1,7 @@
 package com.github.cristianrb.smartnews.rest;
 
 import com.github.cristianrb.smartnews.cf.DataModel;
+import com.github.cristianrb.smartnews.cf.Recommender;
 import com.github.cristianrb.smartnews.entity.*;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsMapper;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsService;
@@ -63,12 +64,14 @@ public class ContributionController {
 
     @ApiOperation(value = "Retrieves the contributions recommended for a given user")
     @GetMapping("/myfeed")
-    public Map<User, Set<Contribution>> getFeed(@RequestParam(name = "userId") String userId, Principal principal) {
-        Map<User, Set<Contribution>> data = null;
+    public Map<User, Map<Contribution, Double>> getFeed(@RequestParam(name = "userId") String userId, Principal principal) {
+        Map<User, Map<Contribution, Double>> data = null;
         //if (userId.equals(principal.getName())) {
             data = dataModel.createDataModel();
         //}
 
-        return data;
+        Recommender recomm = new Recommender(data);
+
+        return recomm.getRecommendationMatrix();
     }
 }

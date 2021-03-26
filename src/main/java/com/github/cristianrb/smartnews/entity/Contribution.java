@@ -2,6 +2,7 @@ package com.github.cristianrb.smartnews.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Contribution {
 
@@ -130,16 +131,19 @@ public class Contribution {
     @Override
     public String toString() {
         return "Contribution{" +
-                "id='" + id + '\'' +
-                "title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", link='" + link + '\'' +
-                ", categories='" + categories + '\'' +
-                ", pubDate='" + pubDate + '\'' +
-                ", creator='" + creator + '\'' +
-                ", urlImage='" + urlImage + '\'' +
-                ", source='" + source + '\'' +
-                ", sourceUrl='" + sourceUrl + '\'' +
-                '}';
+                "id='" + id + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Contribution that = (Contribution) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
