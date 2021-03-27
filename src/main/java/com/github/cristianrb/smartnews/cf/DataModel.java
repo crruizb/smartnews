@@ -27,28 +27,28 @@ public class DataModel {
             Map<Contribution, Double> newsVisited = new HashMap<>();
             for (UserContributionDAO userAndNew : newsByUser) {
                 Contribution cont = ContributionsMapper.mapContributionDAOToContribution(userAndNew.getContribution());
-                newsVisited.put(cont, 1.0);
-                contributions.add(cont);
+                newsVisited.put(cont, (double) userAndNew.getVote());
+                    contributions.add(cont);
             }
 
             User user = new User(userDAO.getId());
             data.put(user, newsVisited);
         }
 
-        for (Map.Entry<User, Map<Contribution, Double>> entry : data.entrySet()) {
-            Map<Contribution, Double> value = entry.getValue();
-            for (Contribution cont : contributions) {
-                if (!value.containsKey(cont)) {
-                    value.put(cont, 0.0);
-                }
-            }
-        }
-
+        //Collections.sort(DataModel.contributions, new SortByContributionId());
         System.out.println(data);
         return data;
     }
 
     public Map<User, Map<Contribution, Double>> getData() {
         return data;
+    }
+}
+
+class SortByContributionId implements Comparator<Contribution>
+{
+    public int compare(Contribution a, Contribution b)
+    {
+        return a.getId() - b.getId();
     }
 }

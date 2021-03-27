@@ -10,10 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.HashSet;
@@ -46,25 +43,28 @@ public class ContributionController {
 
     @ApiOperation(value = "Retrieve a contribution of a given id")
     @GetMapping("/contributions")
-    public Contribution getContributionById(@RequestParam(name = "id") Integer id, Principal principal) {
+    public Contribution getContributionById(@RequestParam(name = "id") Integer id) {
         ContributionDAO contributionDAO = contributionsService.getContributionById(id);
-        if (principal != null) {
-            Optional<UserDAO> optionalUser = usersService.getUser(principal.getName());
-            UserDAO user = optionalUser.orElseGet(() -> new UserDAO(principal.getName()));
-            Set<UserContributionDAO> contributionsVisited = user.getContributionsVisited();
-            if (contributionsVisited == null) {
-                contributionsVisited = new HashSet<>();
-                user.setContributionsVisited(contributionsVisited);
-            }
-            contributionsVisited.add(new UserContributionDAO(user, contributionDAO));
-            usersService.saveUser(user);
-        }
         return ContributionsMapper.mapContributionDAOToContribution(contributionDAO);
     }
 
+    @ApiOperation(value = "Adds a new rating from a given user to a given contribution")
+    @PostMapping("/contributions")
+    public void postVoteContribution(@RequestBody Integer vote, @RequestParam(name = "id") Integer id, Principal principal) {
+        if (principal == null) return;
+        voteContribution(vote, id, principal);
+    }
+
+    @ApiOperation(value = "Updates a rating from a given user to a given contribution")
+    @PutMapping("/contributions")
+    public void putVoteContribution(@RequestBody Integer vote, @RequestParam(name = "id") Integer id, Principal principal) {
+        if (principal == null) return;
+        voteContribution(vote, id, principal);
+    }
+
     @ApiOperation(value = "Retrieves the contributions recommended for a given user")
-    @GetMapping("/myfeed")
-    public Map<User, Map<Contribution, Double>> getFeed(@RequestParam(name = "userId") String userId, Principal principal) {
+    @GetMapping("/recommendations")
+    public Map<Contribution, Double> getFeed(@RequestParam(name = "userId") String userId, Principal principal) {
         Map<User, Map<Contribution, Double>> data = null;
         //if (userId.equals(principal.getName())) {
             data = dataModel.createDataModel();
@@ -72,6 +72,19 @@ public class ContributionController {
 
         Recommender recomm = new Recommender(data);
 
-        return recomm.getRecommendationMatrix();
+        return recomm.getRecommendationMatrix().get(new User(userId));
+    }
+
+    private void voteContribution(int vote, int contributionId, Principal principal) {
+        ContributionDAO contributionDAO = contributionsService.getContributionById(contributionId);
+        Optional<UserDAO> optionalUser = usersService.getUser(principal.getName());
+        UserDAO user = optionalUser.orElseGet(() -> new UserDAO(principal.getName()));
+        Set<UserContributionDAO> contributionsVisited = user.getContributionsVisited();
+        if (contributionsVisited == null) {
+            contributionsVisited = new HashSet<>();
+            user.setContributionsVisited(contributionsVisited);
+        }
+        contributionsVisited.add(new UserContributionDAO(user, contributionDAO, vote));
+        usersService.saveUser(user);
     }
 }

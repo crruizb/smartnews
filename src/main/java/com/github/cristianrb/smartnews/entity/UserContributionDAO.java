@@ -21,12 +21,16 @@ public class UserContributionDAO {
     @JoinColumn(name = "accesed_on")
     private long accesedOn;
 
+    @JoinColumn(name = "vote")
+    private int vote;
+
     public UserContributionDAO() {}
 
-    public UserContributionDAO(UserDAO user, ContributionDAO contributionDAO) {
+    public UserContributionDAO(UserDAO user, ContributionDAO contributionDAO, int vote) {
         this.user = user;
         this.contribution = contributionDAO;
         this.accesedOn = new Date().toInstant().toEpochMilli();
+        this.vote = vote;
     }
 
     public UserDAO getUser() {
@@ -51,5 +55,13 @@ public class UserContributionDAO {
 
     public void setAccesedOn(long accesedOn) {
         this.accesedOn = accesedOn;
+    }
+
+    public int getVote() {
+        return vote;
+    }
+
+    public void setVote(int vote) {
+        this.vote = vote;
     }
 }

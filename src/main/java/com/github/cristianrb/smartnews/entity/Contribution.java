@@ -139,11 +139,11 @@ public class Contribution {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Contribution that = (Contribution) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(title, that.title);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(title);
     }
 }

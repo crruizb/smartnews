@@ -30,7 +30,7 @@ public class ContributionsServiceImpl implements ContributionsService {
 
     @Override
     public Page<ContributionDAO> getAll(Pageable paging) {
-        return this.contributionsRepository.findAll(paging);
+        return this.contributionsRepository.findAllByOrderByIdDesc(paging);
     }
 
     @Override
