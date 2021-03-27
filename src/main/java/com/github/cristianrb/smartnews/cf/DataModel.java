@@ -34,21 +34,11 @@ public class DataModel {
             User user = new User(userDAO.getId());
             data.put(user, newsVisited);
         }
-
-        //Collections.sort(DataModel.contributions, new SortByContributionId());
-        System.out.println(data);
+        
         return data;
     }
 
     public Map<User, Map<Contribution, Double>> getData() {
         return data;
-    }
-}
-
-class SortByContributionId implements Comparator<Contribution>
-{
-    public int compare(Contribution a, Contribution b)
-    {
-        return a.getId() - b.getId();
     }
 }
