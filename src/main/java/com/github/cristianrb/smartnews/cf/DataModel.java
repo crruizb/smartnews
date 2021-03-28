@@ -21,6 +21,7 @@ public class DataModel {
     public Map<User, Map<Contribution, Double>> createDataModel() {
         data = new HashMap<>();
         contributions = new HashSet<>();
+        // TODO: Get all user that rated at least N contributions
         List<UserDAO> users = usersService.getAllUsers();
         for (UserDAO userDAO : users) {
             Set<UserContributionDAO> newsByUser = userDAO.getContributionsVisited();
@@ -34,7 +35,7 @@ public class DataModel {
             User user = new User(userDAO.getId());
             data.put(user, newsVisited);
         }
-        
+
         return data;
     }
 

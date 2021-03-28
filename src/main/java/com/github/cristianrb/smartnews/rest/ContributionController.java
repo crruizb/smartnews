@@ -3,6 +3,8 @@ package com.github.cristianrb.smartnews.rest;
 import com.github.cristianrb.smartnews.cf.DataModel;
 import com.github.cristianrb.smartnews.cf.Recommender;
 import com.github.cristianrb.smartnews.entity.*;
+import com.github.cristianrb.smartnews.errors.ForbiddenAccesException;
+import com.github.cristianrb.smartnews.errors.UserNotFoundException;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsMapper;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsService;
 import com.github.cristianrb.smartnews.service.contributions.UsersService;
@@ -64,18 +66,23 @@ public class ContributionController {
 
     @ApiOperation(value = "Retrieves the contributions recommended for a given user")
     @GetMapping("/recommendations")
-    public Map<Contribution, Double> getFeed(@RequestParam(name = "userId") String userId, Principal principal) {
-        Map<User, Map<Contribution, Double>> data = null;
-        //if (userId.equals(principal.getName())) {
-            data = dataModel.createDataModel();
-        //}
+    public Map<Contribution, Double> getFeed(@RequestParam(name = "userId") String userId, Principal principal) throws Exception {
+        if (usersService.getUser(userId).isPresent()) {
+            if (userId.equals(principal.getName())) {
+                Map<User, Map<Contribution, Double>> data = null;
+                data = dataModel.createDataModel();
+                Recommender recomm = new Recommender(data);
+                return recomm.getRecommendationMatrix().get(new User(userId));
+            }
+            throw new ForbiddenAccesException("Forbidden access to this resource.");
+        }
+        throw new UserNotFoundException("User with userId: " + userId + " not found.");
 
-        Recommender recomm = new Recommender(data);
-
-        return recomm.getRecommendationMatrix().get(new User(userId));
     }
 
     private void voteContribution(int vote, int contributionId, Principal principal) {
+        if (vote > 5) vote = 5;
+        else if (vote < 0) vote = 0;
         ContributionDAO contributionDAO = contributionsService.getContributionById(contributionId);
         Optional<UserDAO> optionalUser = usersService.getUser(principal.getName());
         UserDAO user = optionalUser.orElseGet(() -> new UserDAO(principal.getName()));

@@ -8,6 +8,10 @@ import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+/* TODO: Create an interface and make Recommender implement that interface
+ *  so that the controller can use the interface
+ *  and be able to have different collaborative filtering algorithms.
+ */
 public class Recommender {
 
     private Map<User, Map<Contribution, Double>> inputData;

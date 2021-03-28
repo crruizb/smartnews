@@ -131,7 +131,17 @@ public class Contribution {
     @Override
     public String toString() {
         return "Contribution{" +
-                "id='" + id + '}';
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", link='" + link + '\'' +
+                ", categories=" + categories +
+                ", pubDate='" + pubDate + '\'' +
+                ", creator='" + creator + '\'' +
+                ", urlImage='" + urlImage + '\'' +
+                ", source='" + source + '\'' +
+                ", sourceUrl='" + sourceUrl + '\'' +
+                '}';
     }
 
     @Override
