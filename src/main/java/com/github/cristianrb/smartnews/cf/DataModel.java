@@ -1,11 +1,12 @@
 package com.github.cristianrb.smartnews.cf;
 
 import com.github.cristianrb.smartnews.config.SpringContextConfig;
-import com.github.cristianrb.smartnews.entity.*;
+import com.github.cristianrb.smartnews.entity.Contribution;
+import com.github.cristianrb.smartnews.entity.User;
+import com.github.cristianrb.smartnews.entity.UserContributionDAO;
+import com.github.cristianrb.smartnews.entity.UserDAO;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsMapper;
-import com.github.cristianrb.smartnews.service.contributions.ContributionsService;
 import com.github.cristianrb.smartnews.service.contributions.UsersService;
-import com.github.cristianrb.smartnews.service.contributions.UsersServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;

@@ -1,6 +1,5 @@
 package com.github.cristianrb.smartnews.rest;
 
-import com.github.cristianrb.smartnews.cf.DataModel;
 import com.github.cristianrb.smartnews.cf.Recommender;
 import com.github.cristianrb.smartnews.cf.SlopeOneImpl;
 import com.github.cristianrb.smartnews.entity.*;
