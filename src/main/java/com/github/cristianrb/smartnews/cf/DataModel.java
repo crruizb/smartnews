@@ -1,21 +1,32 @@
 package com.github.cristianrb.smartnews.cf;
 
+import com.github.cristianrb.smartnews.config.SpringContextConfig;
 import com.github.cristianrb.smartnews.entity.*;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsMapper;
+import com.github.cristianrb.smartnews.service.contributions.ContributionsService;
 import com.github.cristianrb.smartnews.service.contributions.UsersService;
+import com.github.cristianrb.smartnews.service.contributions.UsersServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
 public class DataModel {
 
+    private static DataModel instance;
     private Map<User, Map<Contribution, Double>> data;
     protected static Set<Contribution> contributions;
     @Autowired
-    private UsersService usersService;
+    private final UsersService usersService;
 
-    public DataModel(UsersService usersService) {
-        this.usersService = usersService;
+    private DataModel() {
+        usersService = SpringContextConfig.getBean(UsersService.class);
+    }
+
+    public static DataModel getInstance() {
+        if (instance == null) {
+            instance = new DataModel();
+        }
+        return instance;
     }
 
     public Map<User, Map<Contribution, Double>> createDataModel() {

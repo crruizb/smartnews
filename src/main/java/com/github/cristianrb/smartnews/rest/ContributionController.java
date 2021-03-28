@@ -2,6 +2,7 @@ package com.github.cristianrb.smartnews.rest;
 
 import com.github.cristianrb.smartnews.cf.DataModel;
 import com.github.cristianrb.smartnews.cf.Recommender;
+import com.github.cristianrb.smartnews.cf.SlopeOneImpl;
 import com.github.cristianrb.smartnews.entity.*;
 import com.github.cristianrb.smartnews.errors.ForbiddenAccesException;
 import com.github.cristianrb.smartnews.errors.UserNotFoundException;
@@ -11,14 +12,13 @@ import com.github.cristianrb.smartnews.service.contributions.UsersService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
@@ -26,14 +26,12 @@ public class ContributionController {
 
     private final ContributionsService contributionsService;
     private final UsersService usersService;
-    private final DataModel dataModel;
     private static final int PAGE_SIZE = 10;
 
     @Autowired
     public ContributionController(ContributionsService contributionsService, UsersService usersService) {
         this.contributionsService = contributionsService;
         this.usersService = usersService;
-        this.dataModel = new DataModel(usersService);
     }
 
     @ApiOperation(value = "Retrieves at most 10 contributions of a given page")
@@ -66,13 +64,16 @@ public class ContributionController {
 
     @ApiOperation(value = "Retrieves the contributions recommended for a given user")
     @GetMapping("/recommendations")
-    public Map<Contribution, Double> getFeed(@RequestParam(name = "userId") String userId, Principal principal) throws Exception {
+    public Page<Contribution> getFeed(@RequestParam(name = "userId") String userId,
+                                                   @RequestParam(name = "page", defaultValue = "0") Integer page,
+                                                   Principal principal) throws Exception {
         if (usersService.getUser(userId).isPresent()) {
             if (userId.equals(principal.getName())) {
-                Map<User, Map<Contribution, Double>> data = null;
-                data = dataModel.createDataModel();
-                Recommender recomm = new Recommender(data);
-                return recomm.getRecommendationMatrix().get(new User(userId));
+                User user = new User(userId);
+                Recommender recomm = new SlopeOneImpl();
+                List<Contribution> contributionList = recomm.findRecommendations(user);
+                Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+                return toPage(contributionList, pageable);
             }
             throw new ForbiddenAccesException("Forbidden access to this resource.");
         }
@@ -93,5 +94,13 @@ public class ContributionController {
         }
         contributionsVisited.add(new UserContributionDAO(user, contributionDAO, vote));
         usersService.saveUser(user);
+    }
+
+    private Page<Contribution> toPage(List<Contribution> list, Pageable pageable) {
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), list.size());
+        if(start > list.size())
+            return new PageImpl<>(new ArrayList<>(), pageable, list.size());
+        return new PageImpl<>(list.subList(start, end), pageable, list.size());
     }
 }
