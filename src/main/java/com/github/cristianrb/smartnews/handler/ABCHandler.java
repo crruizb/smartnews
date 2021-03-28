@@ -2,6 +2,9 @@ package com.github.cristianrb.smartnews.handler;
 
 import org.xml.sax.SAXException;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class ABCHandler extends GenericHandler {
 
     @Override
@@ -16,7 +19,10 @@ public class ABCHandler extends GenericHandler {
             } else if (qName.equalsIgnoreCase(category)) {
                 getContribution().getCategories().add(getData().toString());
             } else if (qName.equalsIgnoreCase(pubDate)) {
-                getContribution().setPubDate(getData().toString());
+                java.util.Date date = new Date(getData().toString());
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+                String format = formatter.format(date);
+                getContribution().setPubDate(format);
             } else if (qName.equalsIgnoreCase(creator)) {
                 getContribution().setCreator(getData().toString());
             } else if (qName.equalsIgnoreCase(item)) {

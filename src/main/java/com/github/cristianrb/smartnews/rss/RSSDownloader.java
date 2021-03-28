@@ -25,14 +25,14 @@ public class RSSDownloader {
 
     }
 
-    @Scheduled(fixedRate=60000) // Every hour (60*60*1000=3600000)
+    @Scheduled(fixedRate=60000) // Every hour = (60*60*1000=3600000), minute = 60000
     public void downloadFromAllSources() {
         this.contributionsService = SpringContextConfig.getBean(ContributionsService.class);
         sources = new ArrayList<Pair<String, GenericHandler>>();
-        sources.add(new Pair<String, GenericHandler>("https://www.abc.es/rss/feeds/abcPortada.xml", new ABCHandler()));
-        sources.add(new Pair<String, GenericHandler>("https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada", new ElPaisHandler()));
-        sources.add(new Pair<String, GenericHandler>("https://e00-elmundo.uecdn.es/elmundo/rss/portada.xml", new ElMundoHandler()));
-        sources.add(new Pair<String, GenericHandler>("https://www.lavanguardia.com/newsml/home.xml", new LaVanguardiaHandler()));
+        sources.add(new Pair<>("https://www.abc.es/rss/feeds/abcPortada.xml", new ABCHandler()));
+        sources.add(new Pair<>("https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada", new ElPaisHandler()));
+        sources.add(new Pair<>("https://e00-elmundo.uecdn.es/elmundo/rss/portada.xml", new ElMundoHandler()));
+        sources.add(new Pair<>("https://www.lavanguardia.com/newsml/home.xml", new LaVanguardiaHandler()));
         List<Contribution> contributionsFromAllSources = new ArrayList<Contribution>();
         for (Pair<String, GenericHandler> pair : sources) {
             List<Contribution> contributionList = downloadNews(pair.getKey(), pair.getValue());
@@ -65,6 +65,7 @@ public class RSSDownloader {
 
 
         } catch (Exception e) {
+            e.printStackTrace();
             // Continue reading news
         }
         return contributionList;

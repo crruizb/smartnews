@@ -3,10 +3,7 @@ package com.github.cristianrb.smartnews.cf;
 import com.github.cristianrb.smartnews.entity.Contribution;
 import com.github.cristianrb.smartnews.entity.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SlopeOneImpl implements Recommender{
 
@@ -111,6 +108,8 @@ public class SlopeOneImpl implements Recommender{
             recommendationMatrixOfUser.remove(entry.getKey());
         }
 
-        return new ArrayList<>(recommendationMatrixOfUser.keySet());
+        List<Contribution> recommendationList = new ArrayList<>(recommendationMatrixOfUser.keySet());
+        Collections.sort(recommendationList, Contribution.contributionComparator);
+        return recommendationList;
     }
 }

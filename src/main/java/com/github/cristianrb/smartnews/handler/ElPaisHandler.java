@@ -3,6 +3,9 @@ package com.github.cristianrb.smartnews.handler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class ElPaisHandler extends GenericHandler {
 
     @Override
@@ -19,6 +22,11 @@ public class ElPaisHandler extends GenericHandler {
         if (qName.equalsIgnoreCase(item)) {
             getContribution().setSource("El País");
             getContribution().setSourceUrl("www.elpais.com");
+        } else if (qName.equalsIgnoreCase(pubDate)) {
+            java.util.Date date = new Date(getData().toString());
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+            String format = formatter.format(date);
+            getContribution().setPubDate(format);
         }
     }
 }

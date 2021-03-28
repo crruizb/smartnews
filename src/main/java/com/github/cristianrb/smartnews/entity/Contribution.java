@@ -1,6 +1,7 @@
 package com.github.cristianrb.smartnews.entity;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -156,4 +157,10 @@ public class Contribution {
     public int hashCode() {
         return Objects.hash(title);
     }
+
+    public static Comparator<Contribution> contributionComparator = new Comparator<Contribution>() {
+
+        public int compare(Contribution c1, Contribution c2) {
+            return c2.getPubDate().compareTo(c1.getPubDate());
+        }};
 }

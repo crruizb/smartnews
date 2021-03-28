@@ -1,5 +1,6 @@
 package com.github.cristianrb.smartnews.handler;
 
+import com.github.cristianrb.smartnews.util.FillWithZero;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -28,6 +29,15 @@ public class LaVanguardiaHandler extends GenericHandler {
         if (qName.equalsIgnoreCase(item)) {
             getContribution().setSource("La Vanguardia");
             getContribution().setSourceUrl("www.lavanguardia.com");
+        } else if (qName.equalsIgnoreCase(pubDate)) {
+            String date = getData().toString().split("T")[0];
+            String time = getData().toString().split("T")[1];
+            String hour = FillWithZero.fillWithZero(Integer.parseInt(time.split(":")[0]));
+            String minute = FillWithZero.fillWithZero(Integer.parseInt(time.split(":")[1]));
+
+            String dateTime = date + " " + hour + ":" + minute;
+            getContribution().setPubDate(dateTime);
         }
     }
+
 }
