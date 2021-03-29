@@ -15,22 +15,13 @@ public class DataModel {
 
     private static DataModel instance;
     private Map<User, Map<Contribution, Double>> data;
-    protected static Set<Contribution> contributions;
-    @Autowired
-    private final UsersService usersService;
-
-    private DataModel() {
-        usersService = SpringContextConfig.getBean(UsersService.class);
-    }
-
-    public static DataModel getInstance() {
-        if (instance == null) {
-            instance = new DataModel();
-        }
-        return instance;
-    }
+    private Set<Contribution> contributions;
+    private UsersService usersService;
 
     public Map<User, Map<Contribution, Double>> createDataModel() {
+        if (usersService == null) {
+            usersService = SpringContextConfig.getBean(UsersService.class);
+        }
         data = new HashMap<>();
         contributions = new HashSet<>();
         // TODO: Get all user that rated at least N contributions
@@ -53,5 +44,9 @@ public class DataModel {
 
     public Map<User, Map<Contribution, Double>> getData() {
         return data;
+    }
+
+    public Set<Contribution> getContributions() {
+        return contributions;
     }
 }

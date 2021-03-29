@@ -2,25 +2,27 @@ package com.github.cristianrb.smartnews.cf;
 
 import com.github.cristianrb.smartnews.entity.Contribution;
 import com.github.cristianrb.smartnews.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
 public class SlopeOneImpl implements Recommender{
 
+    @Autowired
+    private DataModel dm;
     private Map<User, Map<Contribution, Double>> inputData;
-    private Map<Contribution, Map<Contribution, Double>> diff;
-    private Map<Contribution, Map<Contribution, Integer>> freq;
-    private Map<User, Map<Contribution, Double>> outputData;
+    private final Map<Contribution, Map<Contribution, Double>> diff;
+    private final Map<Contribution, Map<Contribution, Integer>> freq;
+    private final Map<User, Map<Contribution, Double>> outputData;
 
     public SlopeOneImpl() {
-        DataModel dm = DataModel.getInstance();
-        this.inputData = dm.createDataModel();
         this.diff = new HashMap<>();
         this.freq = new HashMap<>();
         this.outputData = new HashMap<>();
     }
 
     private void buildDiffFreqMatrix() {
+        this.inputData = dm.createDataModel();
         for (Map<Contribution, Double> userRating : inputData.values()) {
             for (Map.Entry<Contribution, Double> entry : userRating.entrySet()) {
                 if (!diff.containsKey(entry.getKey())) {
@@ -85,7 +87,7 @@ public class SlopeOneImpl implements Recommender{
                 }
             }
 
-            for (Contribution c : DataModel.contributions) {
+            for (Contribution c : dm.getContributions()) {
                 if (entry.getValue().containsKey(c)) {
                     clean.put(c, entry.getValue().get(c));
                 } else if (!clean.containsKey(c)) {
@@ -100,7 +102,7 @@ public class SlopeOneImpl implements Recommender{
 
     @Override
     public List<Contribution> findRecommendations(User user) {
-        Map<Contribution, Double> ratingsOfTheUser = DataModel.getInstance().getData().get(user);
+        Map<Contribution, Double> ratingsOfTheUser = dm.getData().get(user);
         Map<Contribution, Double> recommendationMatrixOfUser = predictRecommendations().get(user);
         recommendationMatrixOfUser.values().removeIf(val -> val <= 2.5);
 
@@ -109,7 +111,7 @@ public class SlopeOneImpl implements Recommender{
         }
 
         List<Contribution> recommendationList = new ArrayList<>(recommendationMatrixOfUser.keySet());
-        Collections.sort(recommendationList, Contribution.contributionComparator);
+        recommendationList.sort(Contribution.contributionComparator);
         return recommendationList;
     }
 }

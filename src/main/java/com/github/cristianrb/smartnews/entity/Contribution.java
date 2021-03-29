@@ -18,6 +18,12 @@ public class Contribution {
     private String source;
     private String sourceUrl;
 
+    public Contribution(Integer id, String title, String pubDate) {
+        this.id = id;
+        this.title = title;
+        this.pubDate = pubDate;
+    }
+
     public Contribution() {
         this.categories = new ArrayList<String>();
     }

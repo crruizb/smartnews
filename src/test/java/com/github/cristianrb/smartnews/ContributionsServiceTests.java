@@ -5,6 +5,7 @@ import com.github.cristianrb.smartnews.entity.ContributionDAO;
 import com.github.cristianrb.smartnews.repository.ContributionsRepository;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsMapper;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsServiceImpl;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -44,7 +45,7 @@ public class ContributionsServiceTests {
 
         when(contributionsRepository.save(c1DAO)).thenReturn(c1DAO);
         ContributionDAO cdao = contributionsService.saveContribution(c1);
-        assertThat(cdao.equals(c1DAO));
+        Assertions.assertEquals(cdao, c1DAO);
     }
 
     @Test
@@ -64,8 +65,8 @@ public class ContributionsServiceTests {
         final int end = Math.min((start + paging.getPageSize()), contributions.size());
         Page<ContributionDAO> contributionsPaged = new PageImpl<>(contributions.subList(start, end), paging, contributions.size());
 
-        when(contributionsRepository.findAll(paging)).thenReturn(contributionsPaged);
+        when(contributionsRepository.findAllByOrderByPubDateDesc(paging)).thenReturn(contributionsPaged);
         Page<ContributionDAO> resultContributionsDAO = contributionsService.getAll(paging);
-        assertThat(resultContributionsDAO.equals(contributionsPaged));
+        Assertions.assertEquals(resultContributionsDAO, contributionsPaged);
     }
 }
