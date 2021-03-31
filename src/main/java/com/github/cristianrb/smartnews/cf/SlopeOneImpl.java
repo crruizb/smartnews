@@ -4,6 +4,7 @@ import com.github.cristianrb.smartnews.entity.Contribution;
 import com.github.cristianrb.smartnews.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +26,7 @@ public class SlopeOneImpl implements Recommender{
     }
 
     private void buildDiffFreqMatrix() {
+        if (this.dm == null) this.dm = new DataModel();
         this.inputData = dm.createDataModel();
         for (Map<Contribution, Double> userRating : inputData.values()) {
             for (Map.Entry<Contribution, Double> entry : userRating.entrySet()) {

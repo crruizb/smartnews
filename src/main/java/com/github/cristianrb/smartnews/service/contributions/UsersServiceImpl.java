@@ -67,7 +67,7 @@ public class UsersServiceImpl implements UsersService {
             }
             throw new ForbiddenAccesException("Forbidden access to this resource.");
         }
-        throw new UserNotFoundException("User with userId: " + userId + " has no rated contributions.");
+        throw new UserNotFoundException("User with userId: " + userId + " has no rated contributions or doesn't exists.");
     }
 
 

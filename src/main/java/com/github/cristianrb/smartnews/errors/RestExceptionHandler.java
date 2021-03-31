@@ -44,7 +44,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(RecommendationsException.class)
-    protected ResponseEntity<Object> handleRecommendationsException(UserNotFoundException ex) {
+    protected ResponseEntity<Object> handleRecommendationsException(RecommendationsException ex) {
         ApiError apiError = new ApiError(HttpStatus.NOT_FOUND);
         apiError.setMessage(ex.getMessage());
         return buildResponseEntity(apiError);
