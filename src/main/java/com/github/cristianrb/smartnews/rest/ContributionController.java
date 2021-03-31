@@ -4,6 +4,7 @@ import com.github.cristianrb.smartnews.cf.Recommender;
 import com.github.cristianrb.smartnews.cf.SlopeOneImpl;
 import com.github.cristianrb.smartnews.entity.*;
 import com.github.cristianrb.smartnews.errors.ForbiddenAccesException;
+import com.github.cristianrb.smartnews.errors.RecommendationsException;
 import com.github.cristianrb.smartnews.errors.UserNotFoundException;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsMapper;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsService;
@@ -68,12 +69,13 @@ public class ContributionController {
                 User user = new User(userId);
                 Recommender recomm = new SlopeOneImpl();
                 List<Contribution> contributionList = recomm.findRecommendations(user);
+
                 Pageable pageable = PageRequest.of(page, PAGE_SIZE);
                 return toPage(contributionList, pageable);
             }
             throw new ForbiddenAccesException("Forbidden access to this resource.");
         }
-        throw new UserNotFoundException("User with userId: " + userId + " not found.");
+        throw new RecommendationsException("There are no possible recommendations. Try to rate some contribution before.");
 
     }
 
