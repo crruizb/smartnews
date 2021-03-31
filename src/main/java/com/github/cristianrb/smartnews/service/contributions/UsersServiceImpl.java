@@ -1,10 +1,17 @@
 package com.github.cristianrb.smartnews.service.contributions;
 
+import com.github.cristianrb.smartnews.entity.Contribution;
+import com.github.cristianrb.smartnews.entity.ContributionDAO;
+import com.github.cristianrb.smartnews.entity.UserContributionDAO;
 import com.github.cristianrb.smartnews.entity.UserDAO;
+import com.github.cristianrb.smartnews.errors.ForbiddenAccesException;
+import com.github.cristianrb.smartnews.errors.UserNotFoundException;
 import com.github.cristianrb.smartnews.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,4 +35,40 @@ public class UsersServiceImpl implements UsersService {
     public List<UserDAO> getAllUsers() {
         return usersRepository.findAll();
     }
+
+    @Override
+    public Integer getVoteOfContributionByUser(ContributionDAO contributionDAO, String name) {
+        Integer vote = null;
+        Optional<UserDAO> user = getUser(name);
+        if (user.isPresent()) {
+            for (UserContributionDAO userContributionDAO : user.get().getContributionsVisited()) {
+                if (userContributionDAO.getContribution().equals(contributionDAO)) {
+                    vote = userContributionDAO.getVote();
+                }
+            }
+        }
+        return vote;
+    }
+
+    @Override
+    public List<Contribution> getContributionsVotedByUser(String userId, Principal principal) {
+        Optional<UserDAO> user = getUser(userId);
+        if (user.isPresent()) {
+            if (userId.equals(principal.getName())) {
+                List<Contribution> contsVoted = new ArrayList<>();
+                for (UserContributionDAO userContributionDAO : user.get().getContributionsVisited()) {
+                    ContributionDAO contributionDAO = userContributionDAO.getContribution();
+                    Contribution contribution = ContributionsMapper.mapContributionDAOToContribution(contributionDAO);
+                    contribution.setVote(userContributionDAO.getVote());
+                    contsVoted.add(contribution);
+                }
+                contsVoted.sort(Contribution.contributionComparator);
+                return contsVoted;
+            }
+            throw new ForbiddenAccesException("Forbidden access to this resource.");
+        }
+        throw new UserNotFoundException("User with userId: " + userId + " not found.");
+    }
+
+
 }

@@ -7,8 +7,8 @@ import com.github.cristianrb.smartnews.errors.ForbiddenAccesException;
 import com.github.cristianrb.smartnews.errors.UserNotFoundException;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsMapper;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsService;
+import com.github.cristianrb.smartnews.service.contributions.UserContributionService;
 import com.github.cristianrb.smartnews.service.contributions.UsersService;
-import com.github.cristianrb.smartnews.util.Pair;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,12 +26,15 @@ public class ContributionController {
 
     private final ContributionsService contributionsService;
     private final UsersService usersService;
+    private final UserContributionService usersContributionService;
     private static final int PAGE_SIZE = 10;
 
     @Autowired
-    public ContributionController(ContributionsService contributionsService, UsersService usersService) {
+    public ContributionController(ContributionsService contributionsService, UsersService usersService,
+                                  UserContributionService usersContributionService) {
         this.contributionsService = contributionsService;
         this.usersService = usersService;
+        this.usersContributionService = usersContributionService;
     }
 
     @ApiOperation(value = "Retrieves at most 10 contributions of a given page")
@@ -47,15 +50,10 @@ public class ContributionController {
                                             Principal principal) {
         ContributionDAO contributionDAO = contributionsService.getContributionById(id);
         Contribution contribution = ContributionsMapper.mapContributionDAOToContribution(contributionDAO);
+
         if (principal != null) {
-            Optional<UserDAO> user = usersService.getUser(principal.getName());
-            if (user.isPresent()) {
-                for (UserContributionDAO userContributionDAO : user.get().getContributionsVisited()) {
-                    if (userContributionDAO.getContribution().equals(contributionDAO)) {
-                        contribution.setVote(userContributionDAO.getVote());
-                    }
-                }
-            }
+            Integer vote = usersService.getVoteOfContributionByUser(contributionDAO, principal.getName());
+            contribution.setVote(vote);
         }
         return contribution;
     }
@@ -79,56 +77,28 @@ public class ContributionController {
 
     }
 
+    @ApiOperation(value = "Retrieves the contributions rated by a user")
     @GetMapping("/rated")
     public Page<Contribution> getContributionsRated(@RequestParam(name = "userId") String userId,
                                                     @RequestParam(name = "page", defaultValue = "0") Integer page,
                                                     Principal principal) {
-        Optional<UserDAO> user = usersService.getUser(userId);
-        if (user.isPresent()) {
-            if (userId.equals(principal.getName())) {
-                List<Contribution> contsVoted = new ArrayList<>();
-                for (UserContributionDAO userContributionDAO : user.get().getContributionsVisited()) {
-                    ContributionDAO contributionDAO = userContributionDAO.getContribution();
-                    Contribution contribution = ContributionsMapper.mapContributionDAOToContribution(contributionDAO);
-                    contribution.setVote(userContributionDAO.getVote());
-                    contsVoted.add(contribution);
-                }
-                contsVoted.sort(Contribution.contributionComparator);
-                Pageable pageable = PageRequest.of(page, PAGE_SIZE);
-                return toPage(contsVoted, pageable);
-            }
-            throw new ForbiddenAccesException("Forbidden access to this resource.");
-        }
-        throw new UserNotFoundException("User with userId: " + userId + " not found.");
+        List<Contribution> contsVoted = usersService.getContributionsVotedByUser(userId, principal);
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+        return toPage(contsVoted, pageable);
     }
 
     @ApiOperation(value = "Adds a new rating from a given user to a given contribution")
     @PostMapping("/contributions")
     public void postVoteContribution(@RequestBody Integer vote, @RequestParam(name = "id") Integer id, Principal principal) {
         if (principal == null) return;
-        voteContribution(vote, id, principal);
+        usersContributionService.voteContribution(vote, id, principal);
     }
 
     @ApiOperation(value = "Updates a rating from a given user to a given contribution")
     @PutMapping("/contributions")
     public void putVoteContribution(@RequestBody Integer vote, @RequestParam(name = "id") Integer id, Principal principal) {
         if (principal == null) return;
-        voteContribution(vote, id, principal);
-    }
-
-    private void voteContribution(int vote, int contributionId, Principal principal) {
-        if (vote > 5) vote = 5;
-        else if (vote < 0) vote = 0;
-        ContributionDAO contributionDAO = contributionsService.getContributionById(contributionId);
-        Optional<UserDAO> optionalUser = usersService.getUser(principal.getName());
-        UserDAO user = optionalUser.orElseGet(() -> new UserDAO(principal.getName()));
-        Set<UserContributionDAO> contributionsVisited = user.getContributionsVisited();
-        if (contributionsVisited == null) {
-            contributionsVisited = new HashSet<>();
-            user.setContributionsVisited(contributionsVisited);
-        }
-        contributionsVisited.add(new UserContributionDAO(user, contributionDAO, vote));
-        usersService.saveUser(user);
+        usersContributionService.voteContribution(vote, id, principal);
     }
 
     private Page<Contribution> toPage(List<Contribution> list, Pageable pageable) {
