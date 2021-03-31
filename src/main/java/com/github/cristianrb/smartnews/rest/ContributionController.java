@@ -8,6 +8,7 @@ import com.github.cristianrb.smartnews.errors.UserNotFoundException;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsMapper;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsService;
 import com.github.cristianrb.smartnews.service.contributions.UsersService;
+import com.github.cristianrb.smartnews.util.Pair;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,9 +43,63 @@ public class ContributionController {
 
     @ApiOperation(value = "Retrieve a contribution of a given id")
     @GetMapping("/contributions")
-    public Contribution getContributionById(@RequestParam(name = "id") Integer id) {
+    public Contribution getContributionById(@RequestParam(name = "id") Integer id,
+                                            Principal principal) {
         ContributionDAO contributionDAO = contributionsService.getContributionById(id);
-        return ContributionsMapper.mapContributionDAOToContribution(contributionDAO);
+        Contribution contribution = ContributionsMapper.mapContributionDAOToContribution(contributionDAO);
+        if (principal != null) {
+            Optional<UserDAO> user = usersService.getUser(principal.getName());
+            if (user.isPresent()) {
+                for (UserContributionDAO userContributionDAO : user.get().getContributionsVisited()) {
+                    if (userContributionDAO.getContribution().equals(contributionDAO)) {
+                        contribution.setVote(userContributionDAO.getVote());
+                    }
+                }
+            }
+        }
+        return contribution;
+    }
+
+    @ApiOperation(value = "Retrieves the contributions recommended for a given user")
+    @GetMapping("/recommendations")
+    public Page<Contribution> getFeed(@RequestParam(name = "userId") String userId,
+                                      @RequestParam(name = "page", defaultValue = "0") Integer page,
+                                      Principal principal) {
+        if (usersService.getUser(userId).isPresent()) {
+            if (userId.equals(principal.getName())) {
+                User user = new User(userId);
+                Recommender recomm = new SlopeOneImpl();
+                List<Contribution> contributionList = recomm.findRecommendations(user);
+                Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+                return toPage(contributionList, pageable);
+            }
+            throw new ForbiddenAccesException("Forbidden access to this resource.");
+        }
+        throw new UserNotFoundException("User with userId: " + userId + " not found.");
+
+    }
+
+    @GetMapping("/rated")
+    public Page<Contribution> getContributionsRated(@RequestParam(name = "userId") String userId,
+                                                    @RequestParam(name = "page", defaultValue = "0") Integer page,
+                                                    Principal principal) {
+        Optional<UserDAO> user = usersService.getUser(userId);
+        if (user.isPresent()) {
+            if (userId.equals(principal.getName())) {
+                List<Contribution> contsVoted = new ArrayList<>();
+                for (UserContributionDAO userContributionDAO : user.get().getContributionsVisited()) {
+                    ContributionDAO contributionDAO = userContributionDAO.getContribution();
+                    Contribution contribution = ContributionsMapper.mapContributionDAOToContribution(contributionDAO);
+                    contribution.setVote(userContributionDAO.getVote());
+                    contsVoted.add(contribution);
+                }
+                contsVoted.sort(Contribution.contributionComparator);
+                Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+                return toPage(contsVoted, pageable);
+            }
+            throw new ForbiddenAccesException("Forbidden access to this resource.");
+        }
+        throw new UserNotFoundException("User with userId: " + userId + " not found.");
     }
 
     @ApiOperation(value = "Adds a new rating from a given user to a given contribution")
@@ -59,25 +114,6 @@ public class ContributionController {
     public void putVoteContribution(@RequestBody Integer vote, @RequestParam(name = "id") Integer id, Principal principal) {
         if (principal == null) return;
         voteContribution(vote, id, principal);
-    }
-
-    @ApiOperation(value = "Retrieves the contributions recommended for a given user")
-    @GetMapping("/recommendations")
-    public Page<Contribution> getFeed(@RequestParam(name = "userId") String userId,
-                                                   @RequestParam(name = "page", defaultValue = "0") Integer page,
-                                                   Principal principal) {
-        if (usersService.getUser(userId).isPresent()) {
-            if (userId.equals(principal.getName())) {
-                User user = new User(userId);
-                Recommender recomm = new SlopeOneImpl();
-                List<Contribution> contributionList = recomm.findRecommendations(user);
-                Pageable pageable = PageRequest.of(page, PAGE_SIZE);
-                return toPage(contributionList, pageable);
-            }
-            throw new ForbiddenAccesException("Forbidden access to this resource.");
-        }
-        throw new UserNotFoundException("User with userId: " + userId + " not found.");
-
     }
 
     private void voteContribution(int vote, int contributionId, Principal principal) {

@@ -2,10 +2,11 @@ package com.github.cristianrb.smartnews.cf;
 
 import com.github.cristianrb.smartnews.entity.Contribution;
 import com.github.cristianrb.smartnews.entity.User;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.xml.crypto.Data;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SlopeOneImpl implements Recommender{
 

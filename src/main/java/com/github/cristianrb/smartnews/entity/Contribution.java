@@ -17,6 +17,7 @@ public class Contribution {
     private String urlImage;
     private String source;
     private String sourceUrl;
+    private Integer vote;
 
     public Contribution(Integer id, String title, String pubDate) {
         this.id = id;
@@ -29,7 +30,8 @@ public class Contribution {
     }
 
     public Contribution(Integer id, String title, String description, String link, ArrayList<String> categories,
-                        String pubDate, String creator, String urlImage, String source, String sourceUrl) {
+                        String pubDate, String creator, String urlImage, String source, String sourceUrl,
+                        Integer vote) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -40,6 +42,7 @@ public class Contribution {
         this.urlImage = urlImage;
         this.source = source;
         this.sourceUrl = sourceUrl;
+        this.vote = vote;
     }
 
     public Contribution(Contribution contribution) {
@@ -53,6 +56,7 @@ public class Contribution {
         this.urlImage = contribution.urlImage;
         this.source = contribution.source;
         this.sourceUrl = contribution.sourceUrl;
+        this.vote = contribution.getVote();
     }
 
     public int getId() {
@@ -135,6 +139,14 @@ public class Contribution {
         this.sourceUrl = sourceUrl;
     }
 
+    public Integer getVote() {
+        return vote;
+    }
+
+    public void setVote(Integer vote) {
+        this.vote = vote;
+    }
+
     @Override
     public String toString() {
         return "Contribution{" +
@@ -148,6 +160,7 @@ public class Contribution {
                 ", urlImage='" + urlImage + '\'' +
                 ", source='" + source + '\'' +
                 ", sourceUrl='" + sourceUrl + '\'' +
+                ", vote=" + vote +
                 '}';
     }
 

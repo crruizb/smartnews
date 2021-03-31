@@ -7,7 +7,6 @@ import com.github.cristianrb.smartnews.entity.UserContributionDAO;
 import com.github.cristianrb.smartnews.entity.UserDAO;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsMapper;
 import com.github.cristianrb.smartnews.service.contributions.UsersService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
