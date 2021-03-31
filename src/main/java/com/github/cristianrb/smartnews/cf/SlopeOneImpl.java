@@ -4,18 +4,19 @@ import com.github.cristianrb.smartnews.entity.Contribution;
 import com.github.cristianrb.smartnews.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.xml.crypto.Data;
 import java.util.*;
 
 public class SlopeOneImpl implements Recommender{
 
-    @Autowired
-    private DataModel dm;
+    private final DataModel dm;
     private Map<User, Map<Contribution, Double>> inputData;
     private final Map<Contribution, Map<Contribution, Double>> diff;
     private final Map<Contribution, Map<Contribution, Integer>> freq;
     private final Map<User, Map<Contribution, Double>> outputData;
 
     public SlopeOneImpl() {
+        this.dm = new DataModel();
         this.diff = new HashMap<>();
         this.freq = new HashMap<>();
         this.outputData = new HashMap<>();
@@ -57,7 +58,7 @@ public class SlopeOneImpl implements Recommender{
         }
     }
 
-    private Map<User, Map<Contribution, Double>> predictRecommendations() {
+    public Map<User, Map<Contribution, Double>> predictRecommendations() {
         buildDiffFreqMatrix();
         Map<Contribution, Double> uPred = new HashMap<>();
         Map<Contribution, Integer> uFreq = new HashMap<>();
@@ -102,8 +103,8 @@ public class SlopeOneImpl implements Recommender{
 
     @Override
     public List<Contribution> findRecommendations(User user) {
-        Map<Contribution, Double> ratingsOfTheUser = dm.getData().get(user);
         Map<Contribution, Double> recommendationMatrixOfUser = predictRecommendations().get(user);
+        Map<Contribution, Double> ratingsOfTheUser = dm.getData().get(user);
         recommendationMatrixOfUser.values().removeIf(val -> val <= 2.5);
 
         for (Map.Entry<Contribution, Double> entry : ratingsOfTheUser.entrySet()) {

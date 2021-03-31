@@ -13,7 +13,6 @@ import java.util.*;
 
 public class DataModel {
 
-    private static DataModel instance;
     private Map<User, Map<Contribution, Double>> data;
     private Set<Contribution> contributions;
     private UsersService usersService;
@@ -24,7 +23,6 @@ public class DataModel {
         }
         data = new HashMap<>();
         contributions = new HashSet<>();
-        // TODO: Get all user that rated at least N contributions
         List<UserDAO> users = usersService.getAllUsers();
         for (UserDAO userDAO : users) {
             Set<UserContributionDAO> newsByUser = userDAO.getContributionsVisited();

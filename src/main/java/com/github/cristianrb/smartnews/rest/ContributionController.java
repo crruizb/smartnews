@@ -65,7 +65,7 @@ public class ContributionController {
     @GetMapping("/recommendations")
     public Page<Contribution> getFeed(@RequestParam(name = "userId") String userId,
                                                    @RequestParam(name = "page", defaultValue = "0") Integer page,
-                                                   Principal principal) throws Exception {
+                                                   Principal principal) {
         if (usersService.getUser(userId).isPresent()) {
             if (userId.equals(principal.getName())) {
                 User user = new User(userId);
