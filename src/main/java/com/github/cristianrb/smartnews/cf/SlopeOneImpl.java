@@ -2,6 +2,7 @@ package com.github.cristianrb.smartnews.cf;
 
 import com.github.cristianrb.smartnews.entity.Contribution;
 import com.github.cristianrb.smartnews.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,14 +11,14 @@ import java.util.Map;
 
 public class SlopeOneImpl implements Recommender{
 
-    private final DataModel dm;
+    @Autowired
+    private DataModel dm;
     private Map<User, Map<Contribution, Double>> inputData;
     private final Map<Contribution, Map<Contribution, Double>> diff;
     private final Map<Contribution, Map<Contribution, Integer>> freq;
     private final Map<User, Map<Contribution, Double>> outputData;
 
     public SlopeOneImpl() {
-        this.dm = new DataModel();
         this.diff = new HashMap<>();
         this.freq = new HashMap<>();
         this.outputData = new HashMap<>();
