@@ -18,5 +18,5 @@ public interface UsersService {
 
     public Integer getVoteOfContributionByUser(ContributionDAO contributionDAO, String name);
 
-    public List<Contribution> getContributionsVotedByUser(String userId, Principal principal);
+    public List<Contribution> getContributionsVotedByUser(Principal principal);
 }

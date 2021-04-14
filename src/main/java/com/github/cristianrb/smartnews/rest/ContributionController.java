@@ -29,7 +29,6 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api")
-//@EnableResourceServer
 public class ContributionController {
 
     private final ContributionsService contributionsService;
@@ -89,10 +88,9 @@ public class ContributionController {
 
     @ApiOperation(value = "Retrieves the contributions rated by a user")
     @GetMapping("/rated")
-    public Page<Contribution> getContributionsRated(@RequestParam(name = "userId") String userId,
-                                                    @RequestParam(name = "page", defaultValue = "0") Integer page,
+    public Page<Contribution> getContributionsRated(@RequestParam(name = "page", defaultValue = "0") Integer page,
                                                     Principal principal) {
-        List<Contribution> contsVoted = usersService.getContributionsVotedByUser(userId, principal);
+        List<Contribution> contsVoted = usersService.getContributionsVotedByUser(principal);
         Pageable pageable = PageRequest.of(page, PAGE_SIZE);
         return toPage(contsVoted, pageable);
     }

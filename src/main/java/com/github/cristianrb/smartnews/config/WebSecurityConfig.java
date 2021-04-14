@@ -16,15 +16,14 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 
 @Configuration
-@EnableWebSecurity(debug = true)
-@EnableOAuth2Sso
+@EnableWebSecurity
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .antMatcher("/**").authorizeRequests()
-                .antMatchers("/login", "/api/latest", "/api/contributions").permitAll()
+                .antMatchers("/login", "/api/latest", "/api/contributions", "/api/*").permitAll()
                 .anyRequest().authenticated();
 //                .and()
 //                .logout()

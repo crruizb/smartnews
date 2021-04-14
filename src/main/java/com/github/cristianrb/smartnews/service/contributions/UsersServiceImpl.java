@@ -51,10 +51,10 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public List<Contribution> getContributionsVotedByUser(String userId, Principal principal) {
-        Optional<UserDAO> user = getUser(userId);
+    public List<Contribution> getContributionsVotedByUser(Principal principal) {
+        Optional<UserDAO> user = getUser(principal.getName());
         if (user.isPresent()) {
-            if (userId.equals(principal.getName())) {
+            if (principal.getName().equals(principal.getName())) {
                 List<Contribution> contsVoted = new ArrayList<>();
                 for (UserContributionDAO userContributionDAO : user.get().getContributionsVisited()) {
                     ContributionDAO contributionDAO = userContributionDAO.getContribution();
@@ -67,7 +67,7 @@ public class UsersServiceImpl implements UsersService {
             }
             throw new ForbiddenAccesException("Forbidden access to this resource.");
         }
-        throw new UserNotFoundException("User with userId: " + userId + " has no rated contributions or doesn't exists.");
+        throw new UserNotFoundException("User with userId: " + principal.getName() + " has no rated contributions or doesn't exists.");
     }
 
 
