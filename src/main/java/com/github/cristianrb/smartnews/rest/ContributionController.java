@@ -16,6 +16,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -23,6 +28,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api")
+//@EnableResourceServer
 public class ContributionController {
 
     private final ContributionsService contributionsService;
@@ -53,6 +59,7 @@ public class ContributionController {
         Contribution contribution = ContributionsMapper.mapContributionDAOToContribution(contributionDAO);
 
         if (principal != null) {
+            System.out.println("PRINCIPAL IS NOT NULL!");
             Integer vote = usersService.getVoteOfContributionByUser(contributionDAO, principal.getName());
             contribution.setVote(vote);
         }
@@ -91,9 +98,10 @@ public class ContributionController {
 
     @ApiOperation(value = "Adds a new rating from a given user to a given contribution")
     @PostMapping("/contributions")
-    public void postVoteContribution(@RequestBody Integer vote, @RequestParam(name = "id") Integer id, Principal principal) {
-        if (principal == null) return;
-        usersContributionService.voteContribution(vote, id, principal);
+    public void postVoteContribution(@RequestBody Integer vote, @RequestParam(name = "id") Integer id, @AuthenticationPrincipal UserDetails user) {
+
+        if (user == null) return;
+        usersContributionService.voteContribution(vote, id, null);
     }
 
     @ApiOperation(value = "Updates a rating from a given user to a given contribution")

@@ -1,9 +1,9 @@
 package com.github.cristianrb.smartnews.config;
 
-import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -13,9 +13,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
-@EnableWebSecurity
 @Configuration
-@EnableOAuth2Sso
+@EnableWebSecurity
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
@@ -23,10 +22,11 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .antMatcher("/**").authorizeRequests()
                 .antMatchers("/login", "/api/latest", "/api/contributions").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .logout()
-                .logoutSuccessUrl("/api/latest")
-                .permitAll();
+                .anyRequest().fullyAuthenticated();
+//                .and()
+//                .logout()
+//                .logoutSuccessUrl("/api/latest")
+ //               .permitAll();
     }
+
 }
