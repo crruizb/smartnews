@@ -1,6 +1,7 @@
 package com.github.cristianrb.smartnews.auth.filters;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.Optional;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -10,8 +11,14 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import sun.plugin.liveconnect.SecurityContextHelper;
 
 import static com.github.cristianrb.smartnews.auth.AppTokenProvider.addAuthentication;
 import static com.github.cristianrb.smartnews.auth.AppTokenProvider.getUserFromToken;
@@ -36,6 +43,11 @@ public class RestFilter implements Filter {
             response.sendError(HttpStatus.UNAUTHORIZED.value());
             return;
         }
+
+
+        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userFromToken.get(), null, null);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
         request.setAttribute("userId", userFromToken.get());
         addAuthentication(response, userFromToken.get());
         filterChain.doFilter(request, servletResponse);

@@ -1,5 +1,6 @@
 package com.github.cristianrb.smartnews.rest;
 
+import com.github.cristianrb.smartnews.auth.CurrentUser;
 import com.github.cristianrb.smartnews.cf.Recommender;
 import com.github.cristianrb.smartnews.cf.SlopeOneImpl;
 import com.github.cristianrb.smartnews.entity.*;
@@ -54,7 +55,7 @@ public class ContributionController {
     @ApiOperation(value = "Retrieve a contribution of a given id")
     @GetMapping("/contributions")
     public Contribution getContributionById(@RequestParam(name = "id") Integer id,
-                                            Principal principal) {
+                                            @CurrentUser Principal principal) {
         ContributionDAO contributionDAO = contributionsService.getContributionById(id);
         Contribution contribution = ContributionsMapper.mapContributionDAOToContribution(contributionDAO);
 
@@ -98,10 +99,10 @@ public class ContributionController {
 
     @ApiOperation(value = "Adds a new rating from a given user to a given contribution")
     @PostMapping("/contributions")
-    public void postVoteContribution(@RequestBody Integer vote, @RequestParam(name = "id") Integer id, @AuthenticationPrincipal UserDetails user) {
+    public void postVoteContribution(@RequestBody Integer vote, @RequestParam(name = "id") Integer id, @CurrentUser Principal principal) {
 
-        if (user == null) return;
-        usersContributionService.voteContribution(vote, id, null);
+        if (principal == null) return;
+        usersContributionService.voteContribution(vote, id, principal);
     }
 
     @ApiOperation(value = "Updates a rating from a given user to a given contribution")
