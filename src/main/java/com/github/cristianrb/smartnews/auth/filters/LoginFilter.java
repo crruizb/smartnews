@@ -3,19 +3,14 @@ package com.github.cristianrb.smartnews.auth.filters;
 import com.github.cristianrb.smartnews.auth.AppTokenProvider;
 import com.github.cristianrb.smartnews.auth.GoogleTokenVerifier;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 @Component
 public class LoginFilter implements Filter {
