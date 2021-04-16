@@ -8,6 +8,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -20,9 +21,7 @@ public class GoogleTokenVerifier {
 
     private static final HttpTransport transport = new NetHttpTransport();
     private static final JsonFactory jsonFactory = new JacksonFactory();
-    @Value("${security.oauth2.client.client-id}")
-    private static String CLIENT_ID;
-    private static final String CLIENT_SECRET = "9JEXXegig0Y4QHwtB_LxHYEQ";
+    private static final String CLIENT_ID = "694520500304-1dhp53b8i32892l23tm1ntraq0dgapn4.apps.googleusercontent.com";
 
 
     public Payload verify(String idTokenString)
