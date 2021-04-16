@@ -37,7 +37,9 @@ public class ABCHandler extends GenericHandler {
         String dataDesc = getData().toString();
         int startOfDescription = setImage(dataDesc);
         if (!dataDesc.endsWith(getContribution().getUrlImage() + "\">")) {
-            getContribution().setDescription(dataDesc.substring(startOfDescription));
+            String description = dataDesc.substring(startOfDescription);
+            description = description.replace("href=\"/", "href=\"https://www.abc.es/");
+            getContribution().setDescription(description);
         }
 
     }
@@ -51,7 +53,7 @@ public class ABCHandler extends GenericHandler {
             endOfImage = dataDesc.indexOf("\">");
             if (startOfImage > endOfImage) return 0;
             String urlImage = dataDesc.substring(startOfImage, endOfImage);
-            getContribution().setUrlImage(urlImage);
+            if (checkImageFormat(urlImage)) getContribution().setUrlImage(urlImage);
         }
         return endOfImage+2;
     }

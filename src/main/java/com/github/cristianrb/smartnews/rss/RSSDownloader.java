@@ -25,7 +25,7 @@ public class RSSDownloader {
 
     }
 
-    @Scheduled(fixedRate=60000) // Every hour = (60*60*1000=3600000), minute = 60000
+    @Scheduled(fixedRate=3600000) // Every hour = (60*60*1000=3600000), minute = 60000
     public void downloadFromAllSources() {
         this.contributionsService = SpringContextConfig.getBean(ContributionsService.class);
         sources = new ArrayList<Pair<String, GenericHandler>>();

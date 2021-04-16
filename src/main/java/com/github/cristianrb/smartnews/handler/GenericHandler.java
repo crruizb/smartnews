@@ -60,6 +60,13 @@ public class GenericHandler extends DefaultHandler  {
         data.append(new String(ch, start, length));
     }
 
+    public boolean checkImageFormat(String image) {
+        return (image.toLowerCase().endsWith(".jpg") || image.toLowerCase().endsWith(".jpeg") || image.toLowerCase().endsWith(".png") ||
+                image.toLowerCase().endsWith(".gif") || image.toLowerCase().endsWith(".tif") ||
+                image.toLowerCase().endsWith(".tiff") || image.toLowerCase().endsWith(".bmp"));
+
+    }
+
     public List<Contribution> getContributionList() {
         return contributionList;
     }

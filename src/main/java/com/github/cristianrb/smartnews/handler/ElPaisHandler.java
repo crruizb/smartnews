@@ -12,7 +12,8 @@ public class ElPaisHandler extends GenericHandler {
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         super.startElement(uri, localName, qName, attributes);
         if (qName.equalsIgnoreCase(urlImage)) {
-            getContribution().setUrlImage(attributes.getValue("url"));
+            String image = attributes.getValue("url");
+            if (checkImageFormat(image)) getContribution().setUrlImage(image);
         }
     }
 
