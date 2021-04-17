@@ -64,7 +64,7 @@ public class ContributionsServiceTests {
         final int end = Math.min((start + paging.getPageSize()), contributions.size());
         Page<ContributionDAO> contributionsPaged = new PageImpl<>(contributions.subList(start, end), paging, contributions.size());
 
-        when(contributionsRepository.findAllByOrderByPubDateDesc(paging)).thenReturn(contributionsPaged);
+        when(contributionsRepository.findAllByOrderByPubDateDescIdDesc(paging)).thenReturn(contributionsPaged);
         Page<ContributionDAO> resultContributionsDAO = contributionsService.getAll(paging);
         Assertions.assertEquals(resultContributionsDAO, contributionsPaged);
     }
