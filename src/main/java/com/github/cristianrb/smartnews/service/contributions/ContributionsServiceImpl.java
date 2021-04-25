@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class ContributionsServiceImpl implements ContributionsService {
 
@@ -22,6 +24,16 @@ public class ContributionsServiceImpl implements ContributionsService {
     public ContributionDAO saveContribution(Contribution cont) {
         ContributionDAO cDAO = ContributionsMapper.mapContributionToContributionDAO(cont);
         if (!contributionExists(cont.getTitle())) {
+            Optional<ContributionDAO> contDAO = findContributionByImage(cDAO.getUrlImage());
+            if (contDAO.isPresent()) {
+                ContributionDAO cDAOToUpdate = contDAO.get();
+                cDAOToUpdate.setTitle(cDAO.getTitle());
+                cDAOToUpdate.setDescription(cDAO.getDescription());
+                cDAOToUpdate.setPubDate(cDAO.getPubDate());
+                cDAOToUpdate.setCreator(cDAO.getCreator());
+                cDAOToUpdate.setLink(cDAO.getLink());
+                cDAO = cDAOToUpdate;
+            }
             return this.contributionsRepository.save(cDAO);
         }
         return null;
@@ -43,5 +55,8 @@ public class ContributionsServiceImpl implements ContributionsService {
         return this.contributionsRepository.findByTitle(title).isPresent();
     }
 
+    private Optional<ContributionDAO> findContributionByImage(String image) {
+        return this.contributionsRepository.findByUrlImage(image);
+    }
 
 }
