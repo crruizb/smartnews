@@ -56,7 +56,11 @@ public class ContributionsServiceImpl implements ContributionsService {
     }
 
     private Optional<ContributionDAO> findContributionByImage(String image) {
-        return this.contributionsRepository.findByUrlImage(image);
+        try {
+            return this.contributionsRepository.findByUrlImage(image);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 
 }
