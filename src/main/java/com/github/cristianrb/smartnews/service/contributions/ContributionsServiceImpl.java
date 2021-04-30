@@ -56,11 +56,15 @@ public class ContributionsServiceImpl implements ContributionsService {
     }
 
     private Optional<ContributionDAO> findContributionByImage(String image) {
+        if (image == null || !image.contains("/")) return Optional.empty();
         try {
-            return this.contributionsRepository.findByUrlImage(image);
+            String[] imageSplit = image.split("/");
+            String imageName = imageSplit[imageSplit.length-1];
+            return this.contributionsRepository.findByUrlImageContaining(imageName);
         } catch (Exception e) {
             return Optional.empty();
         }
     }
+
 
 }

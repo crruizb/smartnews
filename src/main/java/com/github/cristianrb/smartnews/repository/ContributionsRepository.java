@@ -15,5 +15,5 @@ public interface ContributionsRepository extends JpaRepository<ContributionDAO, 
 
     Page<ContributionDAO> findAllByOrderByPubDateDescIdDesc(Pageable paging);
 
-    Optional<ContributionDAO> findByUrlImage(String image);
+    Optional<ContributionDAO> findByUrlImageContaining(String image);
 }
