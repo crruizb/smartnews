@@ -6,7 +6,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GenericHandler extends DefaultHandler  {
 
@@ -65,6 +67,27 @@ public class GenericHandler extends DefaultHandler  {
                 image.toLowerCase().endsWith(".gif") || image.toLowerCase().endsWith(".tif") ||
                 image.toLowerCase().endsWith(".tiff") || image.toLowerCase().endsWith(".bmp"));
 
+    }
+
+    public String cleanText(String textToClean) {
+        HashMap<String, String> replacementMap = new HashMap<>();
+        replacementMap.put("&lt;", "<");
+        replacementMap.put("&quot;", "\"");
+        replacementMap.put("&#039;", "'");
+        replacementMap.put("&gt;", ">");
+        replacementMap.put("&amp;", "");
+        replacementMap.put("nbsp;", "");
+        replacementMap.put("&amp;nbsp;", " ");
+
+        String newText = textToClean;
+
+        for(Map.Entry<String, String> entry : replacementMap.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+
+            newText = newText.replace(key, value);
+        }
+        return newText;
     }
 
     public List<Contribution> getContributionList() {

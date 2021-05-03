@@ -4,11 +4,6 @@ import com.github.cristianrb.smartnews.util.FillWithZero;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
 public class LaVanguardiaHandler extends GenericHandler {
 
     public LaVanguardiaHandler() {
@@ -48,27 +43,6 @@ public class LaVanguardiaHandler extends GenericHandler {
         } else if (qName.equalsIgnoreCase(description)) {
             getContribution().setDescription(cleanText(getData().toString()));
         }
-    }
-
-    private String cleanText(String textToClean) {
-        HashMap<String, String> replacementMap = new HashMap<>();
-        replacementMap.put("&lt;", "<");
-        replacementMap.put("&quot;", "\"");
-        replacementMap.put("&#039;", "'");
-        replacementMap.put("&gt;", ">");
-        replacementMap.put("&amp;", "");
-        replacementMap.put("nbsp;", "");
-        replacementMap.put("&amp;nbsp;", " ");
-
-        String newText = textToClean;
-
-        for(Map.Entry<String, String> entry : replacementMap.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-
-            newText = newText.replace(key, value);
-        }
-        return newText;
     }
 
 }

@@ -41,6 +41,7 @@ public class ABCHandler extends GenericHandler {
             description = description.replace("href=\"/", "href=\"https://www.abc.es/");
             description = description.replace("data-src=\"/", "src=\"https://www.abc.es/");
             description = description.replace("data-src=", "src=");
+            description = cleanText(description);
             getContribution().setDescription(description);
         }
 
