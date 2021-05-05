@@ -3,10 +3,7 @@ package com.github.cristianrb.smartnews.rest;
 import com.github.cristianrb.smartnews.auth.CurrentUser;
 import com.github.cristianrb.smartnews.cf.Recommender;
 import com.github.cristianrb.smartnews.cf.SlopeOneImpl;
-import com.github.cristianrb.smartnews.entity.Contribution;
-import com.github.cristianrb.smartnews.entity.ContributionDAO;
-import com.github.cristianrb.smartnews.entity.User;
-import com.github.cristianrb.smartnews.errors.ForbiddenAccesException;
+import com.github.cristianrb.smartnews.entity.*;
 import com.github.cristianrb.smartnews.errors.RecommendationsException;
 import com.github.cristianrb.smartnews.errors.UnauthorizedAccessException;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsMapper;
@@ -24,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -118,5 +116,22 @@ public class ContributionController {
         if(start > list.size())
             return new PageImpl<>(new ArrayList<>(), pageable, list.size());
         return new PageImpl<>(list.subList(start, end), pageable, list.size());
+    }
+
+    @ApiOperation(value = "Retrieves the predictions for all the users")
+    @GetMapping("/predictions")
+    public List<PredictionsResponse> getAllPredictions() {
+        SlopeOneImpl recomm = new SlopeOneImpl();
+        Map<User, Map<Contribution, Double>> predictions = recomm.predictRecommendations();
+        List<PredictionsResponse> cleanPredictions = new ArrayList<>();
+
+        for (Map.Entry<User, Map<Contribution, Double>> entry : predictions.entrySet()) {
+            PredictionsResponse predictionByUser = new PredictionsResponse(entry.getKey().getId());
+
+            entry.getValue().forEach( (k, v) -> predictionByUser.addPrediction(new ContributionWithPrediction(k.getId(), k.getTitle(), v)));
+            cleanPredictions.add(predictionByUser);
+        }
+
+        return cleanPredictions;
     }
 }
