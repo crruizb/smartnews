@@ -128,7 +128,7 @@ public class ContributionController {
         for (Map.Entry<User, Map<Contribution, Double>> entry : predictions.entrySet()) {
             PredictionsResponse predictionByUser = new PredictionsResponse(entry.getKey().getId());
 
-            entry.getValue().forEach( (k, v) -> predictionByUser.addPrediction(new ContributionWithPrediction(k.getId(), k.getTitle(), k.getVote(), v)));
+            entry.getValue().forEach( (k, v) -> predictionByUser.addPrediction(new ContributionWithPrediction(k.getId(), k.getTitle(), v)));
             cleanPredictions.add(predictionByUser);
         }
 

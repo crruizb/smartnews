@@ -6,13 +6,11 @@ public class ContributionWithPrediction {
 
     private Integer id;
     private String title;
-    private Integer vote;
     private Double value;
 
-    public ContributionWithPrediction(Integer id, String title, Integer vote, Double value) {
+    public ContributionWithPrediction(Integer id, String title, Double value) {
         this.id = id;
         this.title = title;
-        this.vote = vote;
         this.value = value;
     }
 
@@ -38,14 +36,6 @@ public class ContributionWithPrediction {
 
     public void setValue(Double value) {
         this.value = value;
-    }
-
-    public Integer getVote() {
-        return vote;
-    }
-
-    public void setVote(Integer vote) {
-        this.vote = vote;
     }
 
     @Override
