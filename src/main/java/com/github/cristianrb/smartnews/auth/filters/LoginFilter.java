@@ -2,6 +2,7 @@ package com.github.cristianrb.smartnews.auth.filters;
 
 import com.github.cristianrb.smartnews.auth.AppTokenProvider;
 import com.github.cristianrb.smartnews.auth.GoogleTokenVerifier;
+import com.github.cristianrb.smartnews.errors.UnauthorizedAccessException;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -45,6 +46,7 @@ public class LoginFilter implements Filter {
                 }
             } catch (GeneralSecurityException e) {
                 // This is not a valid token, we will send HTTP 401 back
+                throw new UnauthorizedAccessException("Invalid login.");
             }
         }
         ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED);

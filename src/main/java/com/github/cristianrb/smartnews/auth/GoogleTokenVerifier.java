@@ -1,5 +1,6 @@
 package com.github.cristianrb.smartnews.auth;
 
+import com.github.cristianrb.smartnews.errors.UnauthorizedAccessException;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
@@ -60,9 +61,7 @@ public class GoogleTokenVerifier {
                 String givenName = (String) payload.get("given_name");
             }
         } catch (IllegalArgumentException e){
-            // means token was not valid and idToken
-            // will be null
-            e.printStackTrace();
+            throw new UnauthorizedAccessException("Invalid login.");
         }
 
         if (idToken == null) {
