@@ -1,0 +1,22 @@
+spring:
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    validate-on-migrate: true
+  datasource:
+    hikari:
+      connectionTimeout: '20000'
+      maximumPoolSize: '5'
+    url: ${JDBC_DATABASE_URL:jdbc:postgresql://localhost:5432/smart_news}
+    username: ${JDBC_DATABASE_USERNAME:user}
+    password: ${JDBC_DATABASE_PASSWORD:user}
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+    properties:
+      hibernate:
+        event:
+          merge:
+            entity_copy_observer: allow
+server:
+  port: '8080'
