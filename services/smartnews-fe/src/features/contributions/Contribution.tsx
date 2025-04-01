@@ -1,5 +1,4 @@
 import { ApiContribution } from "../../types";
-import Button from "../../ui/Button";
 
 interface Props {
   contribution: ApiContribution;

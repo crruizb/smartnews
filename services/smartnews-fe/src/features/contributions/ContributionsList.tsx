@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Contribution from "./Contribution";
 import { useContributions } from "./useContributions";
+import { ApiContribution } from "../../types";
 
 export default function ContributionsList() {
   const [sourceFilter, setSourceFilter] = useState("all");
@@ -75,9 +76,9 @@ export default function ContributionsList() {
 
       <hr className="h-px bg-black border-0 my-4" />
       {data &&
-        data.pages.map((group, i) => (
+        data.pages.map((group) => (
           <div>
-            {group.content.map((c) => (
+            {group.content.map((c: ApiContribution) => (
               <>
                 <Contribution contribution={c} />
                 <hr className="h-px bg-black border-0 my-4" />
@@ -88,7 +89,7 @@ export default function ContributionsList() {
 
       {hasNextPage && (
         <button
-          onClick={fetchNextPage}
+          onClick={async () => await fetchNextPage}
           className="inline-block text-sm rounded-full bg-yellow-400 font-semibold uppercase tracking-wide text-stone-800 transition-colors duration-300 hover:bg-yellow-300 focus:bg-yellow-300 focus:outline-none focus:ring focus:ring-yellow-300 focus:ring-offset-2 disabled:cursor-not-allowed cursor-pointer w-54 h-10 mx-auto"
         >
           Cargar mas noticias

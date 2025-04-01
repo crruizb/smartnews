@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { getLatestContributions } from "../../services/apiContributions";
 
 export function useContributions(sourceFilter: string, dateFilter: string) {
@@ -7,15 +7,15 @@ export function useContributions(sourceFilter: string, dateFilter: string) {
     error,
     fetchNextPage,
     hasNextPage,
-    isFetching,
-    isFetchingNextPage,
-    status,
+    // isFetching,
+    // isFetchingNextPage,
+    // status,
   } = useInfiniteQuery({
     queryKey: ["contributions", sourceFilter, dateFilter],
     queryFn: ({ pageParam = 0 }) =>
       getLatestContributions(pageParam, sourceFilter, dateFilter),
     initialPageParam: 0,
-    getNextPageParam: (lastPage, allPages, lastPageParam) => {
+    getNextPageParam: (lastPage, _, lastPageParam) => {
       // console.log(lastPage);
       if (lastPage.last) {
         return undefined;

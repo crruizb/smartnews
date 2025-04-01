@@ -1,14 +1,12 @@
 const API_URL = "http://localhost:8080/api";
 
 export async function getLatestContributions(
-  pageParam,
-  sourceFilter,
-  dateFilter
+  pageParam: number,
+  sourceFilter: string,
+  dateFilter: string
 ) {
-  console.log(pageParam);
-  console.log(sourceFilter);
   const queryParams = new URLSearchParams();
-  queryParams.append("page", pageParam);
+  queryParams.append("page", pageParam.toString());
   if (sourceFilter) {
     queryParams.append("source", sourceFilter);
   }
@@ -26,7 +24,7 @@ export async function getLatestContributions(
   return data;
 }
 
-export async function getContribution(id) {
+export async function getContribution(id: number) {
   const res = await fetch(`${API_URL}/contribution/${id}`);
   if (!res.ok) throw Error(`Could fetch contribution id ${id}`);
 
