@@ -1,4 +1,10 @@
-const API_URL = "http://localhost:8080/api";
+let API_URL = "https://smartnews-be.cristianruiz.dev/sn/api";
+const isLocalhost =
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1";
+if (isLocalhost) {
+  API_URL = "http://localhost:8080/api";
+}
 
 export async function getLatestContributions(
   pageParam: number,
