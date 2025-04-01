@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.when;
@@ -58,8 +59,8 @@ public class ContributionControllerTests {
     @Test
     public void testRetrieveContributions() {
         when(contributionsService.getAll(paging, "all", "")).thenReturn(contributionsPaged);
-        Page<Contribution> contributionsResult = (Page<Contribution>) contributionController.getAllContributions(page, "all", "");
-        assertThat(contributionsResult.getTotalElements()).isEqualTo(2);
+        Map<String,Page<Contribution> >contributionsResult = contributionController.getAllContributions(page, "all", "");
+        assertThat(contributionsResult.get("data").getTotalElements()).isEqualTo(2);
     }
 
     @Test

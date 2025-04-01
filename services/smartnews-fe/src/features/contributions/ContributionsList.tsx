@@ -30,7 +30,7 @@ export default function ContributionsList() {
     <div className="flex flex-col">
       <div className="flex gap-4 items-center justify-end ">
         <div className="px-2">
-          <label>Periodico:</label>
+          <label>Fuente:</label>
           <select onChange={(e) => setSourceFilter(e.target.value)}>
             <option value="all">Todos</option>
             <option value="El País">El País</option>
@@ -46,21 +46,21 @@ export default function ContributionsList() {
                 new Date().setMonth(new Date().getMonth() - 1)
               ).toISOString()}
             >
-              Ultimo mes
+              Último mes
             </option>
             <option
               value={new Date(
                 new Date().setMonth(new Date().getMonth() - 3)
               ).toISOString()}
             >
-              Ultimos 3 meses
+              Últimos 3 meses
             </option>
             <option
               value={new Date(
                 new Date().setMonth(new Date().getMonth() - 12)
               ).toISOString()}
             >
-              Ultimo año
+              Último año
             </option>
             <option
               value={new Date(
