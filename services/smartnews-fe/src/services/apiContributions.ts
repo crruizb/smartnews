@@ -20,13 +20,11 @@ export async function getLatestContributions(
     queryParams.append("date", dateFilter);
   }
 
-  console.log(`${API_URL}/latest?${queryParams.toString()}`);
   const res = await fetch(`${API_URL}/latest?${queryParams.toString()}`);
 
   if (!res.ok) throw Error("Could fetch latest contributions");
 
   const { data } = await res.json();
-  console.log(data);
   return data;
 }
 

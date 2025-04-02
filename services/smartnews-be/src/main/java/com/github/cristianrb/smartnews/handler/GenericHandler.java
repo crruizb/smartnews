@@ -40,11 +40,11 @@ public class GenericHandler extends DefaultHandler  {
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if (getContribution() != null) {
             if (qName.equalsIgnoreCase(title)) {
-                getContribution().setTitle(getData().toString());
+                getContribution().setTitle(cleanText(getData().toString()));
             } else if (qName.equalsIgnoreCase(link)) {
                 getContribution().setLink(getData().toString());
             } else if (qName.equalsIgnoreCase(description)) {
-                getContribution().setDescription(getData().toString());
+                getContribution().setDescription(cleanText(getData().toString()));
             } else if (qName.equalsIgnoreCase(category)) {
                 getContribution().getCategories().add(getData().toString());
             } else if (qName.equalsIgnoreCase(pubDate)) {
@@ -64,7 +64,7 @@ public class GenericHandler extends DefaultHandler  {
 
     public boolean checkImageFormat(String image) {
         return (image.toLowerCase().endsWith("jpg") || image.toLowerCase().endsWith("jpeg") || image.toLowerCase().endsWith("png") ||
-                image.toLowerCase().endsWith("gif") || image.toLowerCase().endsWith("tif") ||
+                image.toLowerCase().endsWith("gif") || image.toLowerCase().endsWith("tif") || image.toLowerCase().endsWith("webp") ||
                 image.toLowerCase().endsWith("tiff") || image.toLowerCase().endsWith("bmp"));
 
     }

@@ -2,12 +2,11 @@ package com.github.cristianrb.smartnews.rss;
 
 import com.github.cristianrb.smartnews.config.SpringContextConfig;
 import com.github.cristianrb.smartnews.entity.Contribution;
-import com.github.cristianrb.smartnews.handler.ABCHandler;
-import com.github.cristianrb.smartnews.handler.ElMundoHandler;
-import com.github.cristianrb.smartnews.handler.ElPaisHandler;
-import com.github.cristianrb.smartnews.handler.GenericHandler;
+import com.github.cristianrb.smartnews.handler.*;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsService;
 import com.github.cristianrb.smartnews.util.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.xml.sax.InputSource;
@@ -18,9 +17,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.rmi.server.LogStream.log;
+
 @Service
 public class RSSDownloader {
 
+    private static final Logger log = LoggerFactory.getLogger(RSSDownloader.class);
     private List<Pair<String, GenericHandler>> sources;
     private ContributionsService contributionsService;
 
@@ -36,6 +38,7 @@ public class RSSDownloader {
         sources.add(new Pair<>("https://www.abc.es/rss/feeds/abcPortada.xml", new ABCHandler()));
         sources.add(new Pair<>("https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada", new ElPaisHandler()));
         sources.add(new Pair<>("https://e00-elmundo.uecdn.es/elmundo/rss/portada.xml", new ElMundoHandler()));
+        sources.add(new Pair<>("https://www.20minutos.es/rss/", new Minutos20Handler()));
 //        sources.add(new Pair<>("https://www.lavanguardia.com/newsml/home.xml", new LaVanguardiaHandler()));
         List<Contribution> contributionsFromAllSources = new ArrayList<Contribution>();
         for (Pair<String, GenericHandler> pair : sources) {
@@ -54,7 +57,7 @@ public class RSSDownloader {
         try {
             contributionsFromAllSources.forEach(cont -> this.contributionsService.saveContribution(cont));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Error saving contribution: {}", e.getMessage());
         }
     }
 
@@ -69,7 +72,7 @@ public class RSSDownloader {
 
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Error downloading news: {}", e.getMessage());
             // Continue reading news
         }
         return contributionList;

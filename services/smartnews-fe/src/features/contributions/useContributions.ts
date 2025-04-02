@@ -16,7 +16,6 @@ export function useContributions(sourceFilter: string, dateFilter: string) {
       getLatestContributions(pageParam, sourceFilter, dateFilter),
     initialPageParam: 0,
     getNextPageParam: (lastPage, _, lastPageParam) => {
-      // console.log(lastPage);
       if (lastPage.last) {
         return undefined;
       }
