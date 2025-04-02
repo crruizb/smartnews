@@ -26,16 +26,14 @@ public class MarcaHandler extends GenericHandler {
             if (qName.equalsIgnoreCase(item)) {
                 getContribution().setSource("Marca");
                 getContribution().setSourceUrl("https://www.marca.com/");
-        }
-
-        } else if (qName.equalsIgnoreCase(pubDate)) {
-            if (getContribution() != null) {
+            } else if (qName.equalsIgnoreCase(pubDate)) {
                 Date date = new Date(getData().toString());
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
                 String format = formatter.format(date);
                 getContribution().setPubDate(format);
+            } else if (qName.equalsIgnoreCase(description)) {
+                getContribution().setDescription(cleanText(getData().toString().split("&nbsp;<a href")[0]));
             }
-
         }
     }
 }
