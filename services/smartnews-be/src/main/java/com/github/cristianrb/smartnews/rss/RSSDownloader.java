@@ -40,6 +40,7 @@ public class RSSDownloader {
         sources.add(new Pair<>("https://e00-elmundo.uecdn.es/elmundo/rss/portada.xml", new ElMundoHandler()));
         sources.add(new Pair<>("https://www.esdiario.com/rss/home.xml", new DiarioHandler()));
         sources.add(new Pair<>("https://e00-marca.uecdn.es/rss/portada.xml", new MarcaHandler()));
+        sources.add(new Pair<>("https://www.20minutos.es/rss/", new Minutos20Handler()));
         List<Contribution> contributionsFromAllSources = new ArrayList<Contribution>();
         System.out.println("Start downloading news...");
         for (Pair<String, GenericHandler> pair : sources) {
