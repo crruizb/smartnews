@@ -14,6 +14,7 @@ import org.xml.sax.InputSource;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +67,10 @@ public class RSSDownloader {
         List<Contribution> contributionList = null;
         try {
             SAXParser saxParser = saxParserFactory.newSAXParser();
-            saxParser.parse(new InputSource(new URL(xmlUrl).openStream()), handler);
+            URL url = new URL(xmlUrl);
+            URLConnection conn = url.openConnection();
+            conn.addRequestProperty("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.3");
+            saxParser.parse(conn.getInputStream(), handler);
 
             contributionList = handler.getContributionList();
 
