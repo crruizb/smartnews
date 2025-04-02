@@ -46,7 +46,6 @@ export default function ContributionsList() {
             <option value="all">Todos</option>
             <option value="El País">El País</option>
             <option value="El Mundo">El Mundo</option>
-            <option value="20 Minutos">20 Minutos</option>
           </select>
         </div>
 

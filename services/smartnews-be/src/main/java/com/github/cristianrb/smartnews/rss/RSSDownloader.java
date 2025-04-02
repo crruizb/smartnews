@@ -13,8 +13,7 @@ import org.xml.sax.InputSource;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +41,7 @@ public class RSSDownloader {
         sources.add(new Pair<>("https://www.20minutos.es/rss/", new Minutos20Handler()));
 //        sources.add(new Pair<>("https://www.lavanguardia.com/newsml/home.xml", new LaVanguardiaHandler()));
         List<Contribution> contributionsFromAllSources = new ArrayList<Contribution>();
+        System.out.println("Start downloading news...");
         for (Pair<String, GenericHandler> pair : sources) {
             List<Contribution> contributionList = downloadNews(pair.getKey(), pair.getValue());
             if (contributionList != null) {
@@ -69,12 +69,9 @@ public class RSSDownloader {
             SAXParser saxParser = saxParserFactory.newSAXParser();
             URL url = new URL(xmlUrl);
             URLConnection conn = url.openConnection();
-            conn.addRequestProperty("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.3");
             saxParser.parse(conn.getInputStream(), handler);
 
             contributionList = handler.getContributionList();
-
-
         } catch (Exception e) {
             log.error("Error downloading news: {}", e.getMessage());
             // Continue reading news
