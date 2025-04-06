@@ -8,16 +8,12 @@ if (isLocalhost) {
 
 export async function getLatestContributions(
   pageParam: number,
-  sourceFilter: string,
-  dateFilter: string
+  sourceFilter: string
 ) {
   const queryParams = new URLSearchParams();
   queryParams.append("page", pageParam.toString());
   if (sourceFilter) {
     queryParams.append("source", sourceFilter);
-  }
-  if (dateFilter) {
-    queryParams.append("date", dateFilter);
   }
 
   const res = await fetch(`${API_URL}/latest?${queryParams.toString()}`);

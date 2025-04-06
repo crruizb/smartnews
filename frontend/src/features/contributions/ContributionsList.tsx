@@ -5,13 +5,7 @@ import { ApiContribution } from "../../types";
 
 export default function ContributionsList() {
   const [sourceFilter, setSourceFilter] = useState("all");
-  const [dateFilter, setDateFilter] = useState(
-    new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString()
-  );
-  const { data, fetchNextPage, hasNextPage } = useContributions(
-    sourceFilter,
-    dateFilter
-  );
+  const { data, fetchNextPage, hasNextPage } = useContributions(sourceFilter);
 
   let ticking = false;
 
