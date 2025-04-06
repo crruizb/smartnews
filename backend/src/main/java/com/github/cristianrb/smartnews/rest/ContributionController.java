@@ -42,10 +42,12 @@ public class ContributionController {
 
     @GetMapping("/latest")
     public Map<String,Page<Contribution>> getAllContributions(
+            Principal principal,
             @RequestParam(name = "page", defaultValue = "0") Integer page,
             @RequestParam(name = "source", defaultValue = "all") String source,
             @RequestParam(name = "date", defaultValue = "2010-01-01T00:00:00Z") String date
     ) {
+        System.out.println(principal.getName());
         Page<Contribution> data = contributionsService.getAll(PageRequest.of(page, PAGE_SIZE), source, date)
                     .map(ContributionsMapper::mapContributionDAOToContribution);
         HashMap<String, Page<Contribution>> json = new HashMap<>();

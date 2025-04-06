@@ -1,4 +1,18 @@
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: to_be_changed
+            client-secret: to_be_changed
+            redirect-uri: http://localhost:8080/login/oauth2/code/google
+            scope: profile, email
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
   flyway:
     enabled: true
     locations: classpath:db/migration
@@ -20,3 +34,6 @@ spring:
             entity_copy_observer: allow
 server:
   port: '8080'
+
+jwt:
+  secret: to_be_changed
