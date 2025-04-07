@@ -26,7 +26,6 @@ public class CustomOAuth2User implements OAuth2User {
 
     @Override
     public String getName() {
-        // You can also return something else like email or sub ID
         return oauth2User.getAttribute("email");
     }
 

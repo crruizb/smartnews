@@ -36,4 +36,4 @@ server:
   port: '8080'
 
 jwt:
-  secret: to_be_changed
+  secret: 123456789012345678901234567890ab

@@ -7,6 +7,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -24,7 +25,8 @@ public class JwtTokenProvider {
     @Value("${jwt.secret}")
     private String secret;
 
-    private final long EXPIRATION_TIME = 86400000; // 1 day
+    private final long accessTokenValidity = 1000 * 60 * 15; // 15 minutes
+    private final long refreshTokenValidity = 1000L * 60 * 60 * 24 * 30; // 30 days
 
     private SecretKey key;
 
@@ -33,15 +35,24 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String createToken(String username, Collection<? extends GrantedAuthority> authorities) {
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME);
-
+    public String generateAccessToken(Authentication auth) {
         return Jwts.builder()
-                .subject(username)
-                .claim("roles", authorities.stream().map(GrantedAuthority::getAuthority).toList())
-                .issuedAt(now)
-                .expiration(expiryDate)
+                .subject(auth.getName())
+                .claim("token_type", "access")
+                .claim("roles", auth.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + accessTokenValidity))
+                .signWith(key)
+                .compact();
+    }
+
+    public String generateRefreshToken(Authentication auth) {
+        return Jwts.builder()
+                .subject(auth.getName())
+                .claim("token_type", "refresh")
+                .claim("roles", auth.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + refreshTokenValidity))
                 .signWith(key)
                 .compact();
     }
@@ -58,6 +69,11 @@ public class JwtTokenProvider {
     public String getUsernameFromToken(String token) {
         Claims claims = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
         return claims.getSubject();
+    }
+
+    public String getTokenType(String token) {
+        Claims claims = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
+        return claims.get("token_type", String.class);
     }
 
     public Collection<? extends GrantedAuthority> getAuthorities(String token) {

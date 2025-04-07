@@ -1,6 +1,7 @@
 package com.github.cristianrb.smartnews.auth;
 
-import jakarta.servlet.ServletException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.cristianrb.smartnews.entity.Token;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +17,19 @@ public class Oauth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     @Autowired
     private JwtTokenProvider tokenProvider;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                        Authentication authentication) throws IOException, ServletException {
-        CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+                                        Authentication authentication) throws IOException {
+        String accessToken = tokenProvider.generateAccessToken(authentication);
+        String refreshToken = tokenProvider.generateRefreshToken(authentication);
 
-        String token = tokenProvider.createToken(oAuth2User.getName(), oAuth2User.getAuthorities());
-
-        // Redirect to React app with token
-        response.sendRedirect("http://localhost:3000/oauth2/redirect?token=" + token);
+        response.setContentType("application/json");
+        Token token = new Token(refreshToken, accessToken);
+        objectMapper.writeValue(response.getWriter(), token);
+        response.sendRedirect("http://localhost:3000/oauth2/redirect");
     }
 
 }
