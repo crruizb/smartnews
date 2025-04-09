@@ -59,7 +59,7 @@ public class ContributionControllerTests {
     @Test
     public void testRetrieveContributions() {
         when(contributionsService.getAll(paging, "all", "")).thenReturn(contributionsPaged);
-        Map<String,Page<Contribution> >contributionsResult = contributionController.getAllContributions(page, "all", "");
+        Map<String,Page<Contribution> >contributionsResult = contributionController.getAllContributions(page, "all", "", null);
         assertThat(contributionsResult.get("data").getTotalElements()).isEqualTo(2);
     }
 

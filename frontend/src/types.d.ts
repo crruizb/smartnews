@@ -1,4 +1,5 @@
 export interface ApiContribution {
+  id: number;
   title: string;
   description: string;
   link: string;
@@ -8,4 +9,5 @@ export interface ApiContribution {
   urlImage: string;
   source: string;
   sourceUrl: string;
+  vote: number | undefined;
 }

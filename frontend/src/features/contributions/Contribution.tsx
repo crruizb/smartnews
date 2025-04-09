@@ -1,4 +1,5 @@
 import { ApiContribution } from "../../types";
+import StarRate from "../../ui/StarRate";
 
 interface Props {
   contribution: ApiContribution;
@@ -39,14 +40,21 @@ export default function Contribution({ contribution }: Props) {
       </a>
       {contribution.categories.length > 0 &&
         contribution.categories[0] !== "" && (
-          <div className="flex justify-end text-xs space-x-2">
-            {contribution.categories.map((c, i) =>
-              i < 3 ? (
-                <p className="bg-palid-blue dark:text-black rounded-xl p-1.5 text-xs font-light capitalize">
-                  {c}
-                </p>
-              ) : null
-            )}
+          <div className="flex justify-between items-center">
+            <StarRate
+              rating={contribution.vote ? contribution.vote : 0}
+              newsId={contribution.id}
+            />
+
+            <div className="flex justify-end text-xs space-x-2">
+              {contribution.categories.map((c, i) =>
+                i < 3 ? (
+                  <p className="bg-palid-blue dark:text-black rounded-xl p-1.5 text-xs font-light capitalize">
+                    {c}
+                  </p>
+                ) : null
+              )}
+            </div>
           </div>
         )}
     </div>

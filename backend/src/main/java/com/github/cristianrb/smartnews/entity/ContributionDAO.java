@@ -2,6 +2,7 @@ package com.github.cristianrb.smartnews.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 

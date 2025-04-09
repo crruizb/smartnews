@@ -1,11 +1,9 @@
 package com.github.cristianrb.smartnews.rest;
 
-import com.github.cristianrb.smartnews.auth.CurrentUser;
 import com.github.cristianrb.smartnews.cf.Recommender;
 import com.github.cristianrb.smartnews.cf.SlopeOneImpl;
 import com.github.cristianrb.smartnews.entity.*;
 import com.github.cristianrb.smartnews.errors.RecommendationsException;
-import com.github.cristianrb.smartnews.errors.UnauthorizedAccessException;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsMapper;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsService;
 import com.github.cristianrb.smartnews.service.contributions.UserContributionService;
@@ -44,10 +42,17 @@ public class ContributionController {
     public Map<String,Page<Contribution>> getAllContributions(
             @RequestParam(name = "page", defaultValue = "0") Integer page,
             @RequestParam(name = "source", defaultValue = "all") String source,
-            @RequestParam(name = "date", defaultValue = "2010-01-01T00:00:00Z") String date
+            @RequestParam(name = "date", defaultValue = "2010-01-01T00:00:00Z") String date,
+            Principal principal
     ) {
+        String username;
+        if (principal != null) {
+            username = principal.getName();
+        } else {
+            username = null;
+        }
         Page<Contribution> data = contributionsService.getAll(PageRequest.of(page, PAGE_SIZE), source, date)
-                    .map(ContributionsMapper::mapContributionDAOToContribution);
+                .map(c -> ContributionsMapper.mapContributionDAOToContribution(c, username));
         HashMap<String, Page<Contribution>> json = new HashMap<>();
         json.put("data", data);
         return json;
@@ -55,9 +60,9 @@ public class ContributionController {
 
     @GetMapping("/contributions")
     public Contribution getContributionById(@RequestParam(name = "id") Integer id,
-                                            @CurrentUser Principal principal) {
+                                            Principal principal) {
         ContributionDAO contributionDAO = contributionsService.getContributionById(id);
-        Contribution contribution = ContributionsMapper.mapContributionDAOToContribution(contributionDAO);
+        Contribution contribution = ContributionsMapper.mapContributionDAOToContribution(contributionDAO, principal.getName());
 
         if (principal != null) {
             Integer vote = usersService.getVoteOfContributionByUser(contributionDAO, principal.getName());
@@ -69,9 +74,6 @@ public class ContributionController {
     @GetMapping("/recommendations")
     public Page<Contribution> getFeed(@RequestParam(name = "page", defaultValue = "0") Integer page,
                                       Principal principal) {
-        if (principal == null) {
-            throw new UnauthorizedAccessException("Log in to access to this resource");
-        }
         if (usersService.getUser(principal.getName()).isPresent()) {
                 User user = new User(principal.getName());
                 Recommender recomm = new SlopeOneImpl();
@@ -87,27 +89,18 @@ public class ContributionController {
     @GetMapping("/rated")
     public Page<Contribution> getContributionsRated(@RequestParam(name = "page", defaultValue = "0") Integer page,
                                                     Principal principal) {
-        if (principal == null) {
-            throw new UnauthorizedAccessException("Log in to access to this resource");
-        }
         List<Contribution> contsVoted = usersService.getContributionsVotedByUser(principal);
         Pageable pageable = PageRequest.of(page, PAGE_SIZE);
         return toPage(contsVoted, pageable);
     }
 
-    @PostMapping("/contributions")
-    public void postVoteContribution(@RequestBody Integer vote, @RequestParam(name = "id") Integer id, @CurrentUser Principal principal) {
-        if (principal == null) {
-            throw new UnauthorizedAccessException("Log in to access to this resource");
-        }
+    @PostMapping("/contributions/{id}")
+    public void postVoteContribution(@RequestBody Integer vote, @PathVariable(name = "id") Integer id, Principal principal) {
         usersContributionService.voteContribution(vote, id, principal);
     }
 
     @PutMapping("/contributions")
     public void putVoteContribution(@RequestBody Integer vote, @RequestParam(name = "id") Integer id, Principal principal) {
-        if (principal == null) {
-            throw new UnauthorizedAccessException("Log in to access to this resource");
-        }
         usersContributionService.voteContribution(vote, id, principal);
     }
 

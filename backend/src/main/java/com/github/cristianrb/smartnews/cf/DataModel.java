@@ -27,7 +27,7 @@ public class DataModel {
             Set<UserContributionDAO> newsByUser = userDAO.getContributionsVisited();
             Map<Contribution, Double> newsVisited = new HashMap<>();
             for (UserContributionDAO userAndNew : newsByUser) {
-                Contribution cont = ContributionsMapper.mapContributionDAOToContribution(userAndNew.getContribution());
+                Contribution cont = ContributionsMapper.mapContributionDAOToContribution(userAndNew.getContribution(), userAndNew.getUser().getId());
                 newsVisited.put(cont, (double) userAndNew.getVote());
                     contributions.add(cont);
             }

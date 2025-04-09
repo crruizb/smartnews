@@ -16,7 +16,9 @@ export async function getLatestContributions(
     queryParams.append("source", sourceFilter);
   }
 
-  const res = await fetch(`${API_URL}/latest?${queryParams.toString()}`);
+  const res = await fetch(`${API_URL}/latest?${queryParams.toString()}`, {
+    credentials: "include",
+  });
 
   if (!res.ok) throw Error("Could fetch latest contributions");
 
@@ -30,4 +32,17 @@ export async function getContribution(id: number) {
 
   const { data } = await res.json();
   return data;
+}
+
+export async function voteContribution(id: number, rating: number) {
+  const res = await fetch(`${API_URL}/contributions/${id}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(rating),
+    credentials: "include",
+  });
+
+  if (!res.ok) throw Error(`Could not vote contribution id ${id}`);
 }
