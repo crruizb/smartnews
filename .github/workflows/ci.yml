@@ -23,14 +23,14 @@ jobs:
           cache: "maven"
 
       - name: Build and test with Maven
-        working-directory: services/backend
+        working-directory: backend
         run: mvn clean verify
 
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-jar
-          path: services/backend/target/*.jar
+          path: backend/target/*.jar
           retention-days: 3
 
   deploy:
@@ -45,7 +45,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: app-jar
-          path: services/backend/target/
+          path: backend/target/
 
       - name: Get current date
         run: echo "IMAGE_TAG=$(date -u +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
@@ -57,7 +57,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push Docker image
-        working-directory: services/smartnews-be
+        working-directory: backend
         run: |
           docker build -t smartnews:$IMAGE_TAG .
           docker tag smartnews:$IMAGE_TAG smartnews:latest
