@@ -58,7 +58,7 @@ public class UsersServiceImpl implements UsersService {
                 List<Contribution> contsVoted = new ArrayList<>();
                 for (UserContributionDAO userContributionDAO : user.get().getContributionsVisited()) {
                     ContributionDAO contributionDAO = userContributionDAO.getContribution();
-                    Contribution contribution = ContributionsMapper.mapContributionDAOToContribution(contributionDAO);
+                    Contribution contribution = ContributionsMapper.mapContributionDAOToContribution(contributionDAO, principal.getName());
                     contribution.setVote(userContributionDAO.getVote());
                     contsVoted.add(contribution);
                 }

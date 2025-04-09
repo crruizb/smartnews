@@ -42,10 +42,17 @@ public class ContributionController {
     public Map<String,Page<Contribution>> getAllContributions(
             @RequestParam(name = "page", defaultValue = "0") Integer page,
             @RequestParam(name = "source", defaultValue = "all") String source,
-            @RequestParam(name = "date", defaultValue = "2010-01-01T00:00:00Z") String date
+            @RequestParam(name = "date", defaultValue = "2010-01-01T00:00:00Z") String date,
+            Principal principal
     ) {
+        String username;
+        if (principal != null) {
+            username = principal.getName();
+        } else {
+            username = null;
+        }
         Page<Contribution> data = contributionsService.getAll(PageRequest.of(page, PAGE_SIZE), source, date)
-                    .map(ContributionsMapper::mapContributionDAOToContribution);
+                .map(c -> ContributionsMapper.mapContributionDAOToContribution(c, username));
         HashMap<String, Page<Contribution>> json = new HashMap<>();
         json.put("data", data);
         return json;
@@ -55,7 +62,7 @@ public class ContributionController {
     public Contribution getContributionById(@RequestParam(name = "id") Integer id,
                                             Principal principal) {
         ContributionDAO contributionDAO = contributionsService.getContributionById(id);
-        Contribution contribution = ContributionsMapper.mapContributionDAOToContribution(contributionDAO);
+        Contribution contribution = ContributionsMapper.mapContributionDAOToContribution(contributionDAO, principal.getName());
 
         if (principal != null) {
             Integer vote = usersService.getVoteOfContributionByUser(contributionDAO, principal.getName());
@@ -87,8 +94,8 @@ public class ContributionController {
         return toPage(contsVoted, pageable);
     }
 
-    @PostMapping("/contributions")
-    public void postVoteContribution(@RequestBody Integer vote, @RequestParam(name = "id") Integer id, Principal principal) {
+    @PostMapping("/contributions/{id}")
+    public void postVoteContribution(@RequestBody Integer vote, @PathVariable(name = "id") Integer id, Principal principal) {
         usersContributionService.voteContribution(vote, id, principal);
     }
 

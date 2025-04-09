@@ -4,8 +4,8 @@ spring:
       client:
         registration:
           google:
-            client-id: to_be_changed
-            client-secret: to_be_changed
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
             redirect-uri: http://localhost:8080/login/oauth2/code/google
             scope: profile, email
         provider:
@@ -19,8 +19,8 @@ spring:
     validate-on-migrate: true
   datasource:
     hikari:
-      connectionTimeout: '20000'
-      maximumPoolSize: '5'
+      connectionTimeout: "20000"
+      maximumPoolSize: "5"
     url: ${JDBC_DATABASE_URL:jdbc:postgresql://localhost:5432/smart_news}
     username: ${JDBC_DATABASE_USERNAME:user}
     password: ${JDBC_DATABASE_PASSWORD:user}
@@ -33,7 +33,7 @@ spring:
           merge:
             entity_copy_observer: allow
 server:
-  port: '8080'
+  port: "8080"
 
 jwt:
-  secret: 123456789012345678901234567890ab
+  secret: {JWT_SECRET}

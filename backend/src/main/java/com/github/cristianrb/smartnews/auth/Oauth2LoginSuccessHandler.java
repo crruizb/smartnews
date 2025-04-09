@@ -2,6 +2,7 @@ package com.github.cristianrb.smartnews.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.cristianrb.smartnews.entity.Token;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +18,6 @@ public class Oauth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     @Autowired
     private JwtTokenProvider tokenProvider;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
@@ -27,9 +25,19 @@ public class Oauth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         String refreshToken = tokenProvider.generateRefreshToken(authentication);
 
         response.setContentType("application/json");
-        Token token = new Token(refreshToken, accessToken);
-        objectMapper.writeValue(response.getWriter(), token);
-        response.sendRedirect("http://localhost:3000/oauth2/redirect");
+        setCookie(response, "accessToken", accessToken, JwtTokenProvider.accessTokenValidity, true);
+        setCookie(response, "refreshToken", refreshToken, JwtTokenProvider.refreshTokenValidity, true);
+        setCookie(response, "username", authentication.getName(), JwtTokenProvider.refreshTokenValidity, false);
+        response.sendRedirect("http://localhost:5173/");
+    }
+
+    private void setCookie(HttpServletResponse response, String name, String value, int maxAgeSeconds, boolean secure) {
+        Cookie cookie = new Cookie(name, value);
+        cookie.setHttpOnly(secure);
+        cookie.setSecure(secure);
+        cookie.setPath("/");
+        cookie.setMaxAge(maxAgeSeconds);
+        response.addCookie(cookie);
     }
 
 }
