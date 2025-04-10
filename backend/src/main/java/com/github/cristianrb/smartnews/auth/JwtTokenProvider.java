@@ -82,5 +82,3 @@ public class JwtTokenProvider {
         return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }
 }
-
-// http://localhost:8080/oauth2/authorization/google
