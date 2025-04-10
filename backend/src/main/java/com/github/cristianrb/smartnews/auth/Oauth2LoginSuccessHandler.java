@@ -22,6 +22,9 @@ public class Oauth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     @Value("${app.frontendURL}")
     private String frontendURL;
 
+    @Value("${app.cookieDomain}")
+    private String domain;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
@@ -40,6 +43,10 @@ public class Oauth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         cookie.setHttpOnly(secure);
         cookie.setSecure(secure);
         cookie.setPath("/");
+        if (!domain.equals("localhost")) {
+            cookie.setDomain(domain);
+        }
+
         cookie.setMaxAge(maxAgeSeconds);
         response.addCookie(cookie);
     }

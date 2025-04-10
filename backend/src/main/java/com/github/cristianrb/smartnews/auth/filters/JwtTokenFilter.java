@@ -9,6 +9,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +24,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+
+    @Value("${app.cookieDomain}")
+    private String domain;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -78,6 +82,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
         cookie.setPath("/");
+        if (!domain.equals("localhost")) {
+            cookie.setDomain(domain);
+        }
+
         cookie.setMaxAge(maxAgeSeconds);
         response.addCookie(cookie);
     }
