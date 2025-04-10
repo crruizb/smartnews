@@ -1,12 +1,11 @@
 package com.github.cristianrb.smartnews.auth;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.cristianrb.smartnews.entity.Token;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -22,9 +21,6 @@ public class Oauth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     @Value("${app.frontendURL}")
     private String frontendURL;
 
-    @Value("${app.cookieDomain}")
-    private String domain;
-
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
@@ -38,17 +34,15 @@ public class Oauth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         response.sendRedirect(frontendURL);
     }
 
-    private void setCookie(HttpServletResponse response, String name, String value, int maxAgeSeconds, boolean secure) {
-        Cookie cookie = new Cookie(name, value);
-        cookie.setHttpOnly(secure);
-        cookie.setSecure(secure);
-        cookie.setPath("/");
-        if (!domain.equals("localhost")) {
-            cookie.setDomain(domain);
-        }
+    private void setCookie(HttpServletResponse response, String name, String value, int maxAgeSeconds, boolean httpOnly) {
+        ResponseCookie cookie = ResponseCookie.from(name, value)
+                .path("/")
+                .httpOnly(httpOnly)
+                .secure(true)
+                .sameSite("None")
+                .maxAge(maxAgeSeconds)
+                .build();
 
-        cookie.setMaxAge(maxAgeSeconds);
-        response.addCookie(cookie);
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
-
 }

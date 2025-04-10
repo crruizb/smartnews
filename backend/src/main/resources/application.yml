@@ -40,4 +40,3 @@ jwt:
 
 app:
   frontendURL: ${FRONTEND_URL:http://localhost:5173/}
-  cookieDomain: ${COOKIE_DOMAIN:localhost}
