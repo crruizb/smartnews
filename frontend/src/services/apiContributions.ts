@@ -1,4 +1,4 @@
-let API_URL = "https://smartnews-be.cristianruiz.dev/sn/api";
+let API_URL = "https://smartnews.api.cristianruiz.dev/sn/api";
 const isLocalhost =
   window.location.hostname === "localhost" ||
   window.location.hostname === "127.0.0.1";
