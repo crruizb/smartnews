@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 
 export default function Header() {
   let GOOGLE_OAUTH_URL =
-    "https://smartnews.api.cristianruiz.dev/sn/oauth2/authorization/google";
+    "https://api.cristianruiz.dev/sn/oauth2/authorization/google";
   const isLocalhost =
     window.location.hostname === "localhost" ||
     window.location.hostname === "127.0.0.1";
