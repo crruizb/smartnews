@@ -2,14 +2,13 @@ package com.github.cristianrb.smartnews.auth.filters;
 
 import com.github.cristianrb.smartnews.auth.JwtTokenProvider;
 import com.github.cristianrb.smartnews.errors.UnauthorizedAccessException;
+import com.github.cristianrb.smartnews.util.CookieHelper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +23,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    private CookieHelper cookieHelper;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -68,21 +70,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                     new UsernamePasswordAuthenticationToken(username, null, authorities);
 
             String newAccessToken = jwtTokenProvider.generateAccessToken(authentication);
-            setCookie(response, "accessToken", newAccessToken, JwtTokenProvider.accessTokenValidity, true);
+            cookieHelper.setCookie(response, "accessToken", newAccessToken, JwtTokenProvider.accessTokenValidity, true);
         }
 
         return null;
-    }
-
-    private void setCookie(HttpServletResponse response, String name, String value, int maxAgeSeconds, boolean httpOnly) {
-        ResponseCookie cookie = ResponseCookie.from(name, value)
-                .path("/")
-                .httpOnly(httpOnly)
-                .secure(true)
-                .sameSite("None")
-                .maxAge(maxAgeSeconds)
-                .build();
-
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 }

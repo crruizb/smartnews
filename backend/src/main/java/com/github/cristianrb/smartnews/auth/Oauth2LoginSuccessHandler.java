@@ -1,11 +1,10 @@
 package com.github.cristianrb.smartnews.auth;
 
+import com.github.cristianrb.smartnews.util.CookieHelper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -18,6 +17,9 @@ public class Oauth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     @Autowired
     private JwtTokenProvider tokenProvider;
 
+    @Autowired
+    private CookieHelper cookieHelper;
+
     @Value("${app.frontendURL}")
     private String frontendURL;
 
@@ -28,21 +30,11 @@ public class Oauth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         String refreshToken = tokenProvider.generateRefreshToken(authentication);
 
         response.setContentType("application/json");
-        setCookie(response, "accessToken", accessToken, JwtTokenProvider.accessTokenValidity, true);
-        setCookie(response, "refreshToken", refreshToken, JwtTokenProvider.refreshTokenValidity, true);
-        setCookie(response, "username", authentication.getName(), JwtTokenProvider.refreshTokenValidity, false);
+        cookieHelper.setCookie(response, "accessToken", accessToken, JwtTokenProvider.accessTokenValidity, true);
+        cookieHelper.setCookie(response, "refreshToken", refreshToken, JwtTokenProvider.refreshTokenValidity, true);
+        cookieHelper.setCookie(response, "username", authentication.getName(), JwtTokenProvider.refreshTokenValidity, false);
         response.sendRedirect(frontendURL);
     }
 
-    private void setCookie(HttpServletResponse response, String name, String value, int maxAgeSeconds, boolean httpOnly) {
-        ResponseCookie cookie = ResponseCookie.from(name, value)
-                .path("/")
-                .httpOnly(httpOnly)
-                .secure(true)
-                .sameSite("None")
-                .maxAge(maxAgeSeconds)
-                .build();
 
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-    }
 }
