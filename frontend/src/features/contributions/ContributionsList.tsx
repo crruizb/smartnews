@@ -75,7 +75,7 @@ export default function ContributionsList() {
       {hasNextPage && (
         <button
           onClick={() => fetchNextPage()}
-          className="inline-block text-sm rounded-full bg-emerald-400 font-semibold uppercase tracking-wide text-stone-800 transition-colors duration-300 hover:bg-emerald-300 cursor-pointer w-54 h-10 mx-auto"
+          className="inline-block text-sm rounded-full bg-palid-pink font-semibold uppercase tracking-wide text-stone-800 transition-colors duration-300 hover:bg-pink cursor-pointer w-54 h-10 mx-auto"
         >
           Cargar mas noticias
         </button>

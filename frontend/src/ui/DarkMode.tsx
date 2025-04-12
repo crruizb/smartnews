@@ -1,4 +1,4 @@
-import { ChangeEventHandler } from "react";
+import { ChangeEventHandler, useState } from "react";
 
 function DarkMode() {
   const setDark = () => {
@@ -22,11 +22,14 @@ function DarkMode() {
   const defaultDark =
     storedTheme === "dark" || (storedTheme === null && prefersDark);
 
+  const [checked, setChecked] = useState(defaultDark);
+
   if (defaultDark) {
     setDark();
   }
 
   const toggleTheme: ChangeEventHandler<HTMLInputElement> = (e) => {
+    setChecked(!checked);
     if (e.target.checked) {
       setDark();
     } else {
@@ -43,6 +46,7 @@ function DarkMode() {
             type="checkbox"
             id="checkbox"
             className="sr-only"
+            checked={checked}
             onChange={toggleTheme}
           />
 

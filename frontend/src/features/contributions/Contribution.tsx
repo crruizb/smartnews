@@ -32,7 +32,7 @@ export default function Contribution({ contribution }: Props) {
             />
           </div>
         )}
-        <p className="font-light">
+        <p className="font-light break-all overflow-hidden text-ellipsis max-w-full">
           {contribution.description.length > 300
             ? `${contribution.description.substring(0, 300)} [...]`
             : contribution.description}
