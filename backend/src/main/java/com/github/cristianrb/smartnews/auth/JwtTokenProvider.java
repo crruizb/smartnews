@@ -26,7 +26,7 @@ public class JwtTokenProvider {
     private String secret;
 
     public static final int accessTokenValidity = 60 * 15; // 15 minutes
-    public static final int refreshTokenValidity = 60 * 60 * 24 * 30; // 30 days
+    public static final int refreshTokenValidity = 60 * 60 * 24 * 30 * 3; // 3 months
 
     private SecretKey key;
 
@@ -41,7 +41,7 @@ public class JwtTokenProvider {
                 .claim("token_type", "access")
                 .claim("roles", auth.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() / 1000 + accessTokenValidity))
+                .expiration(new Date(System.currentTimeMillis() + accessTokenValidity * 1000L))
                 .signWith(key)
                 .compact();
     }
@@ -52,7 +52,7 @@ public class JwtTokenProvider {
                 .claim("token_type", "refresh")
                 .claim("roles", auth.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + refreshTokenValidity))
+                .expiration(new Date(System.currentTimeMillis() + refreshTokenValidity * 1000L))
                 .signWith(key)
                 .compact();
     }

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import DarkMode from "./DarkMode";
 import Cookies from "js-cookie";
 
@@ -15,7 +16,16 @@ export default function Header() {
     window.location.href = GOOGLE_OAUTH_URL;
   };
 
-  const username = Cookies.get("username");
+  const [username, setUsername] = useState(Cookies.get("username") || null);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const cookieUser = Cookies.get("username");
+      setUsername(cookieUser || null);
+    }, 10 * 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <header className="flex justify-between items-center py-4 px-8 bg-white dark:bg-[#2c2c2c] sticky top-0 z-50 border-b border-pink shadow-md dark:shadow-palid-purple dark:shadow-xs">
