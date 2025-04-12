@@ -42,7 +42,9 @@ export function useVoteContribution() {
     onSuccess: () => {
       toast.success("Voto registrado correctamente!");
     },
-    onError: (err) => console.log(err),
+    onError: () => {
+      toast.error("No se pudo registrar el voto, prueba mas tarde.");
+    },
   });
 
   return { voteNews };

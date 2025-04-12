@@ -11,7 +11,6 @@ export default function StarRate({ rating, newsId }: Props) {
   const [vote, setVote] = useState(rating);
   const { voteNews } = useVoteContribution();
   const handleSetRating = (vote: number) => {
-    console.log(newsId);
     voteNews({ id: newsId, rating: vote });
   };
 

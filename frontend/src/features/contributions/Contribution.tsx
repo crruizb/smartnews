@@ -38,14 +38,13 @@ export default function Contribution({ contribution }: Props) {
             : contribution.description}
         </p>
       </a>
-      {contribution.categories.length > 0 &&
-        contribution.categories[0] !== "" && (
-          <div className="flex justify-between items-center">
-            <StarRate
-              rating={contribution.vote ? contribution.vote : 0}
-              newsId={contribution.id}
-            />
-
+      <div className="flex justify-between items-center">
+        <StarRate
+          rating={contribution.vote ? contribution.vote : 0}
+          newsId={contribution.id}
+        />
+        {contribution.categories.length > 0 &&
+          contribution.categories[0] !== "" && (
             <div className="flex justify-end text-xs space-x-2">
               {contribution.categories.map((c, i) =>
                 i < 3 ? (
@@ -55,8 +54,8 @@ export default function Contribution({ contribution }: Props) {
                 ) : null
               )}
             </div>
-          </div>
-        )}
+          )}
+      </div>
     </div>
   );
 }
