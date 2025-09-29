@@ -50,7 +50,6 @@ public class ContributionsServiceTests {
     }
 
     @Test
-    @Disabled
     public void testGetContributions() {
         List<ContributionDAO> contributions = new ArrayList<ContributionDAO>();
         ArrayList<String> categories = new ArrayList<String>();
@@ -67,8 +66,8 @@ public class ContributionsServiceTests {
         final int end = Math.min((start + paging.getPageSize()), contributions.size());
         Page<ContributionDAO> contributionsPaged = new PageImpl<>(contributions.subList(start, end), paging, contributions.size());
 
-        when(contributionsRepository.findAllByCountryAndPubDateAfterOrderByPubDateDescIdDesc(paging, "es", "all")).thenReturn(contributionsPaged);
-        Page<ContributionDAO> resultContributionsDAO = contributionsService.getAll(paging, "all", "all");
+        when(contributionsRepository.findAllByCountryAndPubDateAfterOrderByPubDateDescIdDesc(paging, "ES", "all")).thenReturn(contributionsPaged);
+        Page<ContributionDAO> resultContributionsDAO = contributionsService.getAll(paging, "es", "all");
         Assertions.assertEquals(resultContributionsDAO, contributionsPaged);
     }
 }
