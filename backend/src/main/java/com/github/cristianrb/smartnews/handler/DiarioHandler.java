@@ -24,6 +24,7 @@ public class DiarioHandler extends GenericHandler {
         if (qName.equalsIgnoreCase(item)) {
             getContribution().setSource("ES Diario");
             getContribution().setSourceUrl("https://www.esdiario.com/");
+            getContribution().setCountry("ES");
         } else if (qName.equalsIgnoreCase(pubDate)) {
             Date date = new Date(getData().toString());
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");

@@ -21,7 +21,7 @@ spring:
     hikari:
       connectionTimeout: "20000"
       maximumPoolSize: "5"
-    url: ${JDBC_DATABASE_URL:jdbc:postgresql://localhost:5432/smart_news}
+    url: ${JDBC_DATABASE_URL:jdbc:postgresql://localhost:7000/smart_news}
     username: ${JDBC_DATABASE_USERNAME:user}
     password: ${JDBC_DATABASE_PASSWORD:user}
   jpa:

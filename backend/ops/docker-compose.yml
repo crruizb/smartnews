@@ -1,7 +1,8 @@
 version: "3"
+name: smartnews-backend
 
 services:
-  postgres:
+  postgres-smart-news:
     image: postgres
     environment:
       - POSTGRES_USER=user
@@ -9,4 +10,4 @@ services:
       - POSTGRES_DB=smart_news
       - TZ=UTC
     ports:
-      - "5432:5432"
+      - "7000:5432"

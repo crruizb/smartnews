@@ -1,11 +1,14 @@
 import { ApiContribution } from "../../types";
 import StarRate from "../../ui/StarRate";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   contribution: ApiContribution;
 }
 
 export default function Contribution({ contribution }: Props) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col space-y-2 hover:bg-stone-100 dark:hover:bg-stone-100/5 p-3 rounded-xl transition duration-300">
       <a
@@ -14,7 +17,7 @@ export default function Contribution({ contribution }: Props) {
         className="flex flex-col space-y-2"
       >
         <p className="text-xs font-extralight">
-          Fecha de publicacion: {contribution.pubDate} |{" "}
+            {t("contribution.pubDate")}: {contribution.pubDate} |{" "}
           <span className="font-semibold">
             @
             <a href={contribution.link} target="_blank">

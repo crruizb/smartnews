@@ -42,8 +42,10 @@ public class ContributionsServiceImpl implements ContributionsService {
 
     @Override
     public Page<ContributionDAO> getAll(Pageable paging, String source, String date) {
-        if (source.equals("all")) {
-            return this.contributionsRepository.findAllByPubDateAfterOrderByPubDateDescIdDesc(paging, date);
+        if (source.equals("es")) {
+            return this.contributionsRepository.findAllByCountryAndPubDateAfterOrderByPubDateDescIdDesc(paging, "ES", date);
+        } else if (source.equals("en")) {
+            return this.contributionsRepository.findAllByCountryAndPubDateAfterOrderByPubDateDescIdDesc(paging, "EN", date);
         }
         return this.contributionsRepository.findAllBySourceAndPubDateAfterOrderByPubDateDescIdDesc(paging, source, date);
     }

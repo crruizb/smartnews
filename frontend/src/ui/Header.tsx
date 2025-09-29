@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import DarkMode from "./DarkMode";
 import Cookies from "js-cookie";
+import LanguageSelector from "./LanguageSelector.tsx";
 
 export default function Header() {
   let GOOGLE_OAUTH_URL =
@@ -52,6 +53,7 @@ export default function Header() {
           </button>
         )}
         <DarkMode />
+        <LanguageSelector />
       </div>
     </header>
   );

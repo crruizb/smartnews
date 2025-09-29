@@ -44,9 +44,9 @@ public class ContributionControllerTests {
         ArrayList<String> categories = new ArrayList<String>();
         categories.add("C1");
         c1 = new Contribution(1, "C1", "D1", "L1", categories, "P1", "Cr1",
-                "url1", "source1", "sourceUrl1", null);
+                "url1", "source1", "sourceUrl1", null, "ES");
         Contribution c2 = new Contribution(2, "C2", "D2", "L2", categories, "P2", "Cr2",
-                "url2", "source2", "sourceUrl2", null);
+                "url2", "source2", "sourceUrl2", null, "ES");
         contributions.addAll(Arrays.asList(ContributionsMapper.mapContributionToContributionDAO(c1),
                 ContributionsMapper.mapContributionToContributionDAO(c2)));
 

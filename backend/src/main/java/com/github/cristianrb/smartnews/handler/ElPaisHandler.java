@@ -24,6 +24,7 @@ public class ElPaisHandler extends GenericHandler {
         if (qName.equalsIgnoreCase(item)) {
             getContribution().setSource("El País");
             getContribution().setSourceUrl("https://www.elpais.com");
+            getContribution().setCountry("ES");
         } else if (qName.equalsIgnoreCase(pubDate)) {
             java.util.Date date = new Date(getData().toString());
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");

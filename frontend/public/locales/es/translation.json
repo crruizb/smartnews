@@ -1,0 +1,11 @@
+{
+  "contribution": {
+    "pubDate": "Fecha de publicación"
+  },
+  "source": "Fuente",
+  "vote": {
+    "success": "Voto registrado correctamente!",
+    "error": "No se pudo registrar el voto, prueba mas tarde."
+  },
+  "loadMore": "Cargar mas noticías"
+}

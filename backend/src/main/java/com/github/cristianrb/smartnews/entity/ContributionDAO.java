@@ -30,6 +30,8 @@ public class ContributionDAO {
     @Column
     private String source;
     @Column
+    private String country;
+    @Column
     private String sourceUrl;
     @OneToMany(mappedBy = "contribution", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserContributionDAO> users;
@@ -112,6 +114,14 @@ public class ContributionDAO {
 
     public void setSourceUrl(String sourceUrl) {
         this.sourceUrl = sourceUrl;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     public Set<UserContributionDAO> getUsers() {

@@ -30,6 +30,7 @@ public class LaVanguardiaHandler extends GenericHandler {
         if (qName.equalsIgnoreCase(item)) {
             getContribution().setSource("La Vanguardia");
             getContribution().setSourceUrl("https://www.lavanguardia.com");
+            getContribution().setCountry("ES");
         } else if (qName.equalsIgnoreCase(pubDate)) {
             String date = getData().toString().split("T")[0];
             String time = getData().toString().split("T")[1];

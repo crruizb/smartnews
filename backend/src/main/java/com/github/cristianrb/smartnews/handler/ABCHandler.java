@@ -29,6 +29,7 @@ public class ABCHandler extends GenericHandler {
                 getContributionList().add(getContribution());
                 getContribution().setSource("ABC");
                 getContribution().setSourceUrl("https://www.abc.es");
+                getContribution().setCountry("ES");
             }
         }
     }

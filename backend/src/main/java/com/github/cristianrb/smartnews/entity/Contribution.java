@@ -18,6 +18,7 @@ public class Contribution {
     private String source;
     private String sourceUrl;
     private Integer vote;
+    private String country;
 
     public Contribution(Integer id, String title, String pubDate) {
         this.id = id;
@@ -31,7 +32,7 @@ public class Contribution {
 
     public Contribution(Integer id, String title, String description, String link, ArrayList<String> categories,
                         String pubDate, String creator, String urlImage, String source, String sourceUrl,
-                        Integer vote) {
+                        Integer vote, String country) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -43,6 +44,7 @@ public class Contribution {
         this.source = source;
         this.sourceUrl = sourceUrl;
         this.vote = vote;
+        this.country = country;
     }
 
     public Contribution(Contribution contribution) {
@@ -57,6 +59,7 @@ public class Contribution {
         this.source = contribution.source;
         this.sourceUrl = contribution.sourceUrl;
         this.vote = contribution.getVote();
+        this.country = contribution.country;
     }
 
     public int getId() {
@@ -139,6 +142,14 @@ public class Contribution {
         this.sourceUrl = sourceUrl;
     }
 
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
     public Integer getVote() {
         return vote;
     }
@@ -160,6 +171,7 @@ public class Contribution {
                 ", urlImage='" + urlImage + '\'' +
                 ", source='" + source + '\'' +
                 ", sourceUrl='" + sourceUrl + '\'' +
+                ", country='" + country + '\'' +
                 ", vote=" + vote +
                 '}';
     }

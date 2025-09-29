@@ -1,0 +1,11 @@
+{
+  "contribution": {
+    "pubDate": "Publication date"
+  },
+  "source": "Source",
+  "vote": {
+    "success": "Your vote has been recorded",
+    "error": "An error occurred while recording your vote. Please try again later."
+  },
+  "loadMore": "Load more news"
+}

@@ -4,6 +4,7 @@ import {
   voteContribution,
 } from "../../services/apiContributions";
 import toast from "react-hot-toast";
+import {useTranslation} from "react-i18next";
 
 export function useContributions(sourceFilter: string) {
   const {
@@ -37,13 +38,14 @@ interface Vote {
 
 export function useVoteContribution() {
   // const queryClient = useQueryClient();
+  const { t } = useTranslation();
   const { mutate: voteNews } = useMutation({
     mutationFn: ({ id, rating }: Vote) => voteContribution(id, rating),
     onSuccess: () => {
-      toast.success("Voto registrado correctamente!");
+      toast.success(t('vote.success'));
     },
     onError: () => {
-      toast.error("No se pudo registrar el voto, prueba mas tarde.");
+      toast.error(t('vote.error'));
     },
   });
 

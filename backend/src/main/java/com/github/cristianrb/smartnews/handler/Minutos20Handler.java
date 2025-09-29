@@ -24,6 +24,7 @@ public class Minutos20Handler extends GenericHandler {
         if (qName.equalsIgnoreCase(item)) {
             getContribution().setSource("20 Minutos");
             getContribution().setSourceUrl("https://www.20minutos.es/");
+            getContribution().setCountry("ES");
         } else if (qName.equalsIgnoreCase(pubDate)) {
             Date date = new Date(getData().toString());
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
