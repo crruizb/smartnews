@@ -21,6 +21,7 @@ public class ContributionsMapper {
         contDAO.setUrlImage(cont.getUrlImage());
         contDAO.setSource(cont.getSource());
         contDAO.setSourceUrl(cont.getSourceUrl());
+        contDAO.setCountry(cont.getCountry());
         contDAO.setCategories(cont.getCategories()
                 .stream()
                 .map(Object::toString)
@@ -39,6 +40,7 @@ public class ContributionsMapper {
         cont.setUrlImage(contDAO.getUrlImage());
         cont.setSource(contDAO.getSource());
         cont.setSourceUrl(contDAO.getSourceUrl());
+        cont.setCountry(contDAO.getCountry());
         cont.setCategories(Arrays.asList(contDAO.getCategories().split(",")));
         if (username != null) {
             Set<UserContributionDAO> users = contDAO.getUsers();

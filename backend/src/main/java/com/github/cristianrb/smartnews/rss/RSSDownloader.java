@@ -43,6 +43,7 @@ public class RSSDownloader {
         List<Contribution> contributionsFromAllSources = new ArrayList<Contribution>();
         System.out.println("Start downloading news...");
         for (Pair<String, GenericHandler> pair : sources) {
+            System.out.println("Downloading " + pair.getKey());
             List<Contribution> contributionList = downloadNews(pair.getKey(), pair.getValue());
             if (contributionList != null) {
                 contributionsFromAllSources.addAll(contributionList);
