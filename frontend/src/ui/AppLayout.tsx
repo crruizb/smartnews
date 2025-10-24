@@ -3,15 +3,15 @@ import Footer from "./Footer";
 import Header from "./Header";
 
 export default function AppLayout() {
-  return (
-    <div className="min-w-xs">
-      <Header />
-      <div className="mx-auto p-4 md:p-8 max-w-3xl grid grid-rows-[auto_1fr_auto]">
-        <main>
-          <Outlet />
-        </main>
-      </div>
-      <Footer />
-    </div>
-  );
+    return (
+        <div className="min-w-xs flex flex-col min-h-screen">
+            <Header />
+            <div className="flex flex-1">
+                <main className="flex-1 p-4 md:p-8">
+                    <Outlet />
+                </main>
+            </div>
+            <Footer />
+        </div>
+    );
 }

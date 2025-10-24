@@ -7,5 +7,25 @@
     "success": "Voto registrado correctamente!",
     "error": "No se pudo registrar el voto, prueba mas tarde."
   },
-  "loadMore": "Cargar mas noticías"
+  "loadMore": "Cargar mas noticías",
+  "sidebar": {
+    "title": "Navegación",
+    "latest": "Últimas Noticias",
+    "rated": "Noticias Valoradas",
+    "recommendations": "Recomendadas"
+  },
+  "latestNews": {
+    "description": "Artículos de noticias más recientes de varias fuentes"
+  },
+  "ratedNews": {
+    "title": "Tus Noticias Valoradas",
+    "description": "Artículos de noticias que has valorado anteriormente",
+    "empty": "Aún no has valorado ninguna noticia. ¡Comienza a valorar algunos artículos!"
+  },
+  "recommendations": {
+    "title": "Recomendadas para Ti",
+    "description": "Recomendaciones de noticias personalizadas basadas en tus valoraciones",
+    "empty": "Aún no hay recomendaciones disponibles. ¡Valora algunos artículos para obtener sugerencias personalizadas!",
+    "error": "No hay recomendaciones disponibles. Por favor, valora algunos artículos primero para obtener recomendaciones personalizadas."
+  }
 }

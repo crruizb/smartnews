@@ -25,40 +25,41 @@ export default function ContributionsList() {
         }
     }
 
-  let ticking = false;
-
-  const handleScroll = () => {
-    if (!ticking) {
-      window.requestAnimationFrame(() => {
-        const scrollTop =
-          window.scrollY || document.documentElement.scrollTop;
-        if (
-          window.innerHeight + scrollTop >=
-          document.documentElement.offsetHeight
-        ) {
-          if (hasNextPage) fetchNextPage();
-        }
-        ticking = false;
-      });
-      ticking = true;
-    }
-  };
+  const lang = i18n.language || "en";
+  const sourceOptions = SOURCES[lang as keyof typeof SOURCES] || SOURCES["en"];
 
   useEffect(() => {
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollTop =
+            window.scrollY || document.documentElement.scrollTop;
+          if (
+            window.innerHeight + scrollTop >=
+            document.documentElement.offsetHeight
+          ) {
+            if (hasNextPage) fetchNextPage();
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [hasNextPage, fetchNextPage]);
 
-    useEffect(() => {
-        console.log("asdas", i18n.language)
-        setSourceFilter(i18n.language)
-    }, [i18n.language]);
+  useEffect(() => {
+    setSourceFilter(i18n.language)
+  }, [i18n.language]);
 
-  const lang = i18n.language || "en";
-  const sourceOptions = SOURCES[lang as keyof typeof SOURCES] || SOURCES["en"];
 
   return (
     <div className="flex flex-col">
+
       <div className="flex gap-2 items-center justify-end mt-4 md:mt-2 mr-2 text-xs md:text-base">
         <div className="px-2">
           <label>{t('source')}:</label>
@@ -72,14 +73,14 @@ export default function ContributionsList() {
         </div>
       </div>
 
-      <hr className="h-px bg-palid-purple dark:bg-pink border-0 my-4" />
+      <hr className="h-px bg-palid-purple dark:bg-palid-purple border-0 my-4" />
       {data &&
         data.pages.map((group) => (
           <div>
             {group.content.map((c: ApiContribution) => (
               <>
                 <Contribution contribution={c} />
-                <hr className="h-px bg-palid-purple dark:bg-pink border-0 my-4" />
+                <hr className="h-px bg-palid-purple dark:bg-palid-purple border-0 my-4" />
               </>
             ))}
           </div>

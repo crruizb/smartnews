@@ -34,6 +34,34 @@ export async function getContribution(id: number) {
   return data;
 }
 
+export async function getRatedContributions(pageParam: number) {
+  const queryParams = new URLSearchParams();
+  queryParams.append("page", pageParam.toString());
+
+  const res = await fetch(`${API_URL}/rated?${queryParams.toString()}`, {
+    credentials: "include",
+  });
+
+  if (!res.ok) throw Error("Could fetch rated contributions");
+
+  const data = await res.json();
+  return data;
+}
+
+export async function getRecommendations(pageParam: number) {
+  const queryParams = new URLSearchParams();
+  queryParams.append("page", pageParam.toString());
+
+  const res = await fetch(`${API_URL}/recommendations?${queryParams.toString()}`, {
+    credentials: "include",
+  });
+
+  if (!res.ok) throw Error("Could fetch recommendations");
+
+  const data = await res.json();
+  return data;
+}
+
 export async function voteContribution(id: number, rating: number) {
   const res = await fetch(`${API_URL}/contributions/${id}`, {
     method: "POST",

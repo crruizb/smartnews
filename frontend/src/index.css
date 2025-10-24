@@ -7,6 +7,7 @@
   --color-pink: #ffafcc;
   --color-palid-blue: #bde0fe;
   --color-blue: #a2d2ff;
+  --color-dark-black: #2c2c2c;
 }
 
 @custom-variant dark (&:where(.dark, .dark *));

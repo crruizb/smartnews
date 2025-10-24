@@ -7,5 +7,25 @@
     "success": "Your vote has been recorded",
     "error": "An error occurred while recording your vote. Please try again later."
   },
-  "loadMore": "Load more news"
+  "loadMore": "Load more news",
+  "sidebar": {
+    "title": "Navigation",
+    "latest": "Latest News",
+    "rated": "Rated News",
+    "recommendations": "Recommended"
+  },
+  "latestNews": {
+    "description": "Most recent news articles from various sources"
+  },
+  "ratedNews": {
+    "title": "Your Rated News",
+    "description": "News articles you have previously rated",
+    "empty": "You haven't rated any news yet. Start rating some articles!"
+  },
+  "recommendations": {
+    "title": "Recommended for You",
+    "description": "Personalized news recommendations based on your ratings",
+    "empty": "No recommendations available yet. Rate some articles to get personalized suggestions!",
+    "error": "No recommendations available. Please rate some articles first to get personalized recommendations."
+  }
 }
