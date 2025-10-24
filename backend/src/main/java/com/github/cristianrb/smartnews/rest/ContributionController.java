@@ -1,7 +1,6 @@
 package com.github.cristianrb.smartnews.rest;
 
-import com.github.cristianrb.smartnews.cf.Recommender;
-import com.github.cristianrb.smartnews.cf.SlopeOneImpl;
+import com.github.cristianrb.smartnews.service.ai.RecommendationsService;
 import com.github.cristianrb.smartnews.entity.*;
 import com.github.cristianrb.smartnews.errors.RecommendationsException;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsMapper;
@@ -28,14 +27,21 @@ public class ContributionController {
     private final ContributionsService contributionsService;
     private final UsersService usersService;
     private final UserContributionService usersContributionService;
+    private final RecommendationsService aiRecommendationsService;
     private static final int PAGE_SIZE = 10;
+    private final RecommendationsService recommendationsService;
 
     @Autowired
-    public ContributionController(ContributionsService contributionsService, UsersService usersService,
-                                  UserContributionService usersContributionService) {
+    public ContributionController(ContributionsService contributionsService,
+                                  UsersService usersService,
+                                  UserContributionService usersContributionService,
+                                  RecommendationsService aiRecommendationsService,
+                                  RecommendationsService recommendationsService) {
         this.contributionsService = contributionsService;
         this.usersService = usersService;
         this.usersContributionService = usersContributionService;
+        this.aiRecommendationsService = aiRecommendationsService;
+        this.recommendationsService = recommendationsService;
     }
 
     @GetMapping("/latest")
@@ -64,10 +70,8 @@ public class ContributionController {
         ContributionDAO contributionDAO = contributionsService.getContributionById(id);
         Contribution contribution = ContributionsMapper.mapContributionDAOToContribution(contributionDAO, principal.getName());
 
-        if (principal != null) {
-            Integer vote = usersService.getVoteOfContributionByUser(contributionDAO, principal.getName());
-            contribution.setVote(vote);
-        }
+        Integer vote = usersService.getVoteOfContributionByUser(contributionDAO, principal.getName());
+        contribution.setVote(vote);
         return contribution;
     }
 
@@ -76,8 +80,7 @@ public class ContributionController {
                                       Principal principal) {
         if (usersService.getUser(principal.getName()).isPresent()) {
                 User user = new User(principal.getName());
-                Recommender recomm = new SlopeOneImpl();
-                List<Contribution> contributionList = recomm.findRecommendations(user);
+                List<Contribution> contributionList = recommendationsService.recommendations(user);
 
                 Pageable pageable = PageRequest.of(page, PAGE_SIZE);
                 return toPage(contributionList, pageable);
@@ -110,21 +113,5 @@ public class ContributionController {
         if(start > list.size())
             return new PageImpl<>(new ArrayList<>(), pageable, list.size());
         return new PageImpl<>(list.subList(start, end), pageable, list.size());
-    }
-
-    @GetMapping("/predictions")
-    public List<PredictionsResponse> getAllPredictions() {
-        SlopeOneImpl recomm = new SlopeOneImpl();
-        Map<User, Map<Contribution, Double>> predictions = recomm.predictRecommendations();
-        List<PredictionsResponse> cleanPredictions = new ArrayList<>();
-
-        for (Map.Entry<User, Map<Contribution, Double>> entry : predictions.entrySet()) {
-            PredictionsResponse predictionByUser = new PredictionsResponse(entry.getKey().getId());
-
-            entry.getValue().forEach( (k, v) -> predictionByUser.addPrediction(new ContributionWithPrediction(k.getId(), k.getTitle(), v)));
-            cleanPredictions.add(predictionByUser);
-        }
-
-        return cleanPredictions;
     }
 }
