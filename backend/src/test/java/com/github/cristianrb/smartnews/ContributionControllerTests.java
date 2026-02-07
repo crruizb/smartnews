@@ -50,7 +50,7 @@ public class ContributionControllerTests {
         contributions.addAll(Arrays.asList(ContributionsMapper.mapContributionToContributionDAO(c1),
                 ContributionsMapper.mapContributionToContributionDAO(c2)));
 
-        paging = PageRequest.of(page, 10);
+        paging = PageRequest.of(page, 12);
         final int start = (int)paging.getOffset();
         final int end = Math.min((start + paging.getPageSize()), contributions.size());
         contributionsPaged = new PageImpl<>(contributions.subList(start, end), paging, contributions.size());
