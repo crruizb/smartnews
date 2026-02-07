@@ -5,25 +5,25 @@ import { ApiContribution } from "../../types";
 import { useTranslation } from "react-i18next";
 
 export default function ContributionsList() {
-    const { t, i18n } = useTranslation();
-    const storedLang = localStorage.getItem("language") || "en";
-    const [sourceFilter, setSourceFilter] = useState(storedLang);
-    const { data, fetchNextPage, hasNextPage } = useContributions(sourceFilter);
+  const { t, i18n } = useTranslation();
+  const storedLang = localStorage.getItem("language") || "en";
+  const [sourceFilter, setSourceFilter] = useState(storedLang);
+  const { data, fetchNextPage, hasNextPage } = useContributions(sourceFilter);
 
-    const SOURCES: Record<string, Record<string, string>> = {
-        "es": {
-            "es": "Todos",
-            "El País": "El País",
-            "El Mundo": "El Mundo",
-            "20 Minutos": "20 Minutos",
-            "ES Diario": "ES Diario",
-            "Marca": "Marca",
-        },
-        "en": {
-            "en": "All",
-            "NY Times": "NY Times"
-        }
-    }
+  const SOURCES: Record<string, Record<string, string>> = {
+    es: {
+      es: "Todos",
+      "El País": "El País",
+      "El Mundo": "El Mundo",
+      "20 Minutos": "20 Minutos",
+      "ES Diario": "ES Diario",
+      Marca: "Marca",
+    },
+    en: {
+      en: "All",
+      "NY Times": "NY Times",
+    },
+  };
 
   const lang = i18n.language || "en";
   const sourceOptions = SOURCES[lang as keyof typeof SOURCES] || SOURCES["en"];
@@ -53,22 +53,22 @@ export default function ContributionsList() {
   }, [hasNextPage, fetchNextPage]);
 
   useEffect(() => {
-    setSourceFilter(i18n.language)
+    setSourceFilter(i18n.language);
   }, [i18n.language]);
-
 
   return (
     <div className="flex flex-col">
-
       <div className="flex gap-2 items-center justify-end mt-4 md:mt-2 mr-2 text-xs md:text-base">
         <div className="px-2">
-          <label>{t('source')}:</label>
+          <label>{t("source")}:</label>
           <select onChange={(e) => setSourceFilter(e.target.value)}>
-              {Object.entries(sourceOptions as Record<string, string>).map(([value, label]) => (
-                  <option className="dark:text-black" value={value} key={value}>
-                      {label}
-                  </option>
-              ))}
+            {Object.entries(sourceOptions as Record<string, string>).map(
+              ([value, label]) => (
+                <option className="dark:text-black" value={value} key={value}>
+                  {label}
+                </option>
+              ),
+            )}
           </select>
         </div>
       </div>
@@ -76,12 +76,9 @@ export default function ContributionsList() {
       <hr className="h-px bg-palid-purple dark:bg-palid-purple border-0 my-4" />
       {data &&
         data.pages.map((group) => (
-          <div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6">
             {group.content.map((c: ApiContribution) => (
-              <>
-                <Contribution contribution={c} />
-                <hr className="h-px bg-palid-purple dark:bg-palid-purple border-0 my-4" />
-              </>
+              <Contribution contribution={c} key={c.id} />
             ))}
           </div>
         ))}
@@ -91,7 +88,7 @@ export default function ContributionsList() {
           onClick={() => fetchNextPage()}
           className="inline-block text-sm rounded-full bg-palid-pink font-semibold uppercase tracking-wide text-stone-800 transition-colors duration-300 hover:bg-pink cursor-pointer w-54 h-10 mx-auto"
         >
-            {t('loadMore')}
+          {t("loadMore")}
         </button>
       )}
     </div>

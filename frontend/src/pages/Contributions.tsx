@@ -2,7 +2,7 @@ import { useState } from "react";
 import ContributionsList from "../features/contributions/ContributionsList";
 import RatedContributionsList from "../features/contributions/RatedContributionsList";
 import RecommendationsList from "../features/contributions/RecommendationsList";
-import Sidebar from "../ui/Sidebar";
+import Header from "../ui/Header";
 
 function Contributions() {
   const [activeSection, setActiveSection] = useState("latest");
@@ -21,9 +21,13 @@ function Contributions() {
   };
 
   return (
-    <div className="flex h-full">
-      <Sidebar activeSection={activeSection} onSectionChange={setActiveSection} />
-      <div className="flex-1 max-w-4xl mx-auto md:ml-0 px-4 md:px-8">
+    <div className="flex flex-col h-full">
+      <Header
+        activeSection={activeSection}
+        onSectionChange={setActiveSection}
+        showNavigation={true}
+      />
+      <div className="flex-1 max-w-7xl mx-auto px-4 md:px-8 w-full">
         {renderContent()}
       </div>
     </div>

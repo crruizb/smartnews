@@ -28,7 +28,7 @@ public class ContributionController {
     private final UsersService usersService;
     private final UserContributionService usersContributionService;
     private final RecommendationsService aiRecommendationsService;
-    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 12;
     private final RecommendationsService recommendationsService;
 
     @Autowired
