@@ -64,6 +64,22 @@ public class ContributionController {
         return json;
     }
 
+    @GetMapping("/search")
+    public Page<Contribution> searchContributions(
+            @RequestParam(name = "q") String query,
+            @RequestParam(name = "page", defaultValue = "0") Integer page,
+            Principal principal
+    ) {
+        String username;
+        if (principal != null) {
+            username = principal.getName();
+        } else {
+            username = null;
+        }
+        return contributionsService.search(query, PageRequest.of(page, PAGE_SIZE))
+                .map(c -> ContributionsMapper.mapContributionDAOToContribution(c, username));
+    }
+
     @GetMapping("/contributions")
     public Contribution getContributionById(@RequestParam(name = "id") Integer id,
                                             Principal principal) {

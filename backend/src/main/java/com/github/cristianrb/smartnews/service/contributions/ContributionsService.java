@@ -16,5 +16,7 @@ public interface ContributionsService {
     ContributionDAO getContributionById(Integer id);
 
     boolean contributionExists(String title);
+
+    Page<ContributionDAO> search(String query, Pageable paging);
 }
 

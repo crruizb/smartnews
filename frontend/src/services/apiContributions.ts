@@ -62,6 +62,21 @@ export async function getRecommendations(pageParam: number) {
   return data;
 }
 
+export async function searchContributions(query: string, pageParam: number) {
+  const queryParams = new URLSearchParams();
+  queryParams.append("q", query);
+  queryParams.append("page", pageParam.toString());
+
+  const res = await fetch(`${API_URL}/search?${queryParams.toString()}`, {
+    credentials: "include",
+  });
+
+  if (!res.ok) throw Error("Could not search contributions");
+
+  const data = await res.json();
+  return data;
+}
+
 export async function voteContribution(id: number, rating: number) {
   const res = await fetch(`${API_URL}/contributions/${id}`, {
     method: "POST",

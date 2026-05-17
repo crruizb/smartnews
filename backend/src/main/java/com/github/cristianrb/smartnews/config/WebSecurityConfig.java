@@ -33,7 +33,7 @@ class WebSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
-                    request.requestMatchers("/auth/**", "/api/latest", "/api/contributions/**").permitAll()
+                    request.requestMatchers("/auth/**", "/api/latest", "/api/search", "/api/contributions/**").permitAll()
                             .anyRequest().authenticated()
                 ).oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo.userService(new CustomOAuth2UserService()))

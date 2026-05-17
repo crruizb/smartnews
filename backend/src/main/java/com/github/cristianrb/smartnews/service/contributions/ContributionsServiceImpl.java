@@ -8,7 +8,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ContributionsServiceImpl implements ContributionsService {
@@ -58,6 +60,28 @@ public class ContributionsServiceImpl implements ContributionsService {
     @Override
     public boolean contributionExists(String title) {
         return this.contributionsRepository.findByTitle(title).isPresent();
+    }
+
+    @Override
+    public Page<ContributionDAO> search(String query, Pageable paging) {
+        String trimmed = query != null ? query.trim() : "";
+        if (trimmed.isEmpty()) {
+            return Page.empty(paging);
+        }
+        String tsquery = buildTsQuery(trimmed);
+        if (tsquery.isEmpty()) {
+            return Page.empty(paging);
+        }
+        return this.contributionsRepository.searchByQuery(tsquery, paging);
+    }
+
+    private String buildTsQuery(String query) {
+        String normalized = query.toLowerCase()
+                .replaceAll("[^\\p{L}\\p{N}\\s]", "");
+        return Arrays.stream(normalized.split("\\s+"))
+                .filter(s -> !s.isEmpty())
+                .map(word -> word + ":*")
+                .collect(Collectors.joining(" & "));
     }
 
     private Optional<ContributionDAO> findContributionByImage(String image) {

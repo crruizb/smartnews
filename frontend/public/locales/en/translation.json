@@ -27,5 +27,10 @@
     "description": "Personalized news recommendations based on your ratings",
     "empty": "No recommendations available yet. Rate some articles to get personalized suggestions!",
     "error": "No recommendations available. Please rate some articles first to get personalized recommendations."
+  },
+  "search": {
+    "placeholder": "Search news...",
+    "noResults": "No results found for",
+    "error": "An error occurred while searching. Please try again."
   }
 }

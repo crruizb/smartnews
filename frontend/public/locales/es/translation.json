@@ -27,5 +27,10 @@
     "description": "Recomendaciones de noticias personalizadas basadas en tus valoraciones",
     "empty": "Aún no hay recomendaciones disponibles. ¡Valora algunos artículos para obtener sugerencias personalizadas!",
     "error": "No hay recomendaciones disponibles. Por favor, valora algunos artículos primero para obtener recomendaciones personalizadas."
+  },
+  "search": {
+    "placeholder": "Buscar noticias...",
+    "noResults": "No se encontraron resultados para",
+    "error": "Ocurrió un error al buscar. Por favor, inténtalo de nuevo."
   }
 }

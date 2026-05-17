@@ -3,6 +3,7 @@ import {
   getLatestContributions,
   getRatedContributions,
   getRecommendations,
+  searchContributions,
   voteContribution,
 } from "../../services/apiContributions";
 import toast from "react-hot-toast";
@@ -73,6 +74,29 @@ export function useRecommendations() {
   });
 
   return { error, data, fetchNextPage, hasNextPage };
+}
+
+export function useSearchContributions(query: string) {
+  const {
+    data,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+  } = useInfiniteQuery({
+    queryKey: ["searchContributions", query],
+    queryFn: ({ pageParam = 0 }) => searchContributions(query, pageParam),
+    initialPageParam: 0,
+    enabled: query.trim().length > 0,
+    getNextPageParam: (lastPage, _, lastPageParam) => {
+      if (lastPage.last) {
+        return undefined;
+      }
+      return lastPageParam + 1;
+    },
+  });
+
+  return { error, data, fetchNextPage, hasNextPage, isFetching };
 }
 
 interface Vote {
