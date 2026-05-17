@@ -6,7 +6,6 @@ import com.github.cristianrb.smartnews.repository.ContributionsRepository;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsMapper;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsServiceImpl;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
@@ -22,7 +21,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import org.mockito.ArgumentCaptor;
 
 @ExtendWith(MockitoExtension.class)
 public class ContributionsServiceTests {
@@ -69,5 +71,67 @@ public class ContributionsServiceTests {
         when(contributionsRepository.findAllByCountryAndPubDateAfterOrderByPubDateDescIdDesc(paging, "ES", "all")).thenReturn(contributionsPaged);
         Page<ContributionDAO> resultContributionsDAO = contributionsService.getAll(paging, "es", "all");
         Assertions.assertEquals(resultContributionsDAO, contributionsPaged);
+    }
+
+    @Test
+    public void testSearchEmptyQueryReturnsEmptyPage() {
+        Pageable paging = PageRequest.of(page, 10);
+        Page<ContributionDAO> result = contributionsService.search("", paging);
+        Assertions.assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testSearchNullQueryReturnsEmptyPage() {
+        Pageable paging = PageRequest.of(page, 10);
+        Page<ContributionDAO> result = contributionsService.search(null, paging);
+        Assertions.assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testSearchBuildsPrefixTsQuery() {
+        Pageable paging = PageRequest.of(page, 10);
+        when(contributionsRepository.searchByQuery(any(), any())).thenReturn(Page.empty());
+
+        contributionsService.search("Estados unidos", paging);
+
+        ArgumentCaptor<String> tsqueryCaptor = ArgumentCaptor.forClass(String.class);
+        verify(contributionsRepository).searchByQuery(tsqueryCaptor.capture(), any());
+        Assertions.assertEquals("estados:* & unidos:*", tsqueryCaptor.getValue());
+    }
+
+    @Test
+    public void testSearchStripsSpecialCharacters() {
+        Pageable paging = PageRequest.of(page, 10);
+        when(contributionsRepository.searchByQuery(any(), any())).thenReturn(Page.empty());
+
+        contributionsService.search("economía & crisis!", paging);
+
+        ArgumentCaptor<String> tsqueryCaptor = ArgumentCaptor.forClass(String.class);
+        verify(contributionsRepository).searchByQuery(tsqueryCaptor.capture(), any());
+        Assertions.assertEquals("economía:* & crisis:*", tsqueryCaptor.getValue());
+    }
+
+    @Test
+    public void testSearchLowercasesInput() {
+        Pageable paging = PageRequest.of(page, 10);
+        when(contributionsRepository.searchByQuery(any(), any())).thenReturn(Page.empty());
+
+        contributionsService.search("ESTADOS", paging);
+
+        ArgumentCaptor<String> tsqueryCaptor = ArgumentCaptor.forClass(String.class);
+        verify(contributionsRepository).searchByQuery(tsqueryCaptor.capture(), any());
+        Assertions.assertEquals("estados:*", tsqueryCaptor.getValue());
+    }
+
+    @Test
+    public void testSearchHandlesSingleWord() {
+        Pageable paging = PageRequest.of(page, 10);
+        when(contributionsRepository.searchByQuery(any(), any())).thenReturn(Page.empty());
+
+        contributionsService.search("economía", paging);
+
+        ArgumentCaptor<String> tsqueryCaptor = ArgumentCaptor.forClass(String.class);
+        verify(contributionsRepository).searchByQuery(tsqueryCaptor.capture(), any());
+        Assertions.assertEquals("economía:*", tsqueryCaptor.getValue());
     }
 }

@@ -23,7 +23,7 @@ public interface ContributionsRepository extends JpaRepository<ContributionDAO, 
 
     @Query(value = "SELECT c.* FROM contributions c " +
             "WHERE c.search_vector @@ to_tsquery('simple', :tsquery) " +
-            "ORDER BY ts_rank(c.search_vector, to_tsquery('simple', :tsquery)) DESC",
+            "ORDER BY ts_rank(c.search_vector, to_tsquery('simple', :tsquery)) DESC, c.id DESC",
             countQuery = "SELECT count(*) FROM contributions c " +
                     "WHERE c.search_vector @@ to_tsquery('simple', :tsquery)",
             nativeQuery = true)
