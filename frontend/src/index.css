@@ -1,16 +1,6 @@
-@import "tailwindcss";
-
-@theme {
-  --default-font-family: "Roboto", sans-serif;
-  --color-palid-purple: #cdb4db;
-  --color-palid-pink: #ffc8dd;
-  --color-pink: #ffafcc;
-  --color-palid-blue: #bde0fe;
-  --color-blue: #a2d2ff;
-  --color-dark-black: #2c2c2c;
-}
-
-@custom-variant dark (&:where(.dark, .dark *));
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 html.dark {
   background-color: #2c2c2c;
