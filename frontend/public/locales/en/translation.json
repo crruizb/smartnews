@@ -32,5 +32,11 @@
     "placeholder": "Search news...",
     "noResults": "No results found for",
     "error": "An error occurred while searching. Please try again."
+  },
+  "detail": {
+    "loading": "Loading...",
+    "notFound": "We couldn't find that news item.",
+    "back": "Back to news",
+    "readMore": "Read full article on {{source}}"
   }
 }

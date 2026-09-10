@@ -51,12 +51,7 @@ public class ContributionController {
             @RequestParam(name = "date", defaultValue = "2010-01-01T00:00:00Z") String date,
             Principal principal
     ) {
-        String username;
-        if (principal != null) {
-            username = principal.getName();
-        } else {
-            username = null;
-        }
+        String username = usernameOrNull(principal);
         Page<Contribution> data = contributionsService.getAll(PageRequest.of(page, PAGE_SIZE), source, date)
                 .map(c -> ContributionsMapper.mapContributionDAOToContribution(c, username));
         HashMap<String, Page<Contribution>> json = new HashMap<>();
@@ -70,12 +65,7 @@ public class ContributionController {
             @RequestParam(name = "page", defaultValue = "0") Integer page,
             Principal principal
     ) {
-        String username;
-        if (principal != null) {
-            username = principal.getName();
-        } else {
-            username = null;
-        }
+        String username = usernameOrNull(principal);
         return contributionsService.search(query, PageRequest.of(page, PAGE_SIZE))
                 .map(c -> ContributionsMapper.mapContributionDAOToContribution(c, username));
     }
@@ -84,10 +74,13 @@ public class ContributionController {
     public Contribution getContributionById(@RequestParam(name = "id") Integer id,
                                             Principal principal) {
         ContributionDAO contributionDAO = contributionsService.getContributionById(id);
-        Contribution contribution = ContributionsMapper.mapContributionDAOToContribution(contributionDAO, principal.getName());
+        String username = usernameOrNull(principal);
+        Contribution contribution = ContributionsMapper.mapContributionDAOToContribution(contributionDAO, username);
 
-        Integer vote = usersService.getVoteOfContributionByUser(contributionDAO, principal.getName());
-        contribution.setVote(vote);
+        if (username != null) {
+            Integer vote = usersService.getVoteOfContributionByUser(contributionDAO, username);
+            contribution.setVote(vote);
+        }
         return contribution;
     }
 
@@ -121,6 +114,10 @@ public class ContributionController {
     @PutMapping("/contributions")
     public void putVoteContribution(@RequestBody Integer vote, @RequestParam(name = "id") Integer id, Principal principal) {
         usersContributionService.voteContribution(vote, id, principal);
+    }
+
+    private static String usernameOrNull(Principal principal) {
+        return principal != null ? principal.getName() : null;
     }
 
     private Page<Contribution> toPage(List<Contribution> list, Pageable pageable) {

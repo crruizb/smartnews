@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { BrowserRouter, Navigate, Routes, Route } from "react-router";
 import Contributions from "./pages/Contributions";
+import ContributionDetail from "./pages/ContributionDetail";
 import AppLayout from "./ui/AppLayout";
 import { Toaster } from "react-hot-toast";
 
@@ -23,6 +24,7 @@ function App() {
           <Route element={<AppLayout />}>
             <Route index element={<Navigate replace to="contributions" />} />
             <Route path="/contributions" element={<Contributions />} />
+            <Route path="/contributions/:id" element={<ContributionDetail />} />
           </Route>
         </Routes>
       </BrowserRouter>

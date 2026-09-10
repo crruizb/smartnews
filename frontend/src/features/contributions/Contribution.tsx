@@ -1,6 +1,7 @@
 import { ApiContribution } from "../../types";
 import StarRate from "../../ui/StarRate";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router";
 
 interface Props {
   contribution: ApiContribution;
@@ -11,7 +12,7 @@ export default function Contribution({ contribution }: Props) {
 
   return (
     <div className="flex flex-col hover:bg-stone-100 dark:hover:bg-stone-100/5 rounded-xl transition duration-300 overflow-hidden border border-stone-200 dark:border-stone-800">
-      <a href={contribution.link} target="_blank" className="flex flex-col">
+      <Link to={`/contributions/${contribution.id}`} className="flex flex-col">
         {contribution.urlImage && (
           <div className="overflow-hidden w-full h-48 bg-stone-200 dark:bg-stone-800">
             <img
@@ -35,7 +36,7 @@ export default function Contribution({ contribution }: Props) {
             {contribution.description}
           </p>
         </div>
-      </a>
+      </Link>
       <div className="flex justify-between items-center px-4 pb-4 pt-0">
         <StarRate
           rating={contribution.vote ? contribution.vote : 0}

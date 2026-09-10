@@ -69,4 +69,15 @@ public class ContributionControllerTests {
         when(contributionsService.getContributionById(1)).thenReturn(cdao);
         assertThat(contributionsService.getContributionById(1)).isEqualTo(cdao);
     }
+
+    @Test
+    public void testRetrieveAContributionWithoutAuthentication() {
+        ContributionDAO cdao = ContributionsMapper.mapContributionToContributionDAO(c1);
+        when(contributionsService.getContributionById(1)).thenReturn(cdao);
+
+        Contribution result = contributionController.getContributionById(1, null);
+
+        assertThat(result.getTitle()).isEqualTo("C1");
+        assertThat(result.getVote()).isNull();
+    }
 }

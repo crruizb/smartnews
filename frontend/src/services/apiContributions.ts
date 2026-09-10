@@ -1,3 +1,5 @@
+import { ApiContribution } from "../types";
+
 let API_URL = "https://api.cristianruiz.dev/sn/api";
 const isLocalhost =
   window.location.hostname === "localhost" ||
@@ -26,12 +28,13 @@ export async function getLatestContributions(
   return data;
 }
 
-export async function getContribution(id: number) {
-  const res = await fetch(`${API_URL}/contribution/${id}`);
+export async function getContribution(id: number): Promise<ApiContribution> {
+  const res = await fetch(`${API_URL}/contributions?id=${id}`, {
+    credentials: "include",
+  });
   if (!res.ok) throw Error(`Could fetch contribution id ${id}`);
 
-  const { data } = await res.json();
-  return data;
+  return res.json();
 }
 
 export async function getRatedContributions(pageParam: number) {

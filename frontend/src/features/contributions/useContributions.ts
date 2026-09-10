@@ -1,10 +1,11 @@
-import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import {
   getLatestContributions,
   getRatedContributions,
   getRecommendations,
   searchContributions,
   voteContribution,
+  getContribution,
 } from "../../services/apiContributions";
 import toast from "react-hot-toast";
 import {useTranslation} from "react-i18next";
@@ -97,6 +98,17 @@ export function useSearchContributions(query: string) {
   });
 
   return { error, data, fetchNextPage, hasNextPage, isFetching };
+}
+
+export function useContribution(id: number) {
+  const { data, error, isPending } = useQuery({
+    queryKey: ["contribution", id],
+    queryFn: () => getContribution(id),
+    enabled: Number.isFinite(id),
+    retry: false,
+  });
+
+  return { data, error, isPending };
 }
 
 interface Vote {

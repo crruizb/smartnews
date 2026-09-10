@@ -32,5 +32,11 @@
     "placeholder": "Buscar noticias...",
     "noResults": "No se encontraron resultados para",
     "error": "Ocurrió un error al buscar. Por favor, inténtalo de nuevo."
+  },
+  "detail": {
+    "loading": "Cargando...",
+    "notFound": "No hemos podido encontrar esa noticia.",
+    "back": "Volver a las noticias",
+    "readMore": "Leer el artículo completo en {{source}}"
   }
 }
