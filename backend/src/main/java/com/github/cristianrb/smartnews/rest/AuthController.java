@@ -7,13 +7,16 @@ import com.github.cristianrb.smartnews.errors.UnauthorizedAccessException;
 import com.github.cristianrb.smartnews.util.CookieHelper;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.Collection;
 
 @RestController
@@ -23,17 +26,36 @@ public class AuthController {
     private final JwtTokenProvider jwtTokenProvider;
     private final CookieHelper cookieHelper;
 
+    @Value("${app.frontendURL}")
+    private String frontendURL;
+
     @Autowired
     public AuthController(JwtTokenProvider jwtTokenProvider, CookieHelper cookieHelper) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.cookieHelper = cookieHelper;
     }
 
-    @PostMapping("/logout")
-    public void logout(HttpServletResponse response) {
+    private void clearAuthCookies(HttpServletResponse response) {
         cookieHelper.clearCookie(response, "accessToken", true);
         cookieHelper.clearCookie(response, "refreshToken", true);
         cookieHelper.clearCookie(response, "username", false);
+    }
+
+    /** Programmatic logout for API clients. */
+    @PostMapping("/logout")
+    public void logout(HttpServletResponse response) {
+        clearAuthCookies(response);
+    }
+
+    /**
+     * Browser logout. The frontend navigates here, so the clearing cookies are
+     * applied by a top-level navigation (like login) and we redirect back to
+     * the app afterwards. This avoids cross-origin fetch cookie edge cases.
+     */
+    @GetMapping("/logout")
+    public void logoutAndRedirect(HttpServletResponse response) throws IOException {
+        clearAuthCookies(response);
+        response.sendRedirect(frontendURL + "contributions");
     }
 
     @PostMapping("/refresh")

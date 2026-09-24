@@ -2,18 +2,16 @@ import { useEffect, useRef, useState } from "react";
 import { LogOut } from "lucide-react";
 import Cookies from "js-cookie";
 import { useTranslation } from "react-i18next";
-import { logoutUser } from "../services/apiContributions";
+import { getLogoutUrl } from "../services/apiContributions";
 import { initials } from "../lib/format";
 
 interface AccountMenuProps {
   username: string;
-  onSignOut: () => void;
 }
 
-export default function AccountMenu({ username, onSignOut }: AccountMenuProps) {
+export default function AccountMenu({ username }: AccountMenuProps) {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
-  const [isSigningOut, setIsSigningOut] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -36,18 +34,11 @@ export default function AccountMenu({ username, onSignOut }: AccountMenuProps) {
     };
   }, [isOpen]);
 
-  const handleSignOut = async () => {
-    setIsSigningOut(true);
-    try {
-      // Clears the httpOnly auth cookies server-side.
-      await logoutUser();
-    } catch {
-      /* if the request fails we still drop the local session below */
-    }
-    // `username` is a readable cookie, so clear it locally too and let the
-    // header re-render immediately instead of relying on a page reload.
+  const handleSignOut = () => {
+    // Clear the readable cookie immediately, then let the backend clear the
+    // httpOnly auth cookies and redirect us back to the app.
     Cookies.remove("username");
-    onSignOut();
+    window.location.href = getLogoutUrl();
   };
 
   return (
@@ -84,13 +75,10 @@ export default function AccountMenu({ username, onSignOut }: AccountMenuProps) {
             type="button"
             role="menuitem"
             onClick={handleSignOut}
-            disabled={isSigningOut}
-            className="flex w-full items-center gap-2.5 px-4 py-3 text-left text-sm font-medium text-ink-2 transition-colors hover:bg-accent-soft hover:text-accent-strong disabled:opacity-60 cursor-pointer"
+            className="flex w-full items-center gap-2.5 px-4 py-3 text-left text-sm font-medium text-ink-2 transition-colors hover:bg-accent-soft hover:text-accent-strong cursor-pointer"
           >
             <LogOut className="h-4 w-4" aria-hidden="true" />
-            {isSigningOut
-              ? t("account.signingOut", "Signing out…")
-              : t("account.signOut", "Sign out")}
+            {t("account.signOut", "Sign out")}
           </button>
         </div>
       )}

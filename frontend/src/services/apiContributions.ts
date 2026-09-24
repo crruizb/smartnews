@@ -10,13 +10,13 @@ if (isLocalhost) {
 
 const AUTH_URL = API_URL.replace(/\/api$/, "/auth");
 
-export async function logoutUser() {
-  const res = await fetch(`${AUTH_URL}/logout`, {
-    method: "POST",
-    credentials: "include",
-  });
-
-  if (!res.ok) throw Error("Could not log out");
+/**
+ * Logout is a top-level navigation (not a fetch): the backend clears the
+ * httpOnly auth cookies in the response and redirects back to the app. Cookie
+ * clearing on a navigation is as reliable as it is on login.
+ */
+export function getLogoutUrl() {
+  return `${AUTH_URL}/logout`;
 }
 
 export async function getLatestContributions(

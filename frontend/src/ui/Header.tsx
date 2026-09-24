@@ -19,7 +19,7 @@ export default function Header({
   showNavigation = false,
 }: HeaderProps) {
   const { t } = useTranslation();
-  const [username, setUsername] = useState(() => Cookies.get("username") ?? null);
+  const [username] = useState(() => Cookies.get("username") ?? null);
 
   const isLocalhost =
     window.location.hostname === "localhost" ||
@@ -72,10 +72,7 @@ export default function Header({
           <ThemeToggle />
           <LanguageSelector />
           {username ? (
-            <AccountMenu
-              username={username}
-              onSignOut={() => setUsername(null)}
-            />
+            <AccountMenu username={username} />
           ) : (
             <a
               href={googleOAuthUrl}
