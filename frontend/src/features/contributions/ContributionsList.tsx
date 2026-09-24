@@ -1,95 +1,87 @@
 import { useEffect, useState } from "react";
-import Contribution from "./Contribution";
-import { useContributions } from "./useContributions";
-import { ApiContribution } from "../../types";
 import { useTranslation } from "react-i18next";
+import { Newspaper } from "lucide-react";
+import { useContributions } from "./useContributions";
+import { useInfiniteScroll } from "./useInfiniteScroll";
+import ContributionGrid from "./ContributionGrid";
+import SourceChips from "./SourceChips";
+import { EmptyState, ErrorState, LoadMoreButton } from "./FeedStates";
+
+const SOURCES: Record<string, Record<string, string>> = {
+  es: {
+    es: "Todos",
+    "El País": "El País",
+    "El Mundo": "El Mundo",
+    "20 Minutos": "20 Minutos",
+    "ES Diario": "ES Diario",
+    Marca: "Marca",
+  },
+  en: {
+    en: "All",
+    "NY Times": "NY Times",
+  },
+};
 
 export default function ContributionsList() {
   const { t, i18n } = useTranslation();
-  const storedLang = localStorage.getItem("language") || "en";
-  const [sourceFilter, setSourceFilter] = useState(storedLang);
-  const { data, fetchNextPage, hasNextPage } = useContributions(sourceFilter);
+  const lang = (i18n.language || "en").slice(0, 2);
+  const [sourceFilter, setSourceFilter] = useState(lang);
 
-  const SOURCES: Record<string, Record<string, string>> = {
-    es: {
-      es: "Todos",
-      "El País": "El País",
-      "El Mundo": "El Mundo",
-      "20 Minutos": "20 Minutos",
-      "ES Diario": "ES Diario",
-      Marca: "Marca",
-    },
-    en: {
-      en: "All",
-      "NY Times": "NY Times",
-    },
-  };
+  const { data, fetchNextPage, hasNextPage, isPending, error } =
+    useContributions(sourceFilter);
 
-  const lang = i18n.language || "en";
-  const sourceOptions = SOURCES[lang as keyof typeof SOURCES] || SOURCES["en"];
+  useInfiniteScroll(hasNextPage, fetchNextPage);
 
   useEffect(() => {
-    let ticking = false;
+    setSourceFilter(lang);
+  }, [lang]);
 
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const scrollTop =
-            window.scrollY || document.documentElement.scrollTop;
-          if (
-            window.innerHeight + scrollTop >=
-            document.documentElement.offsetHeight
-          ) {
-            if (hasNextPage) fetchNextPage();
-          }
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
+  const sourceOptions = SOURCES[lang] ?? SOURCES.en;
+  const options = Object.entries(sourceOptions).map(([value, label]) => ({
+    value,
+    label,
+  }));
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasNextPage, fetchNextPage]);
+  const items = data?.pages.flatMap((page) => page.content) ?? [];
+  const isEmpty = !isPending && !error && items.length === 0;
 
-  useEffect(() => {
-    setSourceFilter(i18n.language);
-  }, [i18n.language]);
+  if (error) {
+    return (
+      <ErrorState
+        title={t("latestNews.errorTitle", "We couldn't load the news")}
+        description={t(
+          "latestNews.error",
+          "Something went wrong while fetching the latest stories. Please try again in a moment.",
+        )}
+      />
+    );
+  }
 
   return (
     <div className="flex flex-col">
-      <div className="flex gap-2 items-center justify-end mt-4 md:mt-2 mr-2 text-xs md:text-base">
-        <div className="px-2">
-          <label>{t("source")}:</label>
-          <select onChange={(e) => setSourceFilter(e.target.value)}>
-            {Object.entries(sourceOptions as Record<string, string>).map(
-              ([value, label]) => (
-                <option className="dark:text-black" value={value} key={value}>
-                  {label}
-                </option>
-              ),
-            )}
-          </select>
-        </div>
+      <SourceChips
+        options={options}
+        value={sourceFilter}
+        onChange={setSourceFilter}
+      />
+
+      <div className="mt-5">
+        <ContributionGrid items={items} isLoading={isPending} skeletonCount={6} />
       </div>
 
-      <hr className="h-px bg-palid-purple dark:bg-palid-purple border-0 my-4" />
-      {data &&
-        data.pages.map((group) => (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6">
-            {group.content.map((c: ApiContribution) => (
-              <Contribution contribution={c} key={c.id} />
-            ))}
-          </div>
-        ))}
+      {isEmpty && (
+        <EmptyState
+          icon={<Newspaper className="h-6 w-6" aria-hidden="true" />}
+          title={t("latestNews.emptyTitle", "No stories yet")}
+          description={t(
+            "latestNews.empty",
+            "There are no articles for this source right now. Try another one.",
+          )}
+        />
+      )}
 
-      {hasNextPage && (
-        <button
-          onClick={() => fetchNextPage()}
-          className="inline-block text-sm rounded-full bg-palid-pink font-semibold uppercase tracking-wide text-stone-800 transition-colors duration-300 hover:bg-pink cursor-pointer w-54 h-10 mx-auto"
-        >
-          {t("loadMore")}
-        </button>
+      {hasNextPage && !isPending && (
+        <LoadMoreButton onClick={() => fetchNextPage()} />
       )}
     </div>
   );

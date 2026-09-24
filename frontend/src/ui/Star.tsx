@@ -6,12 +6,14 @@ interface Props {
 }
 
 export default function Star({ vote, setVote, handleSetRating, order }: Props) {
+  const isFilled = vote >= order;
+
   return (
     <svg
       onClick={() => handleSetRating(order)}
       onMouseEnter={() => setVote(order)}
-      className={`w-4 h-4 ms-1 ${
-        vote >= order ? "text-yellow-300" : "text-gray-300"
+      className={`ms-0.5 h-4 w-4 cursor-pointer transition-transform duration-150 hover:scale-110 ${
+        isFilled ? "text-amber-400" : "text-line"
       }`}
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"

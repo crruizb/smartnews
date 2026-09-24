@@ -8,6 +8,20 @@
     "error": "An error occurred while recording your vote. Please try again later."
   },
   "loadMore": "Load more news",
+  "theme": {
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode"
+  },
+  "language": {
+    "select": "Language"
+  },
+  "account": {
+    "signIn": "Sign in with Google",
+    "signInShort": "Sign in",
+    "signedInAs": "Signed in as",
+    "signOut": "Sign out",
+    "signingOut": "Signing out…"
+  },
   "sidebar": {
     "title": "Navigation",
     "latest": "Latest News",
@@ -15,28 +29,46 @@
     "recommendations": "Recommended"
   },
   "latestNews": {
-    "description": "Most recent news articles from various sources"
+    "title": "Latest News",
+    "description": "The most recent stories from your sources.",
+    "emptyTitle": "No stories yet",
+    "empty": "There are no articles for this source right now. Try another one.",
+    "errorTitle": "We couldn't load the news",
+    "error": "Something went wrong while fetching the latest stories. Please try again in a moment."
   },
   "ratedNews": {
     "title": "Your Rated News",
-    "description": "News articles you have previously rated",
+    "description": "News articles you have previously rated.",
+    "emptyTitle": "Nothing rated yet",
     "empty": "You haven't rated any news yet. Start rating some articles!"
   },
   "recommendations": {
     "title": "Recommended for You",
-    "description": "Personalized news recommendations based on your ratings",
+    "description": "Personalized picks based on your ratings.",
+    "emptyTitle": "No recommendations yet",
     "empty": "No recommendations available yet. Rate some articles to get personalized suggestions!",
     "error": "No recommendations available. Please rate some articles first to get personalized recommendations."
   },
   "search": {
     "placeholder": "Search news...",
+    "clear": "Clear search",
     "noResults": "No results found for",
+    "noResultsHint": "Try a different keyword or check the spelling.",
+    "resultsFor": "Results for",
+    "resultsHint": "Matching articles across all sources.",
+    "errorTitle": "Search failed",
     "error": "An error occurred while searching. Please try again."
   },
   "detail": {
     "loading": "Loading...",
     "notFound": "We couldn't find that news item.",
+    "notFoundHint": "It may have been removed, or the link could be wrong.",
     "back": "Back to news",
-    "readMore": "Read full article on {{source}}"
+    "readMore": "Read full article on {{source}}",
+    "share": "Share",
+    "linkCopied": "Link copied to clipboard",
+    "shareError": "Could not copy the link",
+    "readingTime_one": "{{count}} min read",
+    "readingTime_other": "{{count}} min read"
   }
 }

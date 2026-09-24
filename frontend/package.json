@@ -12,10 +12,13 @@
   "dependencies": {
     "@tanstack/react-query": "^5.71.1",
     "@tanstack/react-query-devtools": "^5.71.1",
+    "date-fns": "^4.4.0",
     "i18next": "^25.5.2",
     "i18next-browser-languagedetector": "^8.2.0",
     "i18next-http-backend": "^3.0.2",
     "js-cookie": "^3.0.5",
+    "lucide-react": "^1.47.0",
+    "motion": "^13.4.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.2",

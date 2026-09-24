@@ -8,6 +8,17 @@ if (isLocalhost) {
   API_URL = "http://localhost:8080/api";
 }
 
+const AUTH_URL = API_URL.replace(/\/api$/, "/auth");
+
+export async function logoutUser() {
+  const res = await fetch(`${AUTH_URL}/logout`, {
+    method: "POST",
+    credentials: "include",
+  });
+
+  if (!res.ok) throw Error("Could not log out");
+}
+
 export async function getLatestContributions(
   pageParam: number,
   sourceFilter: string

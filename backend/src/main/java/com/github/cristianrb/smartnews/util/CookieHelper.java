@@ -25,4 +25,12 @@ public class CookieHelper {
         }
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.build().toString());
     }
+
+    /**
+     * Expires a previously set cookie. `httpOnly` must match how the cookie was
+     * originally written so browsers overwrite the right entry.
+     */
+    public void clearCookie(HttpServletResponse response, String name, boolean httpOnly) {
+        setCookie(response, name, "", 0, httpOnly);
+    }
 }

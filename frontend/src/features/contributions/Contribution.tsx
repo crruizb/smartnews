@@ -1,61 +1,89 @@
+import { Link } from "react-router";
+import { useTranslation } from "react-i18next";
 import { ApiContribution } from "../../types";
 import StarRate from "../../ui/StarRate";
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router";
+import SourceFavicon from "./SourceFavicon";
+import { absoluteTime, relativeTime } from "../../lib/format";
 
 interface Props {
   contribution: ApiContribution;
 }
 
 export default function Contribution({ contribution }: Props) {
-  const { t } = useTranslation();
+  const { i18n } = useTranslation();
+  const {
+    id,
+    title,
+    description,
+    urlImage,
+    source,
+    sourceUrl,
+    link,
+    categories,
+    pubDate,
+    vote,
+  } = contribution;
+
+  const visibleCategories = categories.filter(Boolean).slice(0, 2);
 
   return (
-    <div className="flex flex-col hover:bg-stone-100 dark:hover:bg-stone-100/5 rounded-xl transition duration-300 overflow-hidden border border-stone-200 dark:border-stone-800">
-      <Link to={`/contributions/${contribution.id}`} className="flex flex-col">
-        {contribution.urlImage && (
-          <div className="overflow-hidden w-full h-48 bg-stone-200 dark:bg-stone-800">
+    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-surface shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift">
+      <Link
+        to={`/contributions/${id}`}
+        className="flex flex-1 flex-col focus-visible:outline-none"
+      >
+        {urlImage && (
+          <div className="aspect-[16/9] w-full overflow-hidden bg-surface-2">
             <img
-              src={contribution.urlImage}
-              alt={contribution.title}
-              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+              src={urlImage}
+              alt=""
+              loading="lazy"
+              className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
             />
           </div>
         )}
-        <div className="p-4 space-y-3">
-          <div>
-            <p className="text-xs font-extralight text-stone-500 dark:text-stone-400 mb-2">
-              {t("contribution.pubDate")}: {contribution.pubDate} |{" "}
-              <span className="font-semibold">@{contribution.source}</span>
-            </p>
-            <h2 className="font-semibold text-lg leading-tight">
-              {contribution.title}
-            </h2>
+
+        <div className="flex flex-1 flex-col gap-2.5 p-4">
+          <div className="flex items-center gap-2 text-xs text-muted">
+            <SourceFavicon source={source} sourceUrl={sourceUrl} link={link} />
+            <span className="truncate font-medium text-ink-2">{source}</span>
+            <span aria-hidden="true">·</span>
+            <time
+              dateTime={pubDate}
+              title={absoluteTime(pubDate, i18n.language)}
+              className="shrink-0"
+            >
+              {relativeTime(pubDate, i18n.language)}
+            </time>
           </div>
-          <p className="font-light text-sm text-stone-600 dark:text-stone-300 line-clamp-3">
-            {contribution.description}
-          </p>
+
+          <h2 className="font-display text-lg font-semibold leading-snug text-ink transition-colors group-hover:text-accent-strong">
+            {title}
+          </h2>
+
+          {description && (
+            <p className="line-clamp-3 text-sm leading-relaxed text-ink-2">
+              {description}
+            </p>
+          )}
         </div>
       </Link>
-      <div className="flex justify-between items-center px-4 pb-4 pt-0">
-        <StarRate
-          rating={contribution.vote ? contribution.vote : 0}
-          newsId={contribution.id}
-        />
-        {contribution.categories.length > 0 &&
-          contribution.categories[0] !== "" && (
-            <div className="flex gap-1.5 flex-wrap justify-end">
-              {contribution.categories.slice(0, 3).map((c, i) => (
-                <span
-                  key={i}
-                  className="bg-palid-blue dark:text-black rounded-full px-2.5 py-1 text-xs font-medium capitalize"
-                >
-                  {c}
-                </span>
-              ))}
-            </div>
-          )}
+
+      <div className="mt-auto flex items-center justify-between gap-2 px-4 pb-4">
+        <StarRate rating={vote ?? 0} newsId={id} />
+        {visibleCategories.length > 0 && (
+          <div className="flex justify-end gap-1.5 overflow-hidden">
+            {visibleCategories.map((category) => (
+              <span
+                key={category}
+                className="rounded-full bg-accent-soft px-2.5 py-0.5 text-[11px] font-medium capitalize text-accent-strong"
+              >
+                {category}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
-    </div>
+    </article>
   );
 }

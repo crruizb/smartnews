@@ -7,7 +7,21 @@
     "success": "Voto registrado correctamente!",
     "error": "No se pudo registrar el voto, prueba mas tarde."
   },
-  "loadMore": "Cargar mas noticías",
+  "loadMore": "Cargar más noticias",
+  "theme": {
+    "switchToLight": "Cambiar a modo claro",
+    "switchToDark": "Cambiar a modo oscuro"
+  },
+  "language": {
+    "select": "Idioma"
+  },
+  "account": {
+    "signIn": "Iniciar sesión con Google",
+    "signInShort": "Entrar",
+    "signedInAs": "Sesión iniciada como",
+    "signOut": "Cerrar sesión",
+    "signingOut": "Cerrando sesión…"
+  },
   "sidebar": {
     "title": "Navegación",
     "latest": "Últimas Noticias",
@@ -15,28 +29,46 @@
     "recommendations": "Recomendadas"
   },
   "latestNews": {
-    "description": "Artículos de noticias más recientes de varias fuentes"
+    "title": "Últimas Noticias",
+    "description": "Las noticias más recientes de tus fuentes.",
+    "emptyTitle": "Aún no hay noticias",
+    "empty": "No hay artículos para esta fuente ahora mismo. Prueba con otra.",
+    "errorTitle": "No pudimos cargar las noticias",
+    "error": "Algo falló al cargar las últimas noticias. Inténtalo de nuevo en un momento."
   },
   "ratedNews": {
     "title": "Tus Noticias Valoradas",
-    "description": "Artículos de noticias que has valorado anteriormente",
+    "description": "Artículos de noticias que has valorado anteriormente.",
+    "emptyTitle": "Aún no has valorado nada",
     "empty": "Aún no has valorado ninguna noticia. ¡Comienza a valorar algunos artículos!"
   },
   "recommendations": {
     "title": "Recomendadas para Ti",
-    "description": "Recomendaciones de noticias personalizadas basadas en tus valoraciones",
+    "description": "Selección personalizada basada en tus valoraciones.",
+    "emptyTitle": "Aún no hay recomendaciones",
     "empty": "Aún no hay recomendaciones disponibles. ¡Valora algunos artículos para obtener sugerencias personalizadas!",
     "error": "No hay recomendaciones disponibles. Por favor, valora algunos artículos primero para obtener recomendaciones personalizadas."
   },
   "search": {
     "placeholder": "Buscar noticias...",
+    "clear": "Limpiar búsqueda",
     "noResults": "No se encontraron resultados para",
+    "noResultsHint": "Prueba con otra palabra o revisa la ortografía.",
+    "resultsFor": "Resultados para",
+    "resultsHint": "Artículos coincidentes de todas las fuentes.",
+    "errorTitle": "La búsqueda falló",
     "error": "Ocurrió un error al buscar. Por favor, inténtalo de nuevo."
   },
   "detail": {
     "loading": "Cargando...",
     "notFound": "No hemos podido encontrar esa noticia.",
+    "notFoundHint": "Puede que se haya eliminado o que el enlace sea incorrecto.",
     "back": "Volver a las noticias",
-    "readMore": "Leer el artículo completo en {{source}}"
+    "readMore": "Leer el artículo completo en {{source}}",
+    "share": "Compartir",
+    "linkCopied": "Enlace copiado al portapapeles",
+    "shareError": "No se pudo copiar el enlace",
+    "readingTime_one": "{{count}} min de lectura",
+    "readingTime_other": "{{count}} min de lectura"
   }
 }

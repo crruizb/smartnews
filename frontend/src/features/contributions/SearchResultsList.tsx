@@ -1,8 +1,9 @@
-import { useEffect } from "react";
-import Contribution from "./Contribution";
-import { useSearchContributions } from "./useContributions";
-import { ApiContribution } from "../../types";
+import { SearchX } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useSearchContributions } from "./useContributions";
+import { useInfiniteScroll } from "./useInfiniteScroll";
+import ContributionGrid from "./ContributionGrid";
+import { EmptyState, ErrorState, LoadMoreButton } from "./FeedStates";
 
 interface SearchResultsListProps {
   query: string;
@@ -10,81 +11,46 @@ interface SearchResultsListProps {
 
 export default function SearchResultsList({ query }: SearchResultsListProps) {
   const { t } = useTranslation();
-  const { data, fetchNextPage, hasNextPage, error, isFetching } =
+  const { data, fetchNextPage, hasNextPage, isFetching, isPending, error } =
     useSearchContributions(query);
 
-  useEffect(() => {
-    let ticking = false;
+  useInfiniteScroll(hasNextPage, fetchNextPage, isFetching);
 
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const scrollTop =
-            window.scrollY || document.documentElement.scrollTop;
-          if (
-            window.innerHeight + scrollTop >=
-            document.documentElement.offsetHeight - 100
-          ) {
-            if (hasNextPage && !isFetching) fetchNextPage();
-          }
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasNextPage, fetchNextPage, isFetching]);
+  const items = data?.pages.flatMap((page) => page.content) ?? [];
 
   if (error) {
     return (
-      <div className="flex flex-col">
-        <hr className="h-px bg-palid-purple dark:bg-pink border-0 my-4" />
-        <div className="text-center py-8">
-          <p className="text-gray-500 dark:text-gray-400">
-            {t("search.error", "An error occurred while searching. Please try again.")}
-          </p>
-        </div>
-      </div>
+      <ErrorState
+        title={t("search.errorTitle", "Search failed")}
+        description={t(
+          "search.error",
+          "An error occurred while searching. Please try again.",
+        )}
+      />
     );
   }
 
-  const hasResults = data && data.pages.some((page) => page.content.length > 0);
+  if (!isPending && items.length === 0) {
+    return (
+      <EmptyState
+        icon={<SearchX className="h-6 w-6" aria-hidden="true" />}
+        title={`${t("search.noResults", "No results found for")} “${query}”`}
+        description={t(
+          "search.noResultsHint",
+          "Try a different keyword or check the spelling.",
+        )}
+      />
+    );
+  }
 
   return (
     <div className="flex flex-col">
-      <hr className="h-px bg-palid-purple dark:bg-pink border-0 my-4" />
-
-      {hasResults ? (
-        <>
-          {data.pages.map((group, groupIndex) => (
-            <div
-              key={groupIndex}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6"
-            >
-              {group.content.map((c: ApiContribution) => (
-                <Contribution contribution={c} key={c.id} />
-              ))}
-            </div>
-          ))}
-
-          {hasNextPage && (
-            <button
-              onClick={() => fetchNextPage()}
-              className="inline-block text-sm rounded-full bg-palid-pink font-semibold uppercase tracking-wide text-stone-800 transition-colors duration-300 hover:bg-pink cursor-pointer w-54 h-10 mx-auto"
-            >
-              {t("loadMore")}
-            </button>
-          )}
-        </>
-      ) : (
-        <div className="text-center py-8">
-          <p className="text-gray-500 dark:text-gray-400">
-            {t("search.noResults", "No results found for")}{" "}
-            <span className="font-semibold">"{query}"</span>
-          </p>
-        </div>
+      <ContributionGrid items={items} isLoading={isPending} skeletonCount={6} />
+      {hasNextPage && !isPending && (
+        <LoadMoreButton
+          onClick={() => fetchNextPage()}
+          isFetching={isFetching}
+        />
       )}
     </div>
   );

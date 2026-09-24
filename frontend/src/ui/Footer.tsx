@@ -1,10 +1,11 @@
 export default function Footer() {
   return (
-    <footer className="mt-16 mb-4 flex justify-center">
+    <footer className="container-page mt-16 mb-6 flex justify-center border-t border-line pt-6 text-sm text-muted">
       <a
         href="https://cristianruiz.dev"
         target="_blank"
-        className="flex gap-2 "
+        rel="noopener noreferrer"
+        className="font-medium transition-colors hover:text-accent-strong"
       >
         cristianruiz.dev 🚀 {new Date().getFullYear()}
       </a>

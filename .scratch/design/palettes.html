@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Smart News — Palette candidates</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Inter, system-ui, sans-serif;
+    background: #101014;
+    color: #e8e8ea;
+    padding: 40px 24px 80px;
+  }
+  .page-head { max-width: 1180px; margin: 0 auto 36px; }
+  .page-head h1 { font-family: Newsreader, serif; font-size: 34px; font-weight: 600; letter-spacing: -0.01em; }
+  .page-head p { color: #9a9aa2; margin-top: 8px; font-size: 15px; max-width: 720px; line-height: 1.5; }
+
+  .palette { max-width: 1180px; margin: 0 auto 56px; }
+  .palette-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 16px; flex-wrap: wrap; }
+  .palette-head h2 { font-family: Newsreader, serif; font-size: 24px; font-weight: 600; }
+  .palette-head .tag { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #8b8b94; }
+  .recommend { background: #1f6feb; color: #fff; border-radius: 999px; padding: 3px 10px; font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+
+  .surfaces { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 860px) { .surfaces { grid-template-columns: 1fr; } }
+
+  .surface { border-radius: 18px; padding: 26px; border: 1px solid rgba(255,255,255,.08); }
+  .surface-label { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; opacity: .55; margin-bottom: 18px; }
+
+  /* themed scope */
+  .scope { background: var(--bg); color: var(--text); border-radius: 14px; padding: 18px; }
+  .scope.dark { color-scheme: dark; }
+
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 14px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+  .wordmark { font-family: Newsreader, serif; font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+  .wordmark em { font-style: normal; color: var(--accent); }
+  .nav { display: flex; gap: 6px; }
+  .nav span { font-size: 12.5px; padding: 6px 11px; border-radius: 999px; color: var(--muted); }
+  .nav span.on { background: var(--accent-soft); color: var(--accent-strong); font-weight: 600; }
+
+  .chips { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+  .chip { font-size: 12.5px; padding: 7px 13px; border-radius: 999px; border: 1px solid var(--border); color: var(--muted); background: var(--surface); }
+  .chip.on { background: var(--ink); color: var(--bg); border-color: var(--ink); font-weight: 600; }
+
+  .cards { display: grid; grid-template-columns: 1.35fr 1fr; gap: 14px; }
+  @media (max-width: 560px) { .cards { grid-template-columns: 1fr; } }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+  .thumb { height: 132px; background: linear-gradient(135deg, var(--accent-soft), var(--border)); }
+  .card-body { padding: 14px; }
+  .meta { display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: var(--muted); margin-bottom: 8px; }
+  .fav { width: 16px; height: 16px; border-radius: 4px; background: var(--accent); opacity: .85; }
+  .kicker { font-size: 11px; letter-spacing: .09em; text-transform: uppercase; color: var(--accent-strong); font-weight: 700; margin-bottom: 7px; }
+  .headline { font-family: Newsreader, serif; font-size: 21px; line-height: 1.18; font-weight: 600; letter-spacing: -0.01em; }
+  .headline.sm { font-size: 16.5px; }
+  .excerpt { font-size: 13px; line-height: 1.5; color: var(--text-2); margin-top: 8px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .card-foot { display: flex; align-items: center; justify-content: space-between; padding: 0 14px 14px; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 15px; color: var(--accent); }
+  .star.off { color: var(--border); }
+
+  .btn { display: inline-block; margin-top: 18px; background: var(--accent); color: var(--on-accent); font-weight: 600; font-size: 13px; padding: 10px 18px; border-radius: 999px; }
+  .btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--border); margin-left: 8px; }
+
+  .swatches { display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+  .sw { width: 46px; height: 46px; border-radius: 10px; border: 1px solid rgba(255,255,255,.12); }
+
+  .cap { font-size: 12px; color: #9a9aa2; margin-top: 10px; line-height: 1.5; }
+
+  /* ── Palette 1: Ink & Ember (warm editorial) ── */
+  .p-ember {
+    --bg: #faf7f2; --surface: #ffffff; --ink: #1a1613;
+    --text: #1a1613; --text-2: #534b42; --muted: #827a6f;
+    --border: #e8e1d6; --accent: #c2410c; --accent-strong: #9a3412;
+    --accent-soft: #fdece1; --on-accent: #fff7f2;
+  }
+  .p-ember.dark {
+    --bg: #16120f; --surface: #1f1a16; --ink: #f6f0e8;
+    --text: #f6f0e8; --text-2: #c9c0b4; --muted: #948a7d;
+    --border: #322a23; --accent: #fb923c; --accent-strong: #fdba74;
+    --accent-soft: #2c1f16; --on-accent: #2a1408;
+  }
+
+  /* ── Palette 2: Ink & Cobalt (classic editorial) ── */
+  .p-cobalt {
+    --bg: #fbfbf9; --surface: #ffffff; --ink: #0c1424;
+    --text: #0c1424; --text-2: #3d4859; --muted: #6b7686;
+    --border: #e3e7ee; --accent: #1d4ed8; --accent-strong: #1e40af;
+    --accent-soft: #e8eefc; --on-accent: #ffffff;
+  }
+  .p-cobalt.dark {
+    --bg: #0b1018; --surface: #121a28; --ink: #e9edf5;
+    --text: #e9edf5; --text-2: #aeb9c9; --muted: #7c8698;
+    --border: #222c3e; --accent: #60a5fa; --accent-strong: #93c5fd;
+    --accent-soft: #16233a; --on-accent: #04101f;
+  }
+
+  /* ── Palette 3: Ink & Plum (continuity with current purple) ── */
+  .p-plum {
+    --bg: #faf8fc; --surface: #ffffff; --ink: #150f1c;
+    --text: #150f1c; --text-2: #4a4257; --muted: #7c7489;
+    --border: #e9e4f0; --accent: #7c3aed; --accent-strong: #6d28d9;
+    --accent-soft: #f1eafe; --on-accent: #ffffff;
+  }
+  .p-plum.dark {
+    --bg: #120e18; --surface: #1c1626; --ink: #f2eef8;
+    --text: #f2eef8; --text-2: #c4bbcd; --muted: #8e8598;
+    --border: #2f2740; --accent: #a78bfa; --accent-strong: #c4b5fd;
+    --accent-soft: #241b36; --on-accent: #1a0f33;
+  }
+</style>
+</head>
+<body>
+  <div class="page-head">
+    <h1>Smart News — palette candidates</h1>
+    <p>Three editorial directions, each shown in light and dark and applied to the same pieces: wordmark, nav, source chips, a feature card, a compact card, star rating, and buttons. Headlines use <strong>Newsreader</strong> (serif display); UI uses <strong>Inter</strong>.</p>
+  </div>
+
+  <!-- ═══ EMBER ═══ -->
+  <section class="palette">
+    <div class="palette-head">
+      <h2>1 · Ink &amp; Ember</h2>
+      <span class="tag">warm · magazine · paper</span>
+      <span class="recommend">Recommended</span>
+    </div>
+    <div class="surfaces">
+      <div class="surface p-ember"><div class="surface-label">Light</div><div class="scope"><div class="ui"></div></div></div>
+      <div class="surface p-ember dark"><div class="surface-label">Dark</div><div class="scope dark"><div class="ui"></div></div></div>
+    </div>
+    <p class="cap">Warm cream paper and near-black ink with a burnt-orange accent. The most distinctly “printed magazine” of the three; reads premium and inviting, and the warm dark mode is unusually cozy for a news app.</p>
+  </section>
+
+  <!-- ═══ COBALT ═══ -->
+  <section class="palette">
+    <div class="palette-head">
+      <h2>2 · Ink &amp; Cobalt</h2>
+      <span class="tag">cool · classic · trustworthy</span>
+    </div>
+    <div class="surfaces">
+      <div class="surface p-cobalt"><div class="surface-label">Light</div><div class="scope"><div class="ui"></div></div></div>
+      <div class="surface p-cobalt dark"><div class="surface-label">Dark</div><div class="scope dark"><div class="ui"></div></div></div>
+    </div>
+    <p class="cap">Crisp paper-white with a deep cobalt accent on ink-navy text. Familiar, trustworthy, “established newspaper” energy (closest to NYT blue). Slightly cooler and more corporate than Ember.</p>
+  </section>
+
+  <!-- ═══ PLUM ═══ -->
+  <section class="palette">
+    <div class="palette-head">
+      <h2>3 · Ink &amp; Plum</h2>
+      <span class="tag">calm · modern · brand continuity</span>
+    </div>
+    <div class="surfaces">
+      <div class="surface p-plum"><div class="surface-label">Light</div><div class="scope"><div class="ui"></div></div></div>
+      <div class="surface p-plum dark"><div class="surface-label">Dark</div><div class="scope dark"><div class="ui"></div></div></div>
+    </div>
+    <p class="cap">Soft paper-white with a rich violet accent — a grown-up, high-contrast evolution of your current pastel purple. Keeps brand continuity while feeling far more intentional.</p>
+  </section>
+
+  <script>
+    const ui = (accentSwatches) => `
+      <div class="topbar">
+        <div class="wordmark">Smart<em>News</em></div>
+        <div class="nav"><span class="on">Latest</span><span>Rated</span><span>For you</span></div>
+      </div>
+      <div class="chips">
+        <span class="chip on">All sources</span><span class="chip">NY Times</span><span class="chip">El País</span><span class="chip">Marca</span>
+      </div>
+      <div class="cards">
+        <div class="card">
+          <div class="thumb"></div>
+          <div class="card-body">
+            <div class="kicker">World</div>
+            <div class="headline">After Warm Meeting With Trump, Venezuela’s Leader Is Set to Address U.N.</div>
+            <div class="excerpt">She will be the first head of state from her country in eight years to make a speech to the body in person.</div>
+          </div>
+          <div class="card-foot">
+            <div class="meta"><span class="fav"></span>NY Times · 2h ago</div>
+            <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star off">★</span><span class="star off">★</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="meta" style="margin-bottom:10px"><span class="fav"></span>El País · 5h ago</div>
+            <div class="headline sm">Trump Aides Seek to Jump-Start Diplomacy With Iran</div>
+            <div class="excerpt">Secretary of State Marco Rubio said negotiations had restarted.</div>
+            <div style="margin-top:14px" class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star off">★</span><span class="star off">★</span></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <span class="btn">Read full article</span>
+        <span class="btn ghost">Load more</span>
+      </div>
+      <div class="swatches">
+        ${accentSwatches.map(c => `<div class="sw" style="background:${c}"></div>`).join("")}
+      </div>
+    `;
+
+    document.querySelectorAll(".p-ember .ui").forEach(el => el.innerHTML = ui(["#faf7f2","#1a1613","#534b42","#827a6f","#c2410c","#9a3412","#fdece1","#e8e1d6"]));
+    document.querySelectorAll(".p-ember.dark .ui").forEach(el => el.innerHTML = ui(["#16120f","#f6f0e8","#c9c0b4","#948a7d","#fb923c","#fdba74","#2c1f16","#322a23"]));
+    document.querySelectorAll(".p-cobalt .ui").forEach(el => el.innerHTML = ui(["#fbfbf9","#0c1424","#3d4859","#6b7686","#1d4ed8","#1e40af","#e8eefc","#e3e7ee"]));
+    document.querySelectorAll(".p-cobalt.dark .ui").forEach(el => el.innerHTML = ui(["#0b1018","#e9edf5","#aeb9c9","#7c8698","#60a5fa","#93c5fd","#16233a","#222c3e"]));
+    document.querySelectorAll(".p-plum .ui").forEach(el => el.innerHTML = ui(["#faf8fc","#150f1c","#4a4257","#7c7489","#7c3aed","#6d28d9","#f1eafe","#e9e4f0"]));
+    document.querySelectorAll(".p-plum.dark .ui").forEach(el => el.innerHTML = ui(["#120e18","#f2eef8","#c4bbcd","#8e8598","#a78bfa","#c4b5fd","#241b36","#2f2740"]));
+  </script>
+</body>
+</html>
