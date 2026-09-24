@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 
 export function useContributions(sourceFilter: string) {
-  const { error, data, fetchNextPage, hasNextPage, isPending } =
+  const { error, data, fetchNextPage, hasNextPage, isPending, isFetching } =
     useInfiniteQuery({
       queryKey: ["contributions", sourceFilter],
       queryFn: ({ pageParam = 0 }) =>
@@ -25,11 +25,11 @@ export function useContributions(sourceFilter: string) {
       },
     });
 
-  return { error, data, fetchNextPage, hasNextPage, isPending };
+  return { error, data, fetchNextPage, hasNextPage, isPending, isFetching };
 }
 
 export function useRatedContributions() {
-  const { error, data, fetchNextPage, hasNextPage, isPending } =
+  const { error, data, fetchNextPage, hasNextPage, isPending, isFetching } =
     useInfiniteQuery({
       queryKey: ["ratedContributions"],
       queryFn: ({ pageParam = 0 }) => getRatedContributions(pageParam),
@@ -42,11 +42,11 @@ export function useRatedContributions() {
       },
     });
 
-  return { error, data, fetchNextPage, hasNextPage, isPending };
+  return { error, data, fetchNextPage, hasNextPage, isPending, isFetching };
 }
 
 export function useRecommendations() {
-  const { error, data, fetchNextPage, hasNextPage, isPending } =
+  const { error, data, fetchNextPage, hasNextPage, isPending, isFetching } =
     useInfiniteQuery({
       queryKey: ["recommendations"],
       queryFn: ({ pageParam = 0 }) => getRecommendations(pageParam),
@@ -59,7 +59,7 @@ export function useRecommendations() {
       },
     });
 
-  return { error, data, fetchNextPage, hasNextPage, isPending };
+  return { error, data, fetchNextPage, hasNextPage, isPending, isFetching };
 }
 
 export function useSearchContributions(query: string) {

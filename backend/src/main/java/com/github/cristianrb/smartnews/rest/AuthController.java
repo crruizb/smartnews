@@ -41,6 +41,12 @@ public class AuthController {
         cookieHelper.clearCookie(response, "username", false);
     }
 
+    /** Joins the configured frontend URL with a path, tolerating a missing trailing slash. */
+    private String frontendUrl(String path) {
+        String base = frontendURL.endsWith("/") ? frontendURL : frontendURL + "/";
+        return base + path;
+    }
+
     /** Programmatic logout for API clients. */
     @PostMapping("/logout")
     public void logout(HttpServletResponse response) {
@@ -55,7 +61,7 @@ public class AuthController {
     @GetMapping("/logout")
     public void logoutAndRedirect(HttpServletResponse response) throws IOException {
         clearAuthCookies(response);
-        response.sendRedirect(frontendURL + "contributions");
+        response.sendRedirect(frontendUrl("contributions"));
     }
 
     @PostMapping("/refresh")

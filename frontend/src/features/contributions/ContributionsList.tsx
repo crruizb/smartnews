@@ -27,10 +27,10 @@ export default function ContributionsList() {
   const lang = (i18n.language || "en").slice(0, 2);
   const [sourceFilter, setSourceFilter] = useState(lang);
 
-  const { data, fetchNextPage, hasNextPage, isPending, error } =
+  const { data, fetchNextPage, hasNextPage, isPending, isFetching, error } =
     useContributions(sourceFilter);
 
-  useInfiniteScroll(hasNextPage, fetchNextPage);
+  useInfiniteScroll(hasNextPage, fetchNextPage, isFetching);
 
   useEffect(() => {
     setSourceFilter(lang);

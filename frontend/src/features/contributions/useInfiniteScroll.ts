@@ -1,14 +1,25 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 /**
  * Loads the next page when the user scrolls near the bottom of the document.
- * Uses rAF throttling to keep the scroll handler cheap.
+ *
+ * Guards against duplicate fetches two ways:
+ *  - `isFetching` (from useInfiniteQuery) prevents overlapping requests.
+ *  - an in-flight ref prevents firing again in the window between calling
+ *    `fetchNextPage` and React Query updating `isFetching`.
  */
 export function useInfiniteScroll(
   hasNextPage: boolean | undefined,
   fetchNextPage: () => void,
   isFetching = false,
 ) {
+  const inFlight = useRef(false);
+
+  // Release the guard once the current request has settled.
+  useEffect(() => {
+    if (!isFetching) inFlight.current = false;
+  }, [isFetching]);
+
   useEffect(() => {
     let ticking = false;
 
@@ -22,7 +33,8 @@ export function useInfiniteScroll(
           window.innerHeight + scrollTop >=
           document.documentElement.offsetHeight - 200;
 
-        if (nearBottom && hasNextPage && !isFetching) {
+        if (nearBottom && hasNextPage && !isFetching && !inFlight.current) {
+          inFlight.current = true;
           fetchNextPage();
         }
         ticking = false;

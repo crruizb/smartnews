@@ -7,10 +7,10 @@ import { EmptyState, LoadMoreButton } from "./FeedStates";
 
 export default function RecommendationsList() {
   const { t } = useTranslation();
-  const { data, fetchNextPage, hasNextPage, isPending, error } =
+  const { data, fetchNextPage, hasNextPage, isPending, isFetching, error } =
     useRecommendations();
 
-  useInfiniteScroll(hasNextPage, fetchNextPage);
+  useInfiniteScroll(hasNextPage, fetchNextPage, isFetching);
 
   const items = data?.pages.flatMap((page) => page.content) ?? [];
 

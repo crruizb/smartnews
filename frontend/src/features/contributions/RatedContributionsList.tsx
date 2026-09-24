@@ -7,10 +7,10 @@ import { EmptyState, LoadMoreButton } from "./FeedStates";
 
 export default function RatedContributionsList() {
   const { t } = useTranslation();
-  const { data, fetchNextPage, hasNextPage, isPending, error } =
+  const { data, fetchNextPage, hasNextPage, isPending, isFetching, error } =
     useRatedContributions();
 
-  useInfiniteScroll(hasNextPage, fetchNextPage);
+  useInfiniteScroll(hasNextPage, fetchNextPage, isFetching);
 
   const items = data?.pages.flatMap((page) => page.content) ?? [];
 
