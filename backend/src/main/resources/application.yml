@@ -48,3 +48,7 @@ jwt:
 app:
   frontendURL: ${FRONTEND_URL:http://localhost:5173/}
   backendDomain: ${BACKEND_DOMAIN:localhost}
+  news:
+    # Articles dated further ahead than this are treated as feed errors and
+    # excluded from the feed. Raise it if source timezones cause skew.
+    futureToleranceMinutes: ${NEWS_FUTURE_TOLERANCE_MINUTES:0}

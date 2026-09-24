@@ -16,16 +16,18 @@ public interface ContributionsRepository extends JpaRepository<ContributionDAO, 
     Optional<ContributionDAO> findByTitle(String title);
 
     Page<ContributionDAO> findAllByPubDateAfterOrderByPubDateDescIdDesc(Pageable paging, String date);
-    Page<ContributionDAO> findAllByCountryAndPubDateAfterOrderByPubDateDescIdDesc(Pageable paging, String country, String date);
-    Page<ContributionDAO> findAllBySourceAndPubDateAfterOrderByPubDateDescIdDesc(Pageable paging, String source, String date);
+    Page<ContributionDAO> findAllByCountryAndPubDateAfterAndPubDateBeforeOrderByPubDateDescIdDesc(Pageable paging, String country, String after, String before);
+    Page<ContributionDAO> findAllBySourceAndPubDateAfterAndPubDateBeforeOrderByPubDateDescIdDesc(Pageable paging, String source, String after, String before);
 
     Optional<ContributionDAO> findByUrlImageContaining(String image);
 
     @Query(value = "SELECT c.* FROM contributions c " +
             "WHERE c.search_vector @@ to_tsquery('simple', :tsquery) " +
+            "AND c.pub_date <= :now " +
             "ORDER BY ts_rank(c.search_vector, to_tsquery('simple', :tsquery)) DESC, c.id DESC",
             countQuery = "SELECT count(*) FROM contributions c " +
-                    "WHERE c.search_vector @@ to_tsquery('simple', :tsquery)",
+                    "WHERE c.search_vector @@ to_tsquery('simple', :tsquery) " +
+                    "AND c.pub_date <= :now",
             nativeQuery = true)
-    Page<ContributionDAO> searchByQuery(@Param("tsquery") String tsquery, Pageable paging);
+    Page<ContributionDAO> searchByQuery(@Param("tsquery") String tsquery, @Param("now") String now, Pageable paging);
 }

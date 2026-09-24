@@ -29,7 +29,7 @@ public class MarcaHandler extends GenericHandler {
                 getContribution().setCountry("ES");
             } else if (qName.equalsIgnoreCase(pubDate)) {
                 Date date = new Date(getData().toString());
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                 String format = formatter.format(date);
                 getContribution().setPubDate(format);
             } else if (qName.equalsIgnoreCase(description)) {

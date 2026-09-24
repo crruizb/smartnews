@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -68,7 +69,7 @@ public class ContributionsServiceTests {
         final int end = Math.min((start + paging.getPageSize()), contributions.size());
         Page<ContributionDAO> contributionsPaged = new PageImpl<>(contributions.subList(start, end), paging, contributions.size());
 
-        when(contributionsRepository.findAllByCountryAndPubDateAfterOrderByPubDateDescIdDesc(paging, "ES", "all")).thenReturn(contributionsPaged);
+        when(contributionsRepository.findAllByCountryAndPubDateAfterAndPubDateBeforeOrderByPubDateDescIdDesc(eq(paging), eq("ES"), eq("all"), any())).thenReturn(contributionsPaged);
         Page<ContributionDAO> resultContributionsDAO = contributionsService.getAll(paging, "es", "all");
         Assertions.assertEquals(resultContributionsDAO, contributionsPaged);
     }
@@ -90,48 +91,48 @@ public class ContributionsServiceTests {
     @Test
     public void testSearchBuildsPrefixTsQuery() {
         Pageable paging = PageRequest.of(page, 10);
-        when(contributionsRepository.searchByQuery(any(), any())).thenReturn(Page.empty());
+        when(contributionsRepository.searchByQuery(any(), any(), any())).thenReturn(Page.empty());
 
         contributionsService.search("Estados unidos", paging);
 
         ArgumentCaptor<String> tsqueryCaptor = ArgumentCaptor.forClass(String.class);
-        verify(contributionsRepository).searchByQuery(tsqueryCaptor.capture(), any());
+        verify(contributionsRepository).searchByQuery(tsqueryCaptor.capture(), any(), any());
         Assertions.assertEquals("estados:* & unidos:*", tsqueryCaptor.getValue());
     }
 
     @Test
     public void testSearchStripsSpecialCharacters() {
         Pageable paging = PageRequest.of(page, 10);
-        when(contributionsRepository.searchByQuery(any(), any())).thenReturn(Page.empty());
+        when(contributionsRepository.searchByQuery(any(), any(), any())).thenReturn(Page.empty());
 
         contributionsService.search("economía & crisis!", paging);
 
         ArgumentCaptor<String> tsqueryCaptor = ArgumentCaptor.forClass(String.class);
-        verify(contributionsRepository).searchByQuery(tsqueryCaptor.capture(), any());
+        verify(contributionsRepository).searchByQuery(tsqueryCaptor.capture(), any(), any());
         Assertions.assertEquals("economía:* & crisis:*", tsqueryCaptor.getValue());
     }
 
     @Test
     public void testSearchLowercasesInput() {
         Pageable paging = PageRequest.of(page, 10);
-        when(contributionsRepository.searchByQuery(any(), any())).thenReturn(Page.empty());
+        when(contributionsRepository.searchByQuery(any(), any(), any())).thenReturn(Page.empty());
 
         contributionsService.search("ESTADOS", paging);
 
         ArgumentCaptor<String> tsqueryCaptor = ArgumentCaptor.forClass(String.class);
-        verify(contributionsRepository).searchByQuery(tsqueryCaptor.capture(), any());
+        verify(contributionsRepository).searchByQuery(tsqueryCaptor.capture(), any(), any());
         Assertions.assertEquals("estados:*", tsqueryCaptor.getValue());
     }
 
     @Test
     public void testSearchHandlesSingleWord() {
         Pageable paging = PageRequest.of(page, 10);
-        when(contributionsRepository.searchByQuery(any(), any())).thenReturn(Page.empty());
+        when(contributionsRepository.searchByQuery(any(), any(), any())).thenReturn(Page.empty());
 
         contributionsService.search("economía", paging);
 
         ArgumentCaptor<String> tsqueryCaptor = ArgumentCaptor.forClass(String.class);
-        verify(contributionsRepository).searchByQuery(tsqueryCaptor.capture(), any());
+        verify(contributionsRepository).searchByQuery(tsqueryCaptor.capture(), any(), any());
         Assertions.assertEquals("economía:*", tsqueryCaptor.getValue());
     }
 }

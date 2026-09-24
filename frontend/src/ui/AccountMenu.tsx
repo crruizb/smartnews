@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import { LogOut } from "lucide-react";
+import Cookies from "js-cookie";
 import { useTranslation } from "react-i18next";
 import { logoutUser } from "../services/apiContributions";
 import { initials } from "../lib/format";
 
 interface AccountMenuProps {
   username: string;
+  onSignOut: () => void;
 }
 
-export default function AccountMenu({ username }: AccountMenuProps) {
+export default function AccountMenu({ username, onSignOut }: AccountMenuProps) {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
@@ -37,12 +39,15 @@ export default function AccountMenu({ username }: AccountMenuProps) {
   const handleSignOut = async () => {
     setIsSigningOut(true);
     try {
+      // Clears the httpOnly auth cookies server-side.
       await logoutUser();
     } catch {
-      /* even if the request fails, drop the local session view */
-    } finally {
-      window.location.href = "/contributions";
+      /* if the request fails we still drop the local session below */
     }
+    // `username` is a readable cookie, so clear it locally too and let the
+    // header re-render immediately instead of relying on a page reload.
+    Cookies.remove("username");
+    onSignOut();
   };
 
   return (
@@ -52,7 +57,7 @@ export default function AccountMenu({ username }: AccountMenuProps) {
         onClick={() => setIsOpen((open) => !open)}
         aria-haspopup="menu"
         aria-expanded={isOpen}
-        className="flex items-center gap-2 rounded-full border border-line bg-surface p-0.5 pr-2.5 transition-colors hover:border-accent cursor-pointer"
+        className="flex shrink-0 items-center gap-2 rounded-full border border-line bg-surface p-0.5 transition-colors hover:border-accent sm:pr-2.5 cursor-pointer"
       >
         <span className="grid h-8 w-8 place-items-center rounded-full bg-accent-soft text-xs font-semibold text-accent-strong">
           {initials(username)}

@@ -20,7 +20,7 @@ public class ABCHandler extends GenericHandler {
                 getContribution().getCategories().add(getData().toString());
             } else if (qName.equalsIgnoreCase(pubDate)) {
                 java.util.Date date = new Date(getData().toString());
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                 String format = formatter.format(date);
                 getContribution().setPubDate(format);
             } else if (qName.equalsIgnoreCase(creator)) {

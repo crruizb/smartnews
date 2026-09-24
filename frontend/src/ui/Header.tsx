@@ -19,7 +19,7 @@ export default function Header({
   showNavigation = false,
 }: HeaderProps) {
   const { t } = useTranslation();
-  const [username] = useState(() => Cookies.get("username") ?? null);
+  const [username, setUsername] = useState(() => Cookies.get("username") ?? null);
 
   const isLocalhost =
     window.location.hostname === "localhost" ||
@@ -68,15 +68,18 @@ export default function Header({
           )}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
           <ThemeToggle />
           <LanguageSelector />
           {username ? (
-            <AccountMenu username={username} />
+            <AccountMenu
+              username={username}
+              onSignOut={() => setUsername(null)}
+            />
           ) : (
             <a
               href={googleOAuthUrl}
-              className="flex items-center gap-2 rounded-full bg-ink px-3.5 py-2 text-xs font-semibold text-paper transition-opacity hover:opacity-90 sm:text-sm"
+              className="flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-ink px-3.5 py-2 text-xs font-semibold text-paper transition-opacity hover:opacity-90 sm:text-sm"
             >
               <img
                 className="h-4 w-4"

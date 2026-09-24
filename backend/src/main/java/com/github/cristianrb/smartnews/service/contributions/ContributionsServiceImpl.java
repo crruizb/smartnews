@@ -4,10 +4,14 @@ import com.github.cristianrb.smartnews.entity.Contribution;
 import com.github.cristianrb.smartnews.entity.ContributionDAO;
 import com.github.cristianrb.smartnews.repository.ContributionsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,11 +19,29 @@ import java.util.stream.Collectors;
 @Service
 public class ContributionsServiceImpl implements ContributionsService {
 
+    /** Must match the "yyyy-MM-dd HH:mm" format used by the RSS handlers. */
+    private static final DateTimeFormatter PUB_DATE_FORMAT =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
     private ContributionsRepository contributionsRepository;
+
+    /**
+     * Articles dated beyond this many minutes in the future are ignored, since
+     * they are almost always feed errors. A small tolerance absorbs timezone
+     * skew between the source and the server.
+     */
+    @Value("${app.news.futureToleranceMinutes:0}")
+    private long futureToleranceMinutes;
 
     @Autowired
     public ContributionsServiceImpl(ContributionsRepository contributionsRepository) {
         this.contributionsRepository = contributionsRepository;
+    }
+
+    private String feedUpperBound() {
+        return LocalDateTime.now(ZoneOffset.UTC)
+                .plusMinutes(futureToleranceMinutes)
+                .format(PUB_DATE_FORMAT);
     }
 
     @Override
@@ -44,12 +66,13 @@ public class ContributionsServiceImpl implements ContributionsService {
 
     @Override
     public Page<ContributionDAO> getAll(Pageable paging, String source, String date) {
+        String now = feedUpperBound();
         if (source.equals("es")) {
-            return this.contributionsRepository.findAllByCountryAndPubDateAfterOrderByPubDateDescIdDesc(paging, "ES", date);
+            return this.contributionsRepository.findAllByCountryAndPubDateAfterAndPubDateBeforeOrderByPubDateDescIdDesc(paging, "ES", date, now);
         } else if (source.equals("en")) {
-            return this.contributionsRepository.findAllByCountryAndPubDateAfterOrderByPubDateDescIdDesc(paging, "EN", date);
+            return this.contributionsRepository.findAllByCountryAndPubDateAfterAndPubDateBeforeOrderByPubDateDescIdDesc(paging, "EN", date, now);
         }
-        return this.contributionsRepository.findAllBySourceAndPubDateAfterOrderByPubDateDescIdDesc(paging, source, date);
+        return this.contributionsRepository.findAllBySourceAndPubDateAfterAndPubDateBeforeOrderByPubDateDescIdDesc(paging, source, date, now);
     }
 
     @Override
@@ -72,7 +95,7 @@ public class ContributionsServiceImpl implements ContributionsService {
         if (tsquery.isEmpty()) {
             return Page.empty(paging);
         }
-        return this.contributionsRepository.searchByQuery(tsquery, paging);
+        return this.contributionsRepository.searchByQuery(tsquery, feedUpperBound(), paging);
     }
 
     private String buildTsQuery(String query) {
