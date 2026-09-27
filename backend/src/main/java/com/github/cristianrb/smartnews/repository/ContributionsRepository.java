@@ -3,6 +3,7 @@ package com.github.cristianrb.smartnews.repository;
 import com.github.cristianrb.smartnews.entity.ContributionDAO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,8 +17,8 @@ public interface ContributionsRepository extends JpaRepository<ContributionDAO, 
     Optional<ContributionDAO> findByTitle(String title);
 
     Page<ContributionDAO> findAllByPubDateAfterOrderByPubDateDescIdDesc(Pageable paging, String date);
-    Page<ContributionDAO> findAllByCountryAndPubDateAfterAndPubDateBeforeOrderByPubDateDescIdDesc(Pageable paging, String country, String after, String before);
-    Page<ContributionDAO> findAllBySourceAndPubDateAfterAndPubDateBeforeOrderByPubDateDescIdDesc(Pageable paging, String source, String after, String before);
+    Slice<ContributionDAO> findAllByCountryAndPubDateAfterAndPubDateBeforeOrderByPubDateDescIdDesc(Pageable paging, String country, String after, String before);
+    Slice<ContributionDAO> findAllBySourceAndPubDateAfterAndPubDateBeforeOrderByPubDateDescIdDesc(Pageable paging, String source, String after, String before);
 
     Optional<ContributionDAO> findByUrlImageContaining(String image);
 

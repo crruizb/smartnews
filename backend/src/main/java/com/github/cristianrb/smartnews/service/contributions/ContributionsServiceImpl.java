@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -65,7 +66,7 @@ public class ContributionsServiceImpl implements ContributionsService {
 
 
     @Override
-    public Page<ContributionDAO> getAll(Pageable paging, String source, String date) {
+    public Slice<ContributionDAO> getAll(Pageable paging, String source, String date) {
         String now = feedUpperBound();
         if (source.equals("es")) {
             return this.contributionsRepository.findAllByCountryAndPubDateAfterAndPubDateBeforeOrderByPubDateDescIdDesc(paging, "ES", date, now);

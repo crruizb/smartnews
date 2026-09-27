@@ -4,6 +4,7 @@ import com.github.cristianrb.smartnews.entity.Contribution;
 import com.github.cristianrb.smartnews.entity.ContributionDAO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,7 +12,7 @@ public interface ContributionsService {
 
     ContributionDAO saveContribution(Contribution cont);
 
-    Page<ContributionDAO> getAll(Pageable paging, String source, String date);
+    Slice<ContributionDAO> getAll(Pageable paging, String source, String date);
 
     ContributionDAO getContributionById(Integer id);
 

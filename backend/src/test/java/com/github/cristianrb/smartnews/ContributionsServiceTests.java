@@ -17,6 +17,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,10 +69,10 @@ public class ContributionsServiceTests {
         Pageable paging = PageRequest.of(page, 10);
         final int start = (int)paging.getOffset();
         final int end = Math.min((start + paging.getPageSize()), contributions.size());
-        Page<ContributionDAO> contributionsPaged = new PageImpl<>(contributions.subList(start, end), paging, contributions.size());
+        Slice<ContributionDAO> contributionsPaged = new SliceImpl<>(contributions.subList(start, end), paging, false);
 
         when(contributionsRepository.findAllByCountryAndPubDateAfterAndPubDateBeforeOrderByPubDateDescIdDesc(eq(paging), eq("ES"), eq("all"), any())).thenReturn(contributionsPaged);
-        Page<ContributionDAO> resultContributionsDAO = contributionsService.getAll(paging, "es", "all");
+        Slice<ContributionDAO> resultContributionsDAO = contributionsService.getAll(paging, "es", "all");
         Assertions.assertEquals(resultContributionsDAO, contributionsPaged);
     }
 

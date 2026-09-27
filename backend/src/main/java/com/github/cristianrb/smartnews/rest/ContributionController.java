@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -45,16 +46,16 @@ public class ContributionController {
     }
 
     @GetMapping("/latest")
-    public Map<String,Page<Contribution>> getAllContributions(
+    public Map<String,Slice<Contribution>> getAllContributions(
             @RequestParam(name = "page", defaultValue = "0") Integer page,
             @RequestParam(name = "source", defaultValue = "all") String source,
             @RequestParam(name = "date", defaultValue = "2010-01-01T00:00:00Z") String date,
             Principal principal
     ) {
         String username = usernameOrNull(principal);
-        Page<Contribution> data = contributionsService.getAll(PageRequest.of(page, PAGE_SIZE), source, date)
+        Slice<Contribution> data = contributionsService.getAll(PageRequest.of(page, PAGE_SIZE), source, date)
                 .map(c -> ContributionsMapper.mapContributionDAOToContribution(c, username));
-        HashMap<String, Page<Contribution>> json = new HashMap<>();
+        HashMap<String, Slice<Contribution>> json = new HashMap<>();
         json.put("data", data);
         return json;
     }

@@ -15,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +36,7 @@ public class ContributionControllerTests {
     ContributionController contributionController;
 
     private Pageable paging;
-    private Page<ContributionDAO> contributionsPaged;
+    private Slice<ContributionDAO> contributionsPaged;
     private Contribution c1;
     private static final int page = 0;
 
@@ -53,14 +55,15 @@ public class ContributionControllerTests {
         paging = PageRequest.of(page, 12);
         final int start = (int)paging.getOffset();
         final int end = Math.min((start + paging.getPageSize()), contributions.size());
-        contributionsPaged = new PageImpl<>(contributions.subList(start, end), paging, contributions.size());
+        contributionsPaged = new SliceImpl<>(contributions.subList(start, end), paging, false);
     }
 
     @Test
     public void testRetrieveContributions() {
         when(contributionsService.getAll(paging, "all", "")).thenReturn(contributionsPaged);
-        Map<String,Page<Contribution> >contributionsResult = contributionController.getAllContributions(page, "all", "", null);
-        assertThat(contributionsResult.get("data").getTotalElements()).isEqualTo(2);
+        Map<String,Slice<Contribution>> contributionsResult = contributionController.getAllContributions(page, "all", "", null);
+        assertThat(contributionsResult.get("data").getNumberOfElements()).isEqualTo(2);
+        assertThat(contributionsResult.get("data").isLast()).isTrue();
     }
 
     @Test
