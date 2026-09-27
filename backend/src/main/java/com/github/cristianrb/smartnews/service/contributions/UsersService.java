@@ -5,7 +5,9 @@ import com.github.cristianrb.smartnews.entity.ContributionDAO;
 import com.github.cristianrb.smartnews.entity.UserDAO;
 
 import java.security.Principal;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface UsersService {
@@ -19,4 +21,7 @@ public interface UsersService {
     public Integer getVoteOfContributionByUser(ContributionDAO contributionDAO, String name);
 
     public List<Contribution> getContributionsVotedByUser(Principal principal);
+
+    /** Votes of the given user for the given contributions, keyed by contribution id. */
+    public Map<Integer, Integer> getVotesByUser(String name, Collection<Integer> contributionIds);
 }

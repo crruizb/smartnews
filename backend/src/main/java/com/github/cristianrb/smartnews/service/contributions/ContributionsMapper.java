@@ -2,11 +2,8 @@ package com.github.cristianrb.smartnews.service.contributions;
 
 import com.github.cristianrb.smartnews.entity.Contribution;
 import com.github.cristianrb.smartnews.entity.ContributionDAO;
-import com.github.cristianrb.smartnews.entity.UserContributionDAO;
-import org.springframework.security.core.parameters.P;
 
 import java.util.Arrays;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ContributionsMapper {
@@ -29,7 +26,7 @@ public class ContributionsMapper {
         return contDAO;
     }
 
-    public static Contribution mapContributionDAOToContribution(ContributionDAO contDAO, String username) {
+    public static Contribution mapContributionDAOToContribution(ContributionDAO contDAO) {
         Contribution cont = new Contribution();
         cont.setId(contDAO.getId());
         cont.setTitle(contDAO.getTitle());
@@ -42,15 +39,6 @@ public class ContributionsMapper {
         cont.setSourceUrl(contDAO.getSourceUrl());
         cont.setCountry(contDAO.getCountry());
         cont.setCategories(Arrays.asList(contDAO.getCategories().split(",")));
-        if (username != null) {
-            Set<UserContributionDAO> users = contDAO.getUsers();
-            for (UserContributionDAO ucd : users) {
-                if (ucd.getContribution().getId() == contDAO.getId()) {
-                    cont.setVote(ucd.getVote());
-                }
-            }
-        }
-
         return cont;
     }
 }

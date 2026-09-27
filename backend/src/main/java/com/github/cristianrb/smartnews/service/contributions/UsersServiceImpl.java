@@ -6,20 +6,27 @@ import com.github.cristianrb.smartnews.entity.UserContributionDAO;
 import com.github.cristianrb.smartnews.entity.UserDAO;
 import com.github.cristianrb.smartnews.errors.ForbiddenAccesException;
 import com.github.cristianrb.smartnews.errors.UserNotFoundException;
+import com.github.cristianrb.smartnews.repository.UserContributionRepository;
 import com.github.cristianrb.smartnews.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UsersServiceImpl implements UsersService {
 
     @Autowired
     private UsersRepository usersRepository;
+
+    @Autowired
+    private UserContributionRepository userContributionRepository;
 
     @Override
     public UserDAO saveUser(UserDAO user) {
@@ -58,7 +65,7 @@ public class UsersServiceImpl implements UsersService {
                 List<Contribution> contsVoted = new ArrayList<>();
                 for (UserContributionDAO userContributionDAO : user.get().getContributionsVisited()) {
                     ContributionDAO contributionDAO = userContributionDAO.getContribution();
-                    Contribution contribution = ContributionsMapper.mapContributionDAOToContribution(contributionDAO, principal.getName());
+                    Contribution contribution = ContributionsMapper.mapContributionDAOToContribution(contributionDAO);
                     contribution.setVote(userContributionDAO.getVote());
                     contsVoted.add(contribution);
                 }
@@ -70,5 +77,11 @@ public class UsersServiceImpl implements UsersService {
         throw new UserNotFoundException("User with userId: " + principal.getName() + " has no rated contributions or doesn't exists.");
     }
 
-
+    @Override
+    public Map<Integer, Integer> getVotesByUser(String name, Collection<Integer> contributionIds) {
+        if (name == null || contributionIds.isEmpty()) return Map.of();
+        return userContributionRepository.findVotesByUser(name, contributionIds).stream()
+                .collect(Collectors.toMap(UserContributionRepository.ContributionVote::getContributionId,
+                        UserContributionRepository.ContributionVote::getVote));
+    }
 }

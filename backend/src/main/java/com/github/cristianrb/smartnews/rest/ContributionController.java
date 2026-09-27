@@ -52,9 +52,9 @@ public class ContributionController {
             @RequestParam(name = "date", defaultValue = "2010-01-01T00:00:00Z") String date,
             Principal principal
     ) {
-        String username = usernameOrNull(principal);
-        Slice<Contribution> data = contributionsService.getAll(PageRequest.of(page, PAGE_SIZE), source, date)
-                .map(c -> ContributionsMapper.mapContributionDAOToContribution(c, username));
+        Slice<ContributionDAO> contributions = contributionsService.getAll(PageRequest.of(page, PAGE_SIZE), source, date);
+        Map<Integer, Integer> votes = votesOf(contributions, principal);
+        Slice<Contribution> data = contributions.map(c -> toContribution(c, votes));
         HashMap<String, Slice<Contribution>> json = new HashMap<>();
         json.put("data", data);
         return json;
@@ -66,9 +66,9 @@ public class ContributionController {
             @RequestParam(name = "page", defaultValue = "0") Integer page,
             Principal principal
     ) {
-        String username = usernameOrNull(principal);
-        return contributionsService.search(query, PageRequest.of(page, PAGE_SIZE))
-                .map(c -> ContributionsMapper.mapContributionDAOToContribution(c, username));
+        Page<ContributionDAO> contributions = contributionsService.search(query, PageRequest.of(page, PAGE_SIZE));
+        Map<Integer, Integer> votes = votesOf(contributions, principal);
+        return contributions.map(c -> toContribution(c, votes));
     }
 
     @GetMapping("/contributions")
@@ -76,7 +76,7 @@ public class ContributionController {
                                             Principal principal) {
         ContributionDAO contributionDAO = contributionsService.getContributionById(id);
         String username = usernameOrNull(principal);
-        Contribution contribution = ContributionsMapper.mapContributionDAOToContribution(contributionDAO, username);
+        Contribution contribution = ContributionsMapper.mapContributionDAOToContribution(contributionDAO);
 
         if (username != null) {
             Integer vote = usersService.getVoteOfContributionByUser(contributionDAO, username);
@@ -115,6 +115,20 @@ public class ContributionController {
     @PutMapping("/contributions")
     public void putVoteContribution(@RequestBody Integer vote, @RequestParam(name = "id") Integer id, Principal principal) {
         usersContributionService.voteContribution(vote, id, principal);
+    }
+
+    /** Loads the caller's votes for a whole page in one query instead of one lazy load per item. */
+    private Map<Integer, Integer> votesOf(Slice<ContributionDAO> contributions, Principal principal) {
+        String username = usernameOrNull(principal);
+        if (username == null) return Map.of();
+        List<Integer> ids = contributions.getContent().stream().map(ContributionDAO::getId).toList();
+        return usersService.getVotesByUser(username, ids);
+    }
+
+    private static Contribution toContribution(ContributionDAO contributionDAO, Map<Integer, Integer> votes) {
+        Contribution contribution = ContributionsMapper.mapContributionDAOToContribution(contributionDAO);
+        contribution.setVote(votes.get(contributionDAO.getId()));
+        return contribution;
     }
 
     private static String usernameOrNull(Principal principal) {

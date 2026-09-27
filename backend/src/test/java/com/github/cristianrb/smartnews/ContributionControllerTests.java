@@ -5,6 +5,7 @@ import com.github.cristianrb.smartnews.entity.ContributionDAO;
 import com.github.cristianrb.smartnews.rest.ContributionController;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsMapper;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsService;
+import com.github.cristianrb.smartnews.service.contributions.UsersService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,6 +34,9 @@ public class ContributionControllerTests {
 
     @Mock
     ContributionsService contributionsService;
+
+    @Mock
+    UsersService usersService;
 
     @InjectMocks
     ContributionController contributionController;
@@ -64,6 +70,27 @@ public class ContributionControllerTests {
         Map<String,Slice<Contribution>> contributionsResult = contributionController.getAllContributions(page, "all", "", null);
         assertThat(contributionsResult.get("data").getNumberOfElements()).isEqualTo(2);
         assertThat(contributionsResult.get("data").isLast()).isTrue();
+    }
+
+    @Test
+    public void testRetrieveContributionsLoadsOnlyTheCallersVotes() {
+        when(contributionsService.getAll(paging, "all", "")).thenReturn(contributionsPaged);
+        when(usersService.getVotesByUser("u1", List.of(0, 0))).thenReturn(Map.of(0, 4));
+
+        Map<String,Slice<Contribution>> contributionsResult = contributionController.getAllContributions(page, "all", "", () -> "u1");
+
+        assertThat(contributionsResult.get("data").getContent().get(0).getVote()).isEqualTo(4);
+        verify(usersService).getVotesByUser("u1", List.of(0, 0));
+    }
+
+    @Test
+    public void testRetrieveContributionsWithoutAuthenticationSkipsVotes() {
+        when(contributionsService.getAll(paging, "all", "")).thenReturn(contributionsPaged);
+
+        Map<String,Slice<Contribution>> contributionsResult = contributionController.getAllContributions(page, "all", "", null);
+
+        assertThat(contributionsResult.get("data").getContent().get(0).getVote()).isNull();
+        verifyNoInteractions(usersService);
     }
 
     @Test

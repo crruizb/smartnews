@@ -1,12 +1,15 @@
 package com.github.cristianrb.smartnews.service.ai;
 
 import com.github.cristianrb.smartnews.entity.Contribution;
+import com.github.cristianrb.smartnews.entity.ContributionDAO;
 import com.github.cristianrb.smartnews.entity.Recommendation;
 import com.github.cristianrb.smartnews.entity.RecommendationPK;
 import com.github.cristianrb.smartnews.entity.User;
 import com.github.cristianrb.smartnews.repository.RecommendationsRepository;
 import com.github.cristianrb.smartnews.service.contributions.ContributionsMapper;
+import com.github.cristianrb.smartnews.service.contributions.UsersService;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import org.springframework.ai.chat.client.ChatClient;
@@ -20,12 +23,14 @@ public class AIRecommendationsService implements RecommendationsService {
     private final GenericSqlTools sqlTools;
     private final SchemaDescriptionProvider schemaDescriptionProvider;
     private final RecommendationsRepository recommendationsRepository;
+    private final UsersService usersService;
 
-    public AIRecommendationsService(ChatClient.Builder builder, GenericSqlTools sqlTools, SchemaDescriptionProvider schemaDescriptionProvider, RecommendationsRepository recommendationsRepository) {
+    public AIRecommendationsService(ChatClient.Builder builder, GenericSqlTools sqlTools, SchemaDescriptionProvider schemaDescriptionProvider, RecommendationsRepository recommendationsRepository, UsersService usersService) {
         this.chatClient = builder.build();
         this.sqlTools = sqlTools;
         this.schemaDescriptionProvider = schemaDescriptionProvider;
         this.recommendationsRepository = recommendationsRepository;
+        this.usersService = usersService;
     }
 
     @Override
@@ -38,9 +43,13 @@ public class AIRecommendationsService implements RecommendationsService {
             contributions = this.recommendationsRepository.findRecommendedContributionsByUserId(user.getId());
         }
 
+        Map<Integer, Integer> votes = usersService.getVotesByUser(user.getId(),
+                contributions.stream().map(ContributionDAO::getId).toList());
         return contributions
                 .stream().map(c -> {
-                    return ContributionsMapper.mapContributionDAOToContribution(c, user.getId());
+                    Contribution contribution = ContributionsMapper.mapContributionDAOToContribution(c);
+                    contribution.setVote(votes.get(c.getId()));
+                    return contribution;
                 }).toList();
     }
 
